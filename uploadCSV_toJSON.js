@@ -40,7 +40,7 @@ var uploadElm = document.createElement("input");
 uploadElm.setAttribute("id", "csvFileInput");
 uploadElm.setAttribute("type", "file");
 uploadElm.setAttribute("onchange", "handleFiles(this.files)");
-uploadElm.style.transform = "scale(1.1, 1.1) translate(5%, 80%)"
+uploadElm.style.transform = "scale(1.1, 1.1) translate(5%, 80%)";
 document.getElementById("pop_container").appendChild(uploadElm);
 
   var saveBtn = document.createElement("button");
@@ -60,13 +60,6 @@ document.getElementById("pop_container").appendChild(uploadElm);
 function close() {
   document.body.removeChild(document.getElementById("pop_container"));
 }
-
-
-
-  
-//document.getElementById('csvFileInput').find(   file.name   ).append(evt.target.result)
-
-
 
 var objArr = [];
 
