@@ -26,24 +26,27 @@ textbox_1.style.fontSize = "1.2em";
 textbox_1.style.userSelect = "none";
 textbox_1.style.fontFamily = '"Courier New", monospace';
 
-var autoCompl = document.createElement("div");
-autoCompl.setAttribute("id", "autoCompl");
-document.getElementById("pop_container").appendChild(autoCompl);
-autoCompl.style.width = "100%";
-autoCompl.style.height = "10%";
-autoCompl.style.padding = "6px";
-autoCompl.style.border = "1px solid Transparent";
-autoCompl.style.background = "Transparent";
-autoCompl.style.fontFamily = '"Courier New", monospace';
 
-function createDivsFromArray(arr,elmId){
+
+function createDivsFromArray(arr){
+	var heightCont = (arr.length * 10);
+	var autoCompl = document.createElement("div");
+	autoCompl.setAttribute("id", "autoCompl");
+	document.getElementById("pop_container").appendChild(autoCompl);
+	autoCompl.style.width = "100%";
+	autoCompl.style.height = heightCont+"%";
+	autoCompl.style.padding = "6px";
+	autoCompl.style.border = "1px solid Transparent";
+	autoCompl.style.background = "Transparent";
+	autoCompl.style.fontFamily = '"Courier New", monospace';
+
 	for(i=0; i<arr.length; i++){
 		var iDiv = document.createElement('div');
-		document.getElementById(elmId).appendChild(iDiv);
+		document.getElementById('autoCompl').appendChild(iDiv);
 		iDiv.setAttribute('id', 'idiv_'+arr[i]);
 		iDiv.innerText = arr[i];
 		iDiv.style.width = "100%";
-		iDiv.style.height = "10%";
+		iDiv.style.height = Math.floor(100/(arr.length))+"%";
 		iDiv.style.background = "DarkCyan";
 		iDiv.style.border = "1px solid DarkSlateGrey";
 		iDiv.style.borderRadius = ".2em";
@@ -62,4 +65,4 @@ function hoverOut(){
 	this.style.background = 'DarkCyan';
 }
 
-createDivsFromArray(['Athens','Dunwoody','Macon','Atlanta'], 'pop_container')
+createDivsFromArray(['Athens','Dunwoody','Macon','Atlanta','Sandy Springs','Brookhaven'])
