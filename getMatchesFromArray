@@ -1,0 +1,10 @@
+function getMatchesFromArray(str, arr){
+	var containArr = [];
+	var regX = new RegExp(str.replace(/\W/g, '.{0,1}?'), 'i');
+	for(i=0; i<arr.length; i++){
+		if(regX.test(arr[i])){
+			containArr.push(arr[i]);
+		}
+	}
+	return containArr;
+}
