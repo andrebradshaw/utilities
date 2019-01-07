@@ -1,3 +1,5 @@
+//TODO: account for null matches and resize autoCompl container
+
 var cDiv = document.createElement("div");
 cDiv.setAttribute("id", "pop_container");
 document.body.appendChild(cDiv);
@@ -25,8 +27,6 @@ textbox_1.style.background = "FloralWhite";
 textbox_1.style.fontSize = "1.2em";
 textbox_1.style.userSelect = "none";
 textbox_1.style.fontFamily = '"Courier New", monospace';
-
-
 
 function createDivsFromArray(arr){
 	var heightCont = (arr.length * 10);
@@ -65,4 +65,31 @@ function hoverOut(){
 	this.style.background = 'DarkCyan';
 }
 
-createDivsFromArray(['Athens','Dunwoody','Macon','Atlanta','Sandy Springs','Brookhaven'])
+var cityArr = ['Athens','Dunwoody','Macon','Atlanta','Sandy Springs','Brookhaven'];
+
+function getMatchesFromArray(str, arr){
+	var containArr = [];
+	var regX = new RegExp(str.replace(/\W/g, '.{0,1}?'), 'i');
+	for(i=0; i<arr.length; i++){
+		if(regX.test(arr[i])){
+			containArr.push(arr[i]);
+		}
+	}
+	return containArr;
+}
+function clearAutoCompl(){
+	var list = document.getElementById('autoCompl').childNodes;
+	for(i=list.length-1; i>=0; i--){
+		document.getElementById('autoCompl').removeChild(list[i])
+	}
+}
+
+function dropDownMenu() {
+  var inp = this.value;
+  if (inp.length > 2) {
+    var matches = getMatchesFromArray(inp,cityArr);
+	new Promise(()=>{clearAutoCompl()}).then(createDivsFromArray(matches));
+  }
+}
+
+document.getElementById('textbox_code').addEventListener('keydown', dropDownMenu)
