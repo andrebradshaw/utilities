@@ -1,8 +1,8 @@
 var options = ['Athens', 'Dunwoody', 'Macon', 'Atlanta', 'Sandy Springs', 'Brookhaven', 'Atlantis'];
 
-function autocomplete(optionsArr,colorArr) {
-	var borderColor = colorArr[0];
-	var bgColor = colorArr[1];
+function autocomplete(optionsArr, colorArr) {
+  var borderColor = colorArr[0];
+  var bgColor = colorArr[1];
 
   var cDiv = document.createElement('div');
   cDiv.setAttribute('id', 'pop_container');
@@ -55,7 +55,7 @@ function autocomplete(optionsArr,colorArr) {
       iDiv.style.border = "1px solid " + borderColor;
       iDiv.style.borderRadius = ".2em";
       iDiv.style.color = "white";
-	  iDiv.style.opacity = '.9';
+      iDiv.style.opacity = '.9';
       iDiv.style.padding = '2%';
       iDiv.style.cursor = "pointer";
       iDiv.style.transition = "all 193ms";
@@ -67,12 +67,12 @@ function autocomplete(optionsArr,colorArr) {
 
   function hoverIn() {
     this.style.opacity = '1';
-	this.style.transform = 'scale(1.1, 1.1)';
+    this.style.transform = 'scale(1.1, 1.1)';
   }
 
   function hoverOut() {
     this.style.opacity = '.9';
-	this.style.transform = 'scale(1, 1)';
+    this.style.transform = 'scale(1, 1)';
   }
 
   function getMatchesFromArray(str, arr) {
@@ -108,4 +108,4 @@ function autocomplete(optionsArr,colorArr) {
   document.getElementById('textbox_code').addEventListener('keyup', curLocVal);
 }
 
-autocomplete(options, ['DarkSlateGrey','DarkCyan'])
+autocomplete(options, ['DarkSlateGrey', 'DarkCyan'])
