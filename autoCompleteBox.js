@@ -1,5 +1,3 @@
-//TODO: account for null matches and resize autoCompl container
-
 var cDiv = document.createElement("div");
 cDiv.setAttribute("id", "pop_container");
 document.body.appendChild(cDiv);
@@ -78,13 +76,12 @@ function getMatchesFromArray(str, arr){
 	return containArr;
 }
 function clearAutoCompl(){
-	var list = document.getElementById('autoCompl').childNodes;
-	for(i=list.length-1; i>=0; i--){
-		document.getElementById('autoCompl').removeChild(list[i])
+	if(document.getElementById('autoCompl') != null){
+		document.getElementById('pop_container').removeChild(document.getElementById('autoCompl'))
 	}
 }
 
-function dropDownMenu() {
+function curLocVal() {
   var inp = this.value;
   if (inp.length > 2) {
     var matches = getMatchesFromArray(inp,cityArr);
@@ -92,4 +89,4 @@ function dropDownMenu() {
   }
 }
 
-document.getElementById('textbox_code').addEventListener('keydown', dropDownMenu)
+document.getElementById('textbox_code').addEventListener('keydown', curLocVal)
