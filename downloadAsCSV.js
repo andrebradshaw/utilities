@@ -1,4 +1,4 @@
-function downloadr(arr2D, filename, type) {
+function downloadr(arr2D, filename) {
     var data = arr2D.map(itm=>{	return itm.toString().replace(/$/, '\r'); }).toString().replace(/\r,/g, '\r');
     var file = new Blob([data], {type: 'data:text/plain;charset=utf-8,'});
     if (window.navigator.msSaveOrOpenBlob) {
