@@ -4,7 +4,7 @@ function downloadr(arr2D, filename) {
     if (window.navigator.msSaveOrOpenBlob) {
         window.navigator.msSaveOrOpenBlob(file, filename + '.csv');
     } else {
-        var a = document.createElement("a"),
+        var a = document.createElement('a'),
 		url = URL.createObjectURL(file);
         a.href = url;
         a.download = filename + '.csv';
