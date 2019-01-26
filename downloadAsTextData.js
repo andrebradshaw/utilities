@@ -5,14 +5,11 @@ function downloadr(arr2D, filename) {
     }).toString().replace(/\r,/g, '\r');
   }
   if (/\.json$|.js$/.test(filename) === true) {
-    var data = arr2D;
-    var type = 'data:text/plain;charset=utf-8,';
-  } else {
+    var data = JSON.stringify(arr2D);
     var type = 'data:application/json;charset=utf-8,';
+  } else {
+	var type = 'data:text/plain;charset=utf-8,';
   }
-  var data = arr2D.map(itm => {
-    return itm.toString().replace(/$/, '\r');
-  }).toString().replace(/\r,/g, '\r');
   var file = new Blob([data], {
     type: type
   });
@@ -31,6 +28,5 @@ function downloadr(arr2D, filename) {
     }, 10);
   }
 }
-
 // downloadr(containArr, 'filename.csv');
 // downloadr(containArr, 'filename.json');
