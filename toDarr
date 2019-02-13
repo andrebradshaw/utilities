@@ -1,0 +1,13 @@
+function toDarr(numCols){
+	var rows = jdat_file.match(/.+\r|.+$/g);
+	var tempArr = [];
+	for(i=0; i<rows.length; i++){
+		console.log(rows[i])
+		var t = JSON.parse('["'+rows[i].replace(/\n|\r|"/g, '').replace(/,/g, '","')+'"]');
+		tempArr.push(t)
+	}	
+	console.log(tempArr)
+
+}
+
+toDarr(14)
