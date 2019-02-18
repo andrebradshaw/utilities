@@ -54,7 +54,7 @@ function close() {
   document.body.removeChild(popCont);
 }
 
-var jdat_file = [];
+var jdat_file = '';
 
 
 function handleFiles() {
@@ -69,7 +69,7 @@ function getAsText(fileToRead) {
 }
 
 function loadHandler(event) {
-  jdat_file.push(JSON.parse(event.target.result));
+  jdat_file = JSON.parse(event.target.result);
   close();
 }
 
