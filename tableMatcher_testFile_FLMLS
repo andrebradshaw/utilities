@@ -1,0 +1,16 @@
+function mergeOnName(){
+	var temp = ['id', 'first name', 'last name', 'type', 'license num', 'status', 'issue date', 'expiry date', 'county', 'zip code', 'state', 'city', 'street', 'flmsFirst', 'flmsLast', 'phone1', 'phone2'. 'phone3', 'email', 'company', 'company phone'];
+	for(let i = 0; i < flmlsArr.length; i++){
+		for(let r = 0; r<dadeCounty.length; r++){
+			var flrecNameFirst = dadeCounty[r][1];
+			var flrecNameLast = dadeCounty[r][2];
+			var flmlsNameFirst = new RegExp(flmlsArr[i][0], 'i');
+			var flmlsNameLast = new RegExp(flmlsArr[i][1], 'i');
+			if(flmlsNameLast.test(flrecNameLast) && flmlsNameFirst.test(flrecNameFirst)){
+				var tarr = dadeCounty[r].concat([flmlsArr[i][0],flmlsArr[i][1],flmlsArr[i][2],flmlsArr[i][3],flmlsArr[i][4],flmlsArr[i][4],flmlsArr[i][5],flmlsArr[i][6]]);
+ 				temp.push(tarr)
+			}
+		}
+	}
+}
+var matchedArrFL = mergeOnName()
