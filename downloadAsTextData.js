@@ -1,9 +1,15 @@
 function downloadr(arr2D, filename) {
   if (/\.csv$/.test(filename) === true) {
-    var data = arr2D.map(itm => {
-      return itm.toString().replace(/$/, '\r');
-    }).toString().replace(/\r,/g, '\r');
+	var data = '';
+	arr2D.forEach(row => {
+		var arrRow = '';
+		row.forEach(col => {
+			col ? arrRow = arrRow + col.toString().replace(/,/g, ' ') + ',' : arrRow = arrRow + ' ,';
+        });
+		data = data + arrRow + '\r'; 
+	});
   }
+
   if (/\.json$|.js$/.test(filename) === true) {
     var data = JSON.stringify(arr2D);
     var type = 'data:application/json;charset=utf-8,';
@@ -28,5 +34,5 @@ function downloadr(arr2D, filename) {
     }, 10);
   }
 }
-// downloadr(containArr, 'filename.csv');
-// downloadr(containArr, 'filename.json');
+// downloadr(containArrCSV, 'CEI_IndeedReviews.csv');
+// downloadr(containArr, 'CEI_IndeedReviews.json');
