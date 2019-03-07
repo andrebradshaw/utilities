@@ -1,12 +1,14 @@
-// TODO: NEAR operator does not allow for "word word" NEAR3 "other stuff"
-//this doesnt work because of the greed: (?<=\d|\bAND\s+).+?\bNEAR\d+\b.+?(?=\sAND\b|$)
 
+//this doesnt work because of the greed: (?<=\d|\bAND\s+).+?\bNEAR\d+\b.+?(?=\sAND\b|$)
+// TODO: NEAR operator does not allow for "word word" NEAR3 "other stuff"
 var orRX = /\(.+?\)|(\(\w+\s{0,1}OR\s|\w+\s{0,1}OR\s)+((\w+\s)+?|(\w+)\)+)+?/gi;
 
 var notArray = (str) => str.match(/(?<=\bNOT\s+|\s+-\s{0,2})(\w+|".+?")/g);
 var getQuoted = (str) => str.match(/(?<="\b).+?(?=\b")/g);
 var flipNear = (str,n) =>/(?<=\?).+/.exec(str)[0] + '.{0,' +n+ '}?' + /^.+?(?=\.\{)/.exec(str)[0];
-  
+var searchByBoolArr = (barr, str) => barr.every(itm => new RegExp(itm, 'i').test(str));
+var searchBy = (arr, str) => searchByBoolArr(arr, str);
+
 function getNearGroups(str) {
   var x = /\w+\s+NEAR\d+\s+\w+/g;
   var mx = str.match(x);
@@ -63,21 +65,7 @@ function getBoolAsArray(str) {
   return arr;
 }
 
-  function searchByBoolArr(barr, str) {
-    return barr.every(itm => {
-      var x = new RegExp(itm, 'i');
-      return x.test(str);
-    });
-  }
 
-  function searchBy(barr, jobDarr) {
-    var arr = [];
-    for (i = 0; i < jobDarr.length; i++) {
-      if (searchByBoolArr(barr, jobDarr) === true) arr.push(jobDarr);
-    }
-    return arr;
-  }
+var searchArray = getBoolAsArray('(Manager NEAR5 sales OR Director NEAR5 sales OR VP NEAR5 sales OR lead NEAR5 sales OR president NEAR5 sales)');
 
-getBoolAsArray('("general sales manager" OR "general manager") AND (Generate NEAR4 revenue OR assist NEAR6 customer)')
-
-// searchBy()
+searchBy(searchArray, 'sales and marketing leader');
