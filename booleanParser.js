@@ -1,4 +1,5 @@
 // TODO: NEAR operator does not allow for "word word" NEAR3 "other stuff"
+var orRX = /(?<=\bAND\s+|^).+?\bOR\b.+?(?=\sAND\b|$)/gi;
 
 var notArray = (str) => str.match(/(?<=\bNOT\s+|\s+-\s{0,2})(\w+|".+?")/g);
 var getQuoted = (str) => str.match(/(?<="\b).+?(?=\b")/g);
@@ -19,8 +20,7 @@ function getNearGroups(str) {
 
 function getOrGroups(str) {
   var arr = [];
-  var x = /\(.+?\)/gi;
-  var ors = str.match(x);
+  var ors = str.match(orRX);
   if (ors != null) ors.forEach(elm => arr.push(elm) );
   return arr;
 }
@@ -43,7 +43,7 @@ function parseORs(str) {
 function getAndGroups(str) {
   var arr = [];
   var str = str.replace(/\bNOT\s+(\w+|".+?")|\s+-\s{0,2}(\w+|".+?")/g, '');
-  var onlyAND = str.replace(/\(.+?\)/g, '').replace(/\bAND\b/g, '');
+  var onlyAND = str.replace(orRX, '').replace(/\bAND\b/g, '');
   var noNear = onlyAND.replace(/\w+\s+NEAR\d+\s+\w+/g, '').replace(/"\b.+?\b"/g, '');
   var x = /\b\w+\b/g;
   var quoted = getQuoted(onlyAND);
@@ -76,6 +76,6 @@ function getBoolAsArray(str) {
     return arr;
   }
 
-getBoolAsArray('(Manager OR Director OR VP) AND sales NEAR7 dital AND media NEAR8 online')
+getBoolAsArray('Manager OR Director OR VP AND sales NEAR7 dital AND media NEAR8 online')
 
 // searchBy()
