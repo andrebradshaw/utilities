@@ -1,5 +1,7 @@
 // TODO: NEAR operator does not allow for "word word" NEAR3 "other stuff"
-var orRX = /(?<=\bAND\s+|^).+?\bOR\b.+?(?=\sAND\b|$)/gi;
+//this doesnt work because of the greed: (?<=\d|\bAND\s+).+?\bNEAR\d+\b.+?(?=\sAND\b|$)
+
+var orRX = /(\(|\b)\w+\s+\bOR\b.+?(?=\sAND\b|$)/gi;
 
 var notArray = (str) => str.match(/(?<=\bNOT\s+|\s+-\s{0,2})(\w+|".+?")/g);
 var getQuoted = (str) => str.match(/(?<="\b).+?(?=\b")/g);
@@ -76,6 +78,6 @@ function getBoolAsArray(str) {
     return arr;
   }
 
-getBoolAsArray('Manager OR Director OR VP AND sales NEAR7 dital AND media NEAR8 online')
+getBoolAsArray('(Manager OR Director OR VP) AND sales NEAR7 dital AND media NEAR8 online')
 
 // searchBy()
