@@ -1,71 +1,55 @@
+var searchStringTest = 'work NEAR4 test two AND (Manager NEAR5 sales OR Director NEAR5 sales OR VP NEAR5 sales OR lead NEAR5 sales OR president NEAR5 sales OR "business development" NEAR5 manager OR director NEAR5 "business development" OR president NEAR5 "business development" OR pickleBoy) AND Media AND digital AND Campaign Management AND (strategy OR growth OR build) AND TestDangle';
 
-//this doesnt work because of the greed: (?<=\d|\bAND\s+).+?\bNEAR\d+\b.+?(?=\sAND\b|$)
-// TODO: NEAR operator does not allow for "word word" NEAR3 "other stuff"
-var orRX = /\(.+?\)|(\(\w+\s{0,1}OR\s|\w+\s{0,1}OR\s)+((\w+\s)+?|(\w+)\)+)+?/gi;
+function parseSearchStringAsRegX(str) {
+  var orGroupX = /\(.+?\)|(\(\w+\s{0,1}OR\s|\w+\s{0,1}OR\s)+((\w+\s)+?|(\w+)\)+)+?/gi;
 
-var notArray = (str) => str.match(/(?<=\bNOT\s+|\s+-\s{0,2})(\w+|".+?")/g);
-var getQuoted = (str) => str.match(/(?<="\b).+?(?=\b")/g);
-var flipNear = (str,n) =>/(?<=\?).+/.exec(str)[0] + '.{0,' +n+ '}?' + /^.+?(?=\.\{)/.exec(str)[0];
-var searchByBoolArr = (barr, str) => barr.every(itm => new RegExp(itm, 'i').test(str));
-var searchBy = (arr, str) => searchByBoolArr(arr, str);
+  var orChopX = /\s+OR\s+|$/gi;
+  var andChopX = /\s+AND\s+|$/gi;
+  var andCleanX = /^\s*\bAND\b\s*|\s*\bAND\b\s*$/gi;
+  var nearX = /\s+NEAR\d+\s+/g;
+  var rxReady = (s) => s.replace(/\?/g, '\\?').replace(/\+/g, '\\+').replace(/\//g, '\\/');
 
-function getNearGroups(str) {
-  var x = /\w+\s+NEAR\d+\s+\w+/g;
-  var mx = str.match(x);
-  if (mx != null) {
-    return mx.map(itm => {
-      var near = Math.ceil(parseInt(/(?<=NEAR)\d+/.exec(itm)[0]) * 7);
-      var font = itm.replace(/\s+NEAR\d+\s+/g, '.{0,' + near + '}?');
-      var back = '|' + flipNear(font,near);
-		return font+back; 
-    })
+  var chopOn = (x, str) => str.replace(x, '\n').match(/.+\n/g).map(n => n.replace(/\n|"|\(|\)/g, ''));
+
+  var flipNear = (str, n) => /(?<=\?).+/.exec(str)[0] + '.{0,' + n + '}?' + /^.+?(?=\.\{)/.exec(str)[0];
+
+  function parseNear(str) {
+    if (nearX.test(str)) {
+      var near = Math.ceil(parseInt(/(?<=NEAR)\d+/.exec(str)[0]) * 7);
+      var font = str.replace(/\s+NEAR\d+\s+/g, '.{0,' + near + '}?');
+      var back = '|' + flipNear(font, near);
+      return (font + back).replace(/\s+/g, '.{0,8}?');
+    } else {
+      return str;
+    }
   }
+
+  function getOrGroups(str) {
+    var arr = [];
+    var ors = str.match(orGroupX);
+    if (ors != null) ors.forEach(elm => arr.push(elm));
+    return arr;
+  }
+
+  function getAndGroups(str) {
+    var noOrs = str.replace(orGroupX, '').replace(andCleanX, '');
+    var ands = chopOn(andChopX, noOrs).map(n => n.replace(/\s*\bAND\b\s*/g, ''));
+    return ands.map(itm => parseNear(itm));
+  }
+
+  function parseOrGroups(arr) {
+    return arr.map(g => {
+      var tempStr = '';
+      chopOn(orChopX, g).forEach(itm => {
+        tempStr = tempStr + parseNear(itm) + '|';
+      });
+      return tempStr.replace(/\|$/g, '');
+    });
+  }
+
+  var andGroups = getAndGroups(searchStringTest);
+  var orGroups = parseOrGroups(getOrGroups(searchStringTest));
+
+  return (orGroups.concat(andGroups)).map(itm => new RegExp(rxReady(itm), 'i'));
 }
-
-function getOrGroups(str) {
-  var arr = [];
-  var ors = str.match(orRX);
-  if (ors != null) ors.forEach(elm => arr.push(elm) );
-  return arr;
-}
-
-function parseORs(str) {
-  var arr = [];
-  var ors = getOrGroups(str);
-  ors.forEach(itm => {
-	var i = itm.replace(/OR /g,'')
-    var tarr = '';
-    var nears = getNearGroups(i);
-	var theRest = i.replace(/\w+\s+NEAR\d+\s+\w+/g, '').match(/(?<=")\b.+?\b(?=")|\w+/g);
-	nears ? nears.forEach(elm=> tarr = tarr + elm + '|') : ''; 
-	theRest ? theRest.forEach(elm=> tarr = tarr + elm + '|') : ''; 
-	arr.push(tarr.replace(/\|$/,''));
-  })
-  return arr;
-}
-
-function getAndGroups(str) {
-  var arr = [];
-  var str = str.replace(/\bNOT\s+(\w+|".+?")|\s+-\s{0,2}(\w+|".+?")/g, '');
-  var onlyAND = str.replace(orRX, '').replace(/\bAND\b/g, '');
-  var noNear = onlyAND.replace(/\w+\s+NEAR\d+\s+\w+/g, '').replace(/"\b.+?\b"/g, '');
-  var x = /\b\w+\b/g;
-  var quoted = getQuoted(onlyAND);
-  var near = getNearGroups(onlyAND);
-  if (noNear.match(x) != null) noNear.match(x).forEach(elm => arr.push(elm) );
-  if (quoted != null) quoted.forEach(elm => arr.push(elm) );
-  if (near != null) near.forEach(elm => arr.push(elm) );
-  return arr;
-}
-
-function getBoolAsArray(str) {
-  var arr = [];
-  parseORs(str).forEach(itm => arr.push(itm) );
-  getAndGroups(str).forEach(itm => arr.push(itm) );
-  return arr;
-}
-
-
-var searchArray = getBoolAsArray('(Manager NEAR5 sales OR Director NEAR5 sales OR VP NEAR5 sales OR lead NEAR5 sales OR president NEAR5 sales)');
-
-searchBy(searchArray, 'sales and marketing leader');
+parseSearchStringAsRegX(searchStringTest)
