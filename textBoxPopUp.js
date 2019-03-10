@@ -9,6 +9,27 @@ var fixCase = (s) => s.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + 
 var timer = new Date().getTime().toString().replace(/\d{4}$/, '0000');
 var rando = (n) => Math.round(Math.random()*n);
 
+var tsvTo2dArr = (tsv) => tsv.split(/\r|\n/)
+.map(itm=> itm.split(/(?<=^|\t)/));
+
+var jsonKeys = (str) => tsvTo2dArr(str)[0].map(col=>col.toLowerCase().trim().replace(/\W+/g, '_'));
+
+function d2arrToJSON(str){
+  var temp = [];
+  var keys = jsonKeys(str);
+  var d2arr = tsvTo2dArr(str);
+  d2arr.shift();
+  d2arr.forEach(row=>{
+  var tempObj = '{';
+    for(var i=0; i<keys.length; i++){
+	  var val = row[i] ? row[i].replace(/"/g, '\"') : '';
+      tempObj = tempObj + '"'+keys[i]+'":"'+ val.trim() +'",';
+    }
+    temp.push(JSON.parse(tempObj.replace(/,$/, '')+'}'));
+  });
+ return temp;
+}
+
 function dragElement() {
   this.style.border = '1px solid #5E9ED6';
   this.style.background = '#111111';
@@ -108,8 +129,10 @@ tf.style.userSelect = "none";
 tf.style.float = "right";
 tf.style.transform = "translate(0px, -4.5px)";
 tf.style.boxShadow = "1px 1px 1px 0px #888888";
+tf.addEventListener('keydown', (event) => { if (event.key == 'Enter') dlBox(); });
 hd.appendChild(tf);
 
+ 
 var cb = document.createElement("button");
 cb.setAttribute("id", id+"_close");
 cb.innerText = "+";
@@ -131,9 +154,9 @@ cb.style.fontFamily = '"DejaVu Sans Mono", Menlo';
 cb.addEventListener("click", killParent);
 cd.appendChild(cb);
 
-
-var tb = document.createElement("textarea");
+var tb = document.createElement("div");
 tb.setAttribute("id", id+"_textarea");
+tb.setAttribute("contenteditable", "true");
 tb.style.width = "99%";
 tb.style.height = "92%";
 tb.style.padding = "6px";
@@ -143,9 +166,55 @@ tb.style.color = "#ffffff";
 tb.style.fontSize = "1em";
 tb.style.userSelect = "none";
 tb.style.boxShadow = "1px 1px 1px 0px #888888";
+// tb.addEventListener('keyup', syntaxer);
 cd.appendChild(tb);
 
 }
+
+function dlBox(){
+  var filename = gi(document,'popup_textfile').value;
+  var userinput = gi(document,'popup_textarea').innerText;
+  var string2write = d2arrToJSON(userinput);
+  downloadr(string2write,filename)
+}
+
+async function downloadr(str, name) {
+  var type = 'data:text/plain;charset=utf-8,';
+  var strDL = str;
+  if(/\.json$/.test(name)){
+   var type = 'data:application/json;charset=utf-8,';
+   var strDL = JSON.stringify(str);
+  }
+
+  var file = new Blob([strDL], { type: type });
+  var a = document.createElement('a'),
+      url = URL.createObjectURL(file);
+  a.href = url;
+  a.download = /\..{2,4}$/.test(name) ? name : name+'_def.txt';
+  document.body.appendChild(a);
+  a.click();
+  await delay(10);
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
+}
+// downloadr(containArrCSV, 'CEI_IndeedReviews.csv');
+// downloadr(containArr, 'CEI_IndeedReviews.json');
+
+
+
+function syntaxer(){
+  var str = this.value;
+  var objXstart = /(?<=\.\b)(?=\w)/g;
+  var objXend = /(?<=\.\b\w+)\b/g;
+//   var quoX = /".+?"/g;
+//   var varX = /(?<=\bvar\b\s+)\w+\s*\=|(?<=\bfunction\b\s+)\w+/g;
+// if(objXstart.test(str)){
+  var output = str.replace(objXstart, '<span style="color: #ffc549;">').replace(objXend, '</span>');
+  this.innerHTML = output;
+
+// }
+}
+
 createPopTextArea("popup");
 
 /*
@@ -155,3 +224,16 @@ this.style.transform = "scale(1, 1) translate(0px, 0px)";
 this.style.transition = "all 173ms";
 }
 */
+function alterBoxDimensions(){
+  var cd = gi(document, 'popup');
+  var td = gi(document, 'popup_textarea');
+  var rowLen = tn(td,'div').length;
+  if(rowLen > 12 && rowLen < 40){
+	cd.style.height = Math.round(rowLen * 2) +"%";
+  }
+  if(rowLen > 39){
+	cd.style.height = "80%";
+  }
+
+}
+alterBoxDimensions()
