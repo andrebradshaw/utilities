@@ -23,7 +23,7 @@ function d2arrToJSON(str){
   var tempObj = '{';
     for(var i=0; i<keys.length; i++){
 	  var val = row[i] ? row[i].replace(/"/g, '\"') : '';
-      tempObj = tempObj + '"'+keys[i]+'":"'+ val.trim() +'",';
+      tempObj = tempObj + '"' + keys[i] + '":"' + val.trim() + '",';
     }
     temp.push(JSON.parse(tempObj.replace(/,$/, '')+'}'));
   });
@@ -70,18 +70,6 @@ function dragElement() {
   }
 }
 
-async function killParent() {
-  this.parentElement.outerHTML = "";
-}
-async function killElm(){
-  this.parentElement.outerHTML = "";
-}
-
-function nodrag(){
-  this.style.border = '0px solid #5E9ED6';
-  this.style.background = '#000000';
-  this.style.transition = 'all 166ms';
-}
 
 function createPopTextArea(id){
 if(document.getElementById(id)) document.getElementById(id).outerHTML = "";
@@ -122,7 +110,7 @@ tf.style.width = "36%";
 tf.style.height = "100%";
 tf.style.padding = "6px";
 tf.style.border = "1px solid #000000";
-tf.style.background = "#1c1c1c";
+tf.style.background = "#0f0f0f";
 tf.style.color = "#ffffff";
 tf.style.fontSize = "1em";
 tf.style.userSelect = "none";
@@ -141,7 +129,7 @@ cb.style.background = "transparent";
 cb.style.height = "0px";
 cb.style.width = "0px";
 cb.style.display = "inline-block";
-cb.style.transform = "scale(2.9, 2.9) translate(8px, -14px) rotate(45deg)";
+cb.style.transform = "scale(2.9, 2.9) translate(8px, -14.5px) rotate(45deg)";
 cb.style.borderRadius = "1em";
 cb.style.padding = "0px";
 cb.style.boxShadow = "0px";
@@ -152,23 +140,63 @@ cb.style.fontWeight = "bold";
 cb.style.color = "Crimson";
 cb.style.fontFamily = '"DejaVu Sans Mono", Menlo';
 cb.addEventListener("click", killParent);
+cb.addEventListener("mouseover", hoverI);
+cb.addEventListener("mouseout", hoverO);
 cd.appendChild(cb);
 
 var tb = document.createElement("div");
 tb.setAttribute("id", id+"_textarea");
 tb.setAttribute("contenteditable", "true");
+tb.innerText = "text area";
 tb.style.width = "99%";
 tb.style.height = "92%";
 tb.style.padding = "6px";
 tb.style.border = "1px solid #000000";
 tb.style.background = "#303030";
-tb.style.color = "#ffffff";
+tb.style.color = "#3f3f3f";
 tb.style.fontSize = "1em";
 tb.style.userSelect = "none";
 tb.style.boxShadow = "1px 1px 1px 0px #888888";
+tb.addEventListener("click", rmvPlaceholder);
+tb.addEventListener("blur", rmvPlaceholder);
 // tb.addEventListener('keyup', syntaxer);
 cd.appendChild(tb);
 
+}
+
+async function killParent() {
+  this.style.transform = "scale(.3, .3) translate(10px, -14.5px) rotate(45deg)";
+  this.style.transition = 'all 266ms cubic-bezier(.9,.37,.66,.96)';
+  await delay(166);
+  this.parentElement.outerHTML = "";
+}
+async function killElm(){
+  this.outerHTML = "";
+}
+
+
+function hoverI(){
+  this.style.transform = "scale(2.9, 2.9) translate(0px, -14.5px) rotate(0deg)";
+  this.style.transition = 'all 266ms cubic-bezier(.9,.37,.66,.96)';
+}
+function hoverO(){
+  this.style.transform = "scale(2.9, 2.9) translate(8px, -14.5px) rotate(45deg)";
+  this.style.transition = 'all 266ms cubic-bezier(.9,.37,.66,.96)';
+}
+
+
+function nodrag(){
+  this.style.border = '0px solid #5E9ED6';
+  this.style.background = '#000000';
+  this.style.transition = 'all 166ms';
+}
+
+function rmvPlaceholder(){
+var td = gi(document, "popup_textarea");
+  if(/^text area$/.test(td.innerText)){
+    td.innerText = "";
+    td.style.color = "#ffffff";
+  }
 }
 
 function dlBox(){
@@ -200,6 +228,13 @@ async function downloadr(str, name) {
 // downloadr(containArrCSV, 'CEI_IndeedReviews.csv');
 // downloadr(containArr, 'CEI_IndeedReviews.json');
 
+/*
+function btnAction() {
+this.style.background = "rgb(40, 40, 40);
+this.style.transform = "scale(1, 1) translate(0px, 0px)";
+this.style.transition = "all 173ms";
+}
+*/
 
 
 function syntaxer(){
@@ -217,13 +252,6 @@ function syntaxer(){
 
 createPopTextArea("popup");
 
-/*
-function btnAction() {
-this.style.background = "rgb(40, 40, 40);
-this.style.transform = "scale(1, 1) translate(0px, 0px)";
-this.style.transition = "all 173ms";
-}
-*/
 function alterBoxDimensions(){
   var cd = gi(document, 'popup');
   var td = gi(document, 'popup_textarea');
@@ -234,6 +262,5 @@ function alterBoxDimensions(){
   if(rowLen > 39){
 	cd.style.height = "80%";
   }
-
 }
-alterBoxDimensions()
+// alterBoxDimensions()
