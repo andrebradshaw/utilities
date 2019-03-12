@@ -13,7 +13,7 @@ var tsvTo2dArr = (tsv) => tsv.split(/\r|\n/)
 .map(itm=> itm.split(/(?<=^|\t)/));
 
 var jsonKeys = (str) => tsvTo2dArr(str)[0].map(col=>col.toLowerCase().trim().replace(/\W+/g, '_'));
-
+//   <path d="M0,1 10,1 M9,1 9,10 M0,9 10,9 M1,9 1,1" />
 function d2arrToJSON(str){
   var temp = [];
   var keys = jsonKeys(str);
@@ -31,9 +31,9 @@ function d2arrToJSON(str){
 }
 
 function dragElement() {
-  this.style.border = '1px solid #5E9ED6';
-  this.style.background = '#111111';
-  this.style.transition = 'all 166ms';
+  this.style.border = "1px solid #5E9ED6";
+  this.style.background = "#111111";
+  this.style.transition = "all 166ms";
   var elmnt = this.parentElement;
   var pos1 = 0,
     pos2 = 0,
@@ -45,14 +45,14 @@ function dragElement() {
     this.onmousedown = dragMouseDown;
   }
   function dragMouseDown(e) {
-    e = e || window.event;
+//     e = e || window.event;
     pos3 = e.clientX;
     pos4 = e.clientY;
     document.onmouseup = closeDragElement;
     document.onmousemove = elementDrag;
   }
   function elementDrag(e) {
-    e = e || window.event;
+//     e = e || window.event;
     pos1 = pos3 - e.clientX;
     pos2 = pos4 - e.clientY;
     pos3 = e.clientX;
@@ -80,13 +80,35 @@ cd.style.display = "inline-block";
 cd.style.position = "fixed";
 cd.style.top = "10%";
 cd.style.left = "50%";
-cd.style.width = "25%";
-cd.style.height = "33%";
+cd.style.width = "29%";
+cd.style.height = "39%";
 cd.style.background = "transparent";
 cd.style.borderRadius = ".15em";
-cd.style.padding = "0px";
+cd.style.padding = "2px";
 cd.style.zIndex = "10000";
 document.body.appendChild(cd);
+
+var cb = document.createElement("button");
+cb.setAttribute("id", id+"_close");
+cb.innerText = "♯";
+cb.style.float = "left";
+cb.style.background = "#000";
+cb.style.height = "22px";
+cb.style.width = "22px";
+cb.style.borderRadius = ".8em";
+cb.style.boxShadow = "0px";
+cb.style.border = "3px solid Crimson";
+cb.style.textAlign = "center";
+cb.style.cursor = "pointer";
+cb.style.userSelect = "none";
+cb.style.fontSize = "1em";
+cb.style.color = "Crimson";
+cb.style.transform = "scale(1, 1) translate(4px, 4px) rotate(135deg)"; 
+cb.addEventListener("click", killParent);
+cb.addEventListener("mousedown", hoverO);
+cb.addEventListener("mouseover", hoverI);
+cb.addEventListener("mouseout", hoverO);
+cd.appendChild(cb);
 
 var hd = document.createElement("div");
 hd.setAttribute("id", id+"_mover");
@@ -98,8 +120,8 @@ hd.style.borderTopRightRadius = ".15em";
 hd.style.padding = "6px";
 hd.style.cursor = 'move';
 hd.style.boxShadow = "1px 1px 1px 0px #888888";
-hd.addEventListener('mouseover', dragElement);
-hd.addEventListener('mouseout', nodrag);
+hd.addEventListener("mouseover", dragElement);
+hd.addEventListener("mouseout", nodrag);
 cd.appendChild(hd);
 
 
@@ -115,34 +137,10 @@ tf.style.color = "#ffffff";
 tf.style.fontSize = "1em";
 tf.style.userSelect = "none";
 tf.style.float = "right";
-tf.style.transform = "translate(0px, -4.5px)";
+// tf.style.transform = "translate(0px, -4.5px)";
 tf.style.boxShadow = "1px 1px 1px 0px #888888";
-tf.addEventListener('keydown', (event) => { if (event.key == 'Enter') dlBox(); });
+tf.addEventListener("keydown", (event) => { if (event.key == "Enter") dlBox(); });
 hd.appendChild(tf);
-
- 
-var cb = document.createElement("button");
-cb.setAttribute("id", id+"_close");
-cb.innerText = "+";
-cb.style.position = "absolute";
-cb.style.background = "transparent";
-cb.style.height = "0px";
-cb.style.width = "0px";
-cb.style.display = "inline-block";
-cb.style.transform = "scale(2.9, 2.9) translate(8px, -14.5px) rotate(45deg)";
-cb.style.borderRadius = "1em";
-cb.style.padding = "0px";
-cb.style.boxShadow = "0px";
-cb.style.border = "0px";
-cb.style.cursor = "pointer";
-cb.style.userSelect = "none";
-cb.style.fontWeight = "bold";
-cb.style.color = "Crimson";
-cb.style.fontFamily = '"DejaVu Sans Mono", Menlo';
-cb.addEventListener("click", killParent);
-cb.addEventListener("mouseover", hoverI);
-cb.addEventListener("mouseout", hoverO);
-cd.appendChild(cb);
 
 var tb = document.createElement("div");
 tb.setAttribute("id", id+"_textarea");
@@ -150,45 +148,50 @@ tb.setAttribute("contenteditable", "true");
 tb.innerText = "text area";
 tb.style.width = "99%";
 tb.style.height = "92%";
-tb.style.padding = "6px";
+tb.style.padding = "3px";
 tb.style.border = "1px solid #000000";
 tb.style.background = "#303030";
-tb.style.color = "#3f3f3f";
+tb.style.color = "#474747";
 tb.style.fontSize = "1em";
 tb.style.userSelect = "none";
 tb.style.boxShadow = "1px 1px 1px 0px #888888";
 tb.addEventListener("click", rmvPlaceholder);
-tb.addEventListener("blur", rmvPlaceholder);
+tb.addEventListener("blur", addPlaceholder);
 // tb.addEventListener('keyup', syntaxer);
 cd.appendChild(tb);
 
+
 }
+/*<svg viewbox="0 0 100 100"><path style="stroke: red; stroke-width: 1;" d="M0,0 100,100 M100,0 0,100" /></svg>
+*/
 
 async function killParent() {
-  this.style.transform = "scale(.3, .3) translate(10px, -14.5px) rotate(45deg)";
-  this.style.transition = 'all 266ms cubic-bezier(.9,.37,.66,.96)';
-  await delay(166);
+  this.style.transform = "scale(.03, .03) translate(10px, -10px)  rotate(495deg)"; 
+  this.style.transition = "all 206ms cubic-bezier(.9,.37,.66,.96)";
+  await delay(206);
   this.parentElement.outerHTML = "";
 }
 async function killElm(){
   this.outerHTML = "";
 }
 
-
 function hoverI(){
-  this.style.transform = "scale(2.9, 2.9) translate(0px, -14.5px) rotate(0deg)";
-  this.style.transition = 'all 266ms cubic-bezier(.9,.37,.66,.96)';
+  this.style.border = "1px solid #000";
+  this.style.background = "Crimson";
+  this.style.color = "#000";
+  this.style.transition = "all 166ms cubic-bezier(.9,.37,.66,.96)";
 }
 function hoverO(){
-  this.style.transform = "scale(2.9, 2.9) translate(8px, -14.5px) rotate(45deg)";
-  this.style.transition = 'all 266ms cubic-bezier(.9,.37,.66,.96)';
+  this.style.border = "3px solid Crimson";
+  this.style.background = "#000";
+  this.style.color = "Crimson";
+  this.style.transition = "all 166ms cubic-bezier(.9,.37,.66,.96)";
 }
 
-
 function nodrag(){
-  this.style.border = '0px solid #5E9ED6';
-  this.style.background = '#000000';
-  this.style.transition = 'all 166ms';
+  this.style.border = "0px solid #5E9ED6";
+  this.style.background = "#000000";
+  this.style.transition = "all 166ms";
 }
 
 function rmvPlaceholder(){
@@ -198,27 +201,34 @@ var td = gi(document, "popup_textarea");
     td.style.color = "#ffffff";
   }
 }
+function addPlaceholder(){
+var td = gi(document, "popup_textarea");
+  if(/^.{0}$/.test(td.innerText)){
+    td.innerText = "text area";
+    td.style.color = "#474747";
+  }
+}
 
 function dlBox(){
-  var filename = gi(document,'popup_textfile').value;
-  var userinput = gi(document,'popup_textarea').innerText;
+  var filename = gi(document,"popup_textfile").value;
+  var userinput = gi(document,"popup_textarea").innerText;
   var string2write = d2arrToJSON(userinput);
   downloadr(string2write,filename)
 }
 
 async function downloadr(str, name) {
-  var type = 'data:text/plain;charset=utf-8,';
+  var type = "data:text/plain;charset=utf-8,";
   var strDL = str;
   if(/\.json$/.test(name)){
-   var type = 'data:application/json;charset=utf-8,';
+   var type = "data:application/json;charset=utf-8,";
    var strDL = JSON.stringify(str);
   }
 
   var file = new Blob([strDL], { type: type });
-  var a = document.createElement('a'),
+  var a = document.createElement("a"),
       url = URL.createObjectURL(file);
   a.href = url;
-  a.download = /\..{2,4}$/.test(name) ? name : name+'_def.txt';
+  a.download = /\..{2,4}$/.test(name) ? name : name+"_def.txt";
   document.body.appendChild(a);
   a.click();
   await delay(10);
@@ -253,9 +263,9 @@ function syntaxer(){
 createPopTextArea("popup");
 
 function alterBoxDimensions(){
-  var cd = gi(document, 'popup');
-  var td = gi(document, 'popup_textarea');
-  var rowLen = tn(td,'div').length;
+  var cd = gi(document, "popup");
+  var td = gi(document, "popup_textarea");
+  var rowLen = tn(td,"div").length;
   if(rowLen > 12 && rowLen < 40){
 	cd.style.height = Math.round(rowLen * 2) +"%";
   }
