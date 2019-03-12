@@ -90,12 +90,12 @@ document.body.appendChild(cd);
 
 var cb = document.createElement("button");
 cb.setAttribute("id", id+"_close");
-cb.innerText = "♯";
+// cb.innerText = ""; //♯
 cb.style.float = "left";
 cb.style.background = "#000";
 cb.style.height = "22px";
 cb.style.width = "22px";
-cb.style.borderRadius = ".8em";
+cb.style.borderRadius = "50%";
 cb.style.boxShadow = "0px";
 cb.style.border = "3px solid Crimson";
 cb.style.textAlign = "center";
@@ -103,7 +103,7 @@ cb.style.cursor = "pointer";
 cb.style.userSelect = "none";
 cb.style.fontSize = "1em";
 cb.style.color = "Crimson";
-cb.style.transform = "scale(1, 1) translate(4px, 4px) rotate(135deg)"; 
+cb.style.transform = "scale(1, 1) translate(3.5px, 3.5px) rotate(135deg)"; 
 cb.addEventListener("click", killParent);
 cb.addEventListener("mousedown", hoverO);
 cb.addEventListener("mouseover", hoverI);
@@ -166,7 +166,7 @@ cd.appendChild(tb);
 */
 
 async function killParent() {
-  this.style.transform = "scale(.03, .03) translate(10px, -10px)  rotate(495deg)"; 
+  this.style.transform = "scale(.03, .03) translate(4px, -50px)  rotate(495deg)"; 
   this.style.transition = "all 206ms cubic-bezier(.9,.37,.66,.96)";
   await delay(206);
   this.parentElement.outerHTML = "";
@@ -175,17 +175,21 @@ async function killElm(){
   this.outerHTML = "";
 }
 
-function hoverI(){
+async function hoverI(){
+  this.style.border = "4px solid Crimson";
+  await delay(66);
   this.style.border = "1px solid #000";
   this.style.background = "Crimson";
   this.style.color = "#000";
-  this.style.transition = "all 166ms cubic-bezier(.9,.37,.66,.96)";
+  this.style.transition = "all 186ms cubic-bezier(.9,.37,.66,.96)";
 }
-function hoverO(){
-  this.style.border = "3px solid Crimson";
+async function hoverO(){
   this.style.background = "#000";
+  this.style.border = "4px solid Crimson";
+  await delay(66);
+  this.style.border = "3px solid Crimson";
   this.style.color = "Crimson";
-  this.style.transition = "all 166ms cubic-bezier(.9,.37,.66,.96)";
+  this.style.transition = "all 186ms cubic-bezier(.9,.37,.66,.96)";
 }
 
 function nodrag(){
