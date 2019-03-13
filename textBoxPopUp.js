@@ -93,8 +93,8 @@ cb.setAttribute("id", id+"_close");
 // cb.innerText = ""; //♯
 cb.style.float = "left";
 cb.style.background = "#000";
-cb.style.height = "22px";
-cb.style.width = "22px";
+cb.style.height = "20px";
+cb.style.width = "20px";
 cb.style.borderRadius = "50%";
 cb.style.boxShadow = "0px";
 cb.style.border = "3px solid Crimson";
@@ -103,7 +103,8 @@ cb.style.cursor = "pointer";
 cb.style.userSelect = "none";
 cb.style.fontSize = "1em";
 cb.style.color = "Crimson";
-cb.style.transform = "scale(1, 1) translate(3.5px, 3.5px) rotate(135deg)"; 
+cb.style.transform = "scale(1, 1) translate(3.5px, 3.5px) rotate(0deg)"; 
+cb.style.background = "transparent"
 cb.addEventListener("click", killParent);
 cb.addEventListener("mousedown", hoverO);
 cb.addEventListener("mouseover", hoverI);
@@ -150,7 +151,6 @@ tb.style.width = "99%";
 tb.style.height = "92%";
 tb.style.padding = "3px";
 tb.style.border = "1px solid #000000";
-tb.style.background = "#303030";
 tb.style.color = "#474747";
 tb.style.fontSize = "1em";
 tb.style.userSelect = "none";
@@ -159,39 +159,39 @@ tb.addEventListener("click", rmvPlaceholder);
 tb.addEventListener("blur", addPlaceholder);
 // tb.addEventListener('keyup', syntaxer);
 cd.appendChild(tb);
-
+tb.style.backgroundColor = "#282828";
 
 }
-/*<svg viewbox="0 0 100 100"><path style="stroke: red; stroke-width: 1;" d="M0,0 100,100 M100,0 0,100" /></svg>
-*/
 
 async function killParent() {
-  this.style.transform = "scale(.03, .03) translate(4px, -50px)  rotate(495deg)"; 
-  this.style.transition = "all 206ms cubic-bezier(.9,.37,.66,.96)";
+  this.style.background = "Crimson";
+  this.style.transform = "scale(.001, .001) translate(3px, 3px)  rotate(495deg)"; 
+  this.style.transition = "all 106ms cubic-bezier(.9,.37,.66,.96)";
   await delay(206);
   this.parentElement.outerHTML = "";
 }
 async function killElm(){
   this.outerHTML = "";
 }
-
 async function hoverI(){
-  this.style.border = "4px solid Crimson";
+  this.style.border = "2px solid Crimson";
   await delay(66);
+  this.style.border = "1px solid Crimson";
+  await delay(46);
   this.style.border = "1px solid #000";
+  await delay(26);
   this.style.background = "Crimson";
   this.style.color = "#000";
   this.style.transition = "all 186ms cubic-bezier(.9,.37,.66,.96)";
 }
 async function hoverO(){
   this.style.background = "#000";
-  this.style.border = "4px solid Crimson";
+  this.style.border = "1px solid Crimson";
   await delay(66);
   this.style.border = "3px solid Crimson";
   this.style.color = "Crimson";
   this.style.transition = "all 186ms cubic-bezier(.9,.37,.66,.96)";
 }
-
 function nodrag(){
   this.style.border = "0px solid #5E9ED6";
   this.style.background = "#000000";
