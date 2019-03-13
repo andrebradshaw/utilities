@@ -81,7 +81,7 @@ cd.style.position = "fixed";
 cd.style.top = "10%";
 cd.style.left = "50%";
 cd.style.width = "29%";
-cd.style.height = "39%";
+cd.style.height = "43%";
 cd.style.background = "transparent";
 cd.style.borderRadius = ".15em";
 cd.style.padding = "2px";
@@ -175,11 +175,11 @@ async function killElm(){
 }
 async function hoverI(){
   this.style.border = "2px solid Crimson";
-  await delay(66);
+  await delay(40);
   this.style.border = "1px solid Crimson";
-  await delay(46);
+  await delay(30);
   this.style.border = "1px solid #000";
-  await delay(26);
+  await delay(20);
   this.style.background = "Crimson";
   this.style.color = "#000";
   this.style.transition = "all 186ms cubic-bezier(.9,.37,.66,.96)";
@@ -252,15 +252,16 @@ this.style.transition = "all 173ms";
 
 
 function syntaxer(){
-  var str = this.value;
+  var str = this.innerHTML;
   var objXstart = /(?<=\.\b)(?=\w)/g;
   var objXend = /(?<=\.\b\w+)\b/g;
 //   var quoX = /".+?"/g;
 //   var varX = /(?<=\bvar\b\s+)\w+\s*\=|(?<=\bfunction\b\s+)\w+/g;
 // if(objXstart.test(str)){
+if(objXstart.test(str)){
   var output = str.replace(objXstart, '<span style="color: #ffc549;">').replace(objXend, '</span>');
   this.innerHTML = output;
-
+}
 // }
 }
 
