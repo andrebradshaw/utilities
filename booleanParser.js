@@ -9,7 +9,7 @@ var andChopX = "\\s+AND\\s+|$";
 var andCleanX = "^\\s*\\bAND\\b\\s*|\\s*\\bAND\\b\\s*$";
 
 var rxReady = (s) => s.replace(/\?/g, '\\?').replace(/\+/g, '\\+').replace(/\//g, '\\/');
-var chopOn = (x, s) => s.replace(x, '\n').match(/.+\n/g).map(n => n.replace(/\n|"|\(|\)/g, ''));
+var chopOn = (x, s) => s.replace(x, '\n').match(/.+\n/g) ? s.replace(x, '\n').match(/.+\n/g).map(n => n.replace(/\n|"|\(|\)/g, '')) : [];
 var flipNear = (s, n) => /(?<=\?).+/.exec(s)[0] + '.{0,' + n + '}?' + /^.+?(?=\.\{)/.exec(s)[0];
 
 function parseNear(str) {
@@ -26,8 +26,9 @@ function parseNear(str) {
 
 function getAndGroups(str) {
   var noOrs = str.replace(orGroupX, '').replace(rx(andCleanX,'gi'), '');
-  var ands = chopOn(rx(andChopX,'gi'), noOrs).map(n => n.replace(/\s*\bAND\b\s*/g, ''));
-  return ands.map(itm => parseNear(itm));
+  var ands = rx(andChopX,'i').test(str) ? chopOn(rx(andChopX,'gi'), noOrs).map(n => n.replace(/\s*\bAND\b\s*/g, '')) : [];
+  var arrout = ands.length > 0 ? ands.map(itm => parseNear(itm)) : [];
+  return arrout;
 }
 
 function parseOrGroups(arr) {
@@ -47,11 +48,11 @@ function getOrGroups(str) {
   return arr;
 }
 
-function parseBooleanStringAsArrayOfRegExp(str,tags) {
+function parseBooleanStringAsArrayOfRegExp(str) {
   var andGroups = getAndGroups(str);
   var orGroups = getOrGroups(str);
   var parsedOrGroups = parseOrGroups(orGroups);
-  var catout = (parsedOrGroups.concat(andGroups)).map(itm=>rx(itm,tags));
+  var catout = (parsedOrGroups.concat(andGroups)).map(itm=>rx(itm,'i'));
   return catout;
 }
-parseBooleanStringAsArrayOfRegExp(searchStringTest,'gi')
+parseBooleanStringAsArrayOfRegExp(searchStringTest)
