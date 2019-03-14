@@ -90,7 +90,6 @@ document.body.appendChild(cd);
 
 var cb = document.createElement("button");
 cb.setAttribute("id", id+"_close");
-// cb.innerText = ""; //♯
 cb.style.float = "left";
 cb.style.background = "#000";
 cb.style.height = "20px";
@@ -158,6 +157,7 @@ tb.style.boxShadow = "1px 1px 1px 0px #888888";
 tb.addEventListener("click", rmvPlaceholder);
 tb.addEventListener("blur", addPlaceholder);
 // tb.addEventListener('keyup', syntaxer);
+// tb.addEventListener('keyup', setCursorToEnd);
 cd.appendChild(tb);
 tb.style.backgroundColor = "#282828";
 
@@ -249,18 +249,50 @@ this.style.transform = "scale(1, 1) translate(0px, 0px)";
 this.style.transition = "all 173ms";
 }
 */
+function setCursorToEnd(){
+  var contentEditable = gi(document, "popup_textarea");
+  var clen = tn(contentEditable,"span").length-1;
+  var lastItem = tn(contentEditable,"span").item(clen);
 
+  var selectElementText = (el, win) => {
+    win = win || window;
+    var doc = win.document, sel, range;
+    if (win.getSelection && doc.createRange) {                    
+      range = doc.createRange();
+      range.selectNodeContents(el);
+      range.collapse(false);
+      sel = win.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+    else 
+    if (doc.body.createTextRange) {
+      range = doc.body.createTextRange();
+      range.moveToElementText(el);
+      range.select();
+    }
+  }
+  contentEditable.focus();
+  selectElementText(lastItem);
+}
 
 function syntaxer(){
   var str = this.innerHTML;
-  var objXstart = /(?<=\.\b)(?=\w)/g;
-  var objXend = /(?<=\.\b\w+)\b/g;
+  var purpXend = /(?<=var|await|function)\b/g;
+  var purpXstart = /\b(?=var|await|function)/g;
+//   var objXstart = /(?<=\.\b)(?=\w)/g;
+//   var objXend = /(?<=\.\b\w+)\b/g;
+//   var periodX = /\b\.\b/g;
 //   var quoX = /".+?"/g;
 //   var varX = /(?<=\bvar\b\s+)\w+\s*\=|(?<=\bfunction\b\s+)\w+/g;
 // if(objXstart.test(str)){
-if(objXstart.test(str)){
-  var output = str.replace(objXstart, '<span style="color: #ffc549;">').replace(objXend, '</span>');
+if(purpXstart.test(str)){
+  var output = str
+	.replace(purpXstart, '<span style="color: #6c1b9b;">')
+	.replace(purpXend, '</span>')
+	.replace();
   this.innerHTML = output;
+  setCursorToEnd()
 }
 // }
 }
