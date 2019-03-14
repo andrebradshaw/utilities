@@ -156,7 +156,7 @@ tb.style.userSelect = "none";
 tb.style.boxShadow = "1px 1px 1px 0px #888888";
 tb.addEventListener("click", rmvPlaceholder);
 tb.addEventListener("blur", addPlaceholder);
-// tb.addEventListener('keyup', syntaxer);
+tb.addEventListener('keyup', syntaxer);
 // tb.addEventListener('keyup', setCursorToEnd);
 cd.appendChild(tb);
 tb.style.backgroundColor = "#282828";
@@ -175,11 +175,11 @@ async function killElm(){
 }
 async function hoverI(){
   this.style.border = "2px solid Crimson";
-  await delay(40);
-  this.style.border = "1px solid Crimson";
   await delay(30);
-  this.style.border = "1px solid #000";
+  this.style.border = "1px solid Crimson";
   await delay(20);
+  this.style.border = "1px solid #000";
+  await delay(10);
   this.style.background = "Crimson";
   this.style.color = "#000";
   this.style.transition = "all 186ms cubic-bezier(.9,.37,.66,.96)";
@@ -187,7 +187,7 @@ async function hoverI(){
 async function hoverO(){
   this.style.background = "#000";
   this.style.border = "1px solid Crimson";
-  await delay(66);
+  await delay(46);
   this.style.border = "3px solid Crimson";
   this.style.color = "Crimson";
   this.style.transition = "all 186ms cubic-bezier(.9,.37,.66,.96)";
