@@ -47,11 +47,11 @@ function getOrGroups(str) {
   return arr;
 }
 
-function parseSearchStringAsRegX(str) {
+function parseBooleanStringAsArrayOfRegExp(str,tags) {
   var andGroups = getAndGroups(str);
   var orGroups = getOrGroups(str);
   var parsedOrGroups = parseOrGroups(orGroups);
-  var catout = (parsedOrGroups.concat(andGroups));
+  var catout = (parsedOrGroups.concat(andGroups)).map(itm=>rx(itm,tags));
   return catout;
 }
-parseSearchStringAsRegX(searchStringTest)
+parseBooleanStringAsArrayOfRegExp(searchStringTest,'gi')
