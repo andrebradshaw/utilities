@@ -90,6 +90,7 @@ document.body.appendChild(cd);
 
 var cb = document.createElement("button");
 cb.setAttribute("id", id+"_close");
+cb.setAttribute("colorid", "Crimson")
 cb.style.float = "left";
 cb.style.background = "#000";
 cb.style.height = "20px";
@@ -111,6 +112,7 @@ cd.appendChild(cb);
 
 var ev = document.createElement("button");
 ev.setAttribute("id", id+"_eval");
+ev.setAttribute("colorid", "#2E8B57")
 ev.style.float = "left";
 ev.style.background = "#000";
 ev.style.height = "20px";
@@ -125,35 +127,16 @@ ev.style.fontSize = "1em";
 ev.style.color = "Crimson";
 ev.style.transform = "scale(1, 1) translate(3.5px, 3.5px)";
 ev.addEventListener("click", doJavscript);
-ev.addEventListener("mousedown", outEv);
-ev.addEventListener("mouseover", hoverEv);
-ev.addEventListener("mouseout", outEv);
+ev.addEventListener("mousedown", hoverO);
+ev.addEventListener("mouseover", hoverI);
+ev.addEventListener("mouseout", hoverO);
 // ev.innerText = "eval";
 cd.appendChild(ev);
 
-async function hoverEv(){
-  this.style.border = "2px solid #2E8B57";
-  await delay(30);
-  this.style.border = "1px solid #2E8B57";
-  await delay(20);
-  this.style.border = "1px solid #000";
-  await delay(10);
-  this.style.background = "#2E8B57";
-  this.style.color = "#000";
-  this.style.transition = "all 186ms cubic-bezier(.9,.37,.66,.96)";
-}
-async function outEv(){
-  this.style.background = "#000";
-  this.style.border = "1px solid #2E8B57";
-  await delay(66);
-  this.style.border = "3px solid #2E8B57";
-  this.style.color = "#41f49d";
-  this.style.transition = "all 186ms cubic-bezier(.9,.37,.66,.96)";
-}
 
 var hd = document.createElement("div");
 hd.setAttribute("id", id+"_mover");
-hd.style.width = "99%";
+// hd.style.width = "99%";
 hd.style.height = "8%";
 hd.style.backgroundColor = "#000000";
 hd.style.borderTopLeftRadius = ".15em";
@@ -166,28 +149,36 @@ hd.addEventListener("mouseout", nodrag);
 cd.appendChild(hd);
 
 
-var tf = document.createElement("input");
+var tf = document.createElement("div");
 tf.setAttribute("id", id+"_textfile");
-tf.setAttribute("placeholder", "filename")
+tf.setAttribute("contenteditable", "true");
+tf.setAttribute("colorid", "#c4c4c4");
+tf.innerText = 'filename.txt';
 tf.style.width = "36%";
-tf.style.height = "100%";
+// tf.style.height = "100%";
 tf.style.padding = "6px";
-tf.style.border = "1px solid #000000";
+tf.style.cursor = "text";
+tf.style.borderRadius = "1%";
+tf.style.border = "3px solid #c4c4c4";
 tf.style.background = "#0f0f0f";
-tf.style.color = "#ffffff";
+tf.style.color = "#c4c4c4";
 tf.style.fontSize = "1em";
 tf.style.userSelect = "none";
 tf.style.float = "right";
 // tf.style.transform = "translate(0px, -4.5px)";
-tf.style.boxShadow = "1px 1px 1px 0px #888888";
+// tf.style.boxShadow = "1px 1px 1px 0px #888888";
 tf.addEventListener("keydown", (event) => { if (event.key == "Enter") dlBox(); });
+tf.addEventListener("focus", hoverEv);
+tf.addEventListener("blur", outEv);
+// tf.addEventListener("mouseover", hoverEv);
+// tf.addEventListener("mouseout", outEv);
 hd.appendChild(tf);
 
 var tb = document.createElement("div");
 tb.setAttribute("id", id+"_textarea");
 tb.setAttribute("contenteditable", "true");
 tb.innerText = '"text area"';
-tb.style.width = "99%";
+// tb.style.width = "99%";
 tb.style.height = "92%";
 tb.style.padding = "3px";
 tb.style.border = "1px solid #000000";
@@ -215,25 +206,52 @@ async function killParent() {
 async function killElm(){
   this.outerHTML = "";
 }
-async function hoverI(){
-  this.style.border = "2px solid Crimson";
+
+
+async function hoverEv(){
+var colorid = this.getAttribute("colorid");
+  this.style.border = "2px solid "+colorid;
   await delay(30);
-  this.style.border = "1px solid Crimson";
+  this.style.border = "1px solid "+colorid;
+  await delay(20);
+  this.style.border = "3px solid #000";
+  await delay(10);
+  this.style.background = colorid;
+  this.style.color = "#000";
+  this.style.transition = "all 186ms ";
+}
+async function outEv(){
+var colorid = this.getAttribute("colorid");
+  this.style.background = "#000";
+  this.style.border = "1px solid "+colorid;
+  await delay(66);
+  this.style.border = "3px solid "+colorid;
+  this.style.color = colorid;
+  this.style.transition = "all 186ms ";
+}
+
+async function hoverI(){
+  var colorid = this.getAttribute("colorid");
+  this.style.border = "2px solid ";
+  await delay(30);
+  this.style.border = "1px solid "+colorid;
   await delay(20);
   this.style.border = "1px solid #000";
   await delay(10);
-  this.style.background = "Crimson";
+  this.style.background = colorid;
   this.style.color = "#000";
   this.style.transition = "all 186ms cubic-bezier(.9,.37,.66,.96)";
 }
 async function hoverO(){
+var colorid = this.getAttribute("colorid");
   this.style.background = "#000";
-  this.style.border = "1px solid Crimson";
+  this.style.border = "1px solid "+colorid;
   await delay(66);
-  this.style.border = "3px solid Crimson";
-  this.style.color = "Crimson";
+  this.style.border = "3px solid "+colorid;
+  this.style.color = "#41f49d";
   this.style.transition = "all 186ms cubic-bezier(.9,.37,.66,.96)";
 }
+
 function nodrag(){
   this.style.border = "0px solid #5E9ED6";
   this.style.background = "#000000";
