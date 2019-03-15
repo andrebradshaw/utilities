@@ -103,12 +103,53 @@ cb.style.userSelect = "none";
 cb.style.fontSize = "1em";
 cb.style.color = "Crimson";
 cb.style.transform = "scale(1, 1) translate(3.5px, 3.5px) rotate(0deg)"; 
-cb.style.background = "transparent"
 cb.addEventListener("click", killParent);
 cb.addEventListener("mousedown", hoverO);
 cb.addEventListener("mouseover", hoverI);
 cb.addEventListener("mouseout", hoverO);
 cd.appendChild(cb);
+
+var ev = document.createElement("button");
+ev.setAttribute("id", id+"_eval");
+ev.style.float = "left";
+ev.style.background = "#000";
+ev.style.height = "20px";
+ev.style.width = "20px";
+ev.style.borderRadius = "50%";
+ev.style.boxShadow = "0px";
+ev.style.border = "3px solid #2E8B57";
+ev.style.textAlign = "center";
+ev.style.cursor = "pointer";
+ev.style.userSelect = "none";
+ev.style.fontSize = "1em";
+ev.style.color = "Crimson";
+ev.style.transform = "scale(1, 1) translate(3.5px, 3.5px)";
+ev.addEventListener("click", doJavscript);
+ev.addEventListener("mousedown", outEv);
+ev.addEventListener("mouseover", hoverEv);
+ev.addEventListener("mouseout", outEv);
+// ev.innerText = "eval";
+cd.appendChild(ev);
+
+async function hoverEv(){
+  this.style.border = "2px solid #2E8B57";
+  await delay(30);
+  this.style.border = "1px solid #2E8B57";
+  await delay(20);
+  this.style.border = "1px solid #000";
+  await delay(10);
+  this.style.background = "#2E8B57";
+  this.style.color = "#000";
+  this.style.transition = "all 186ms cubic-bezier(.9,.37,.66,.96)";
+}
+async function outEv(){
+  this.style.background = "#000";
+  this.style.border = "1px solid #2E8B57";
+  await delay(66);
+  this.style.border = "3px solid #2E8B57";
+  this.style.color = "#41f49d";
+  this.style.transition = "all 186ms cubic-bezier(.9,.37,.66,.96)";
+}
 
 var hd = document.createElement("div");
 hd.setAttribute("id", id+"_mover");
@@ -145,7 +186,7 @@ hd.appendChild(tf);
 var tb = document.createElement("div");
 tb.setAttribute("id", id+"_textarea");
 tb.setAttribute("contenteditable", "true");
-tb.innerText = "text area";
+tb.innerText = '"text area"';
 tb.style.width = "99%";
 tb.style.height = "92%";
 tb.style.padding = "3px";
@@ -160,6 +201,7 @@ tb.addEventListener('keyup', syntaxer);
 // tb.addEventListener('keyup', setCursorToEnd);
 cd.appendChild(tb);
 tb.style.backgroundColor = "#282828";
+
 
 }
 
@@ -187,7 +229,7 @@ async function hoverI(){
 async function hoverO(){
   this.style.background = "#000";
   this.style.border = "1px solid Crimson";
-  await delay(46);
+  await delay(66);
   this.style.border = "3px solid Crimson";
   this.style.color = "Crimson";
   this.style.transition = "all 186ms cubic-bezier(.9,.37,.66,.96)";
@@ -208,10 +250,15 @@ var td = gi(document, "popup_textarea");
 function addPlaceholder(){
 var td = gi(document, "popup_textarea");
   if(/^.{0}$/.test(td.innerText)){
-    td.innerText = "text area";
+    td.innerText = '"text area"';
     td.style.color = "#474747";
   }
 }
+async function doJavscript(){
+  var outputEval = await eval(gi(document,'popup_textarea').innerText);
+  gi(document,'popup_textarea').innerText = outputEval;
+}
+
 
 function dlBox(){
   var filename = gi(document,"popup_textfile").value;
@@ -227,7 +274,6 @@ async function downloadr(str, name) {
    var type = "data:application/json;charset=utf-8,";
    var strDL = JSON.stringify(str);
   }
-
   var file = new Blob([strDL], { type: type });
   var a = document.createElement("a"),
       url = URL.createObjectURL(file);
