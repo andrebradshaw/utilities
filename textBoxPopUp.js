@@ -138,6 +138,7 @@ var hd = document.createElement("div");
 hd.setAttribute("id", id+"_mover");
 // hd.style.width = "99%";
 hd.style.height = "8%";
+hd.style.border = "1px solid #000"     
 hd.style.backgroundColor = "#000000";
 hd.style.borderTopLeftRadius = ".15em";
 hd.style.borderTopRightRadius = ".15em";
@@ -151,11 +152,11 @@ cd.appendChild(hd);
 
 var tf = document.createElement("div");
 tf.setAttribute("id", id+"_textfile");
+tf.setAttribute("textholder", "filename.txt");
 tf.setAttribute("contenteditable", "true");
 tf.setAttribute("colorid", "#c4c4c4");
 tf.innerText = 'filename.txt';
 tf.style.width = "36%";
-// tf.style.height = "100%";
 tf.style.padding = "6px";
 tf.style.cursor = "text";
 tf.style.borderRadius = "1%";
@@ -165,17 +166,18 @@ tf.style.color = "#c4c4c4";
 tf.style.fontSize = "1em";
 tf.style.userSelect = "none";
 tf.style.float = "right";
-// tf.style.transform = "translate(0px, -4.5px)";
-// tf.style.boxShadow = "1px 1px 1px 0px #888888";
 tf.addEventListener("keydown", (event) => { if (event.key == "Enter") dlBox(); });
 tf.addEventListener("focus", hoverEv);
 tf.addEventListener("blur", outEv);
-// tf.addEventListener("mouseover", hoverEv);
-// tf.addEventListener("mouseout", outEv);
+tf.addEventListener("click", rmvPlaceholder);
+tf.addEventListener("focus", rmvPlaceholder);
+tf.addEventListener("blur", addPlaceholder);
 hd.appendChild(tf);
+
 
 var tb = document.createElement("div");
 tb.setAttribute("id", id+"_textarea");
+tb.setAttribute("textholder", '"text area"');
 tb.setAttribute("contenteditable", "true");
 tb.innerText = '"text area"';
 // tb.style.width = "99%";
@@ -187,8 +189,9 @@ tb.style.fontSize = "1em";
 tb.style.userSelect = "none";
 tb.style.boxShadow = "1px 1px 1px 0px #888888";
 tb.addEventListener("click", rmvPlaceholder);
+tb.addEventListener("focus", rmvPlaceholder);
 tb.addEventListener("blur", addPlaceholder);
-tb.addEventListener('keyup', syntaxer);
+// tb.addEventListener('keyup', syntaxer);
 // tb.addEventListener('keyup', setCursorToEnd);
 cd.appendChild(tb);
 tb.style.backgroundColor = "#282828";
@@ -259,17 +262,16 @@ function nodrag(){
 }
 
 function rmvPlaceholder(){
-var td = gi(document, "popup_textarea");
-  if(/^text area$/.test(td.innerText)){
-    td.innerText = "";
-    td.style.color = "#ffffff";
+  var txt = this.getAttribute("textholder");
+  if(new RegExp(txt.replace(/"/g, '"{0,1}')).test(this.innerText)){
+    this.innerText = "";
+    this.style.color = "#c4c4c4";
   }
 }
 function addPlaceholder(){
-var td = gi(document, "popup_textarea");
-  if(/^.{0}$/.test(td.innerText)){
-    td.innerText = '"text area"';
-    td.style.color = "#474747";
+  if(/^.{0}$/.test(this.innerText)){
+    this.innerText = this.getAttribute("textholder");
+    this.style.color = "#474747";
   }
 }
 async function doJavscript(){
