@@ -32,9 +32,6 @@ function d2arrToJSON(str){
 }
 
 function dragElement() {
-  this.style.border = "1px solid #5E9ED6";
-  this.style.background = "#111111";
-  this.style.transition = "all 166ms";
   var elmnt = this.parentElement;
   var pos1 = 0,
     pos2 = 0,
@@ -85,7 +82,7 @@ cd.style.width = "29%";
 cd.style.height = "43%";
 cd.style.background = "transparent";
 cd.style.borderRadius = ".15em";
-cd.style.padding = "2px";
+cd.style.padding = "6px";
 cd.style.zIndex = "10000";
 document.body.appendChild(cd);
 
@@ -134,23 +131,6 @@ ev.addEventListener("mouseout", hoverO);
 // ev.innerText = "eval";
 cd.appendChild(ev);
 
-
-var hd = document.createElement("div");
-hd.setAttribute("id", id+"_mover");
-// hd.style.width = "99%";
-hd.style.height = "8%";
-hd.style.border = "1px solid #000"     
-hd.style.backgroundColor = "#000000";
-hd.style.borderTopLeftRadius = ".15em";
-hd.style.borderTopRightRadius = ".15em";
-hd.style.padding = "6px";
-hd.style.cursor = 'move';
-hd.style.boxShadow = "1px 1px 1px 0px #888888";
-hd.addEventListener("mouseover", dragElement);
-hd.addEventListener("mouseout", nodrag);
-cd.appendChild(hd);
-
-
 var tf = document.createElement("div");
 tf.setAttribute("id", id+"_textfile");
 tf.setAttribute("textholder", "filename.txt");
@@ -158,6 +138,7 @@ tf.setAttribute("contenteditable", "true");
 tf.setAttribute("colorid", "#c4c4c4");
 tf.innerHTML = tf.getAttribute("textholder");
 tf.style.width = "36%";
+tf.style.height = "8%";
 tf.style.padding = "6px";
 tf.style.cursor = "text";
 tf.style.borderRadius = "1%";
@@ -173,7 +154,23 @@ tf.addEventListener("blur", outEv);
 tf.addEventListener("click", rmvPlaceholder);
 tf.addEventListener("focus", rmvPlaceholder);
 tf.addEventListener("blur", addPlaceholder);
-hd.appendChild(tf);
+cd.appendChild(tf);
+
+
+var hd = document.createElement("div");
+hd.setAttribute("id", id+"_mover");
+// hd.style.width = "99%";
+hd.style.height = "8%";
+hd.style.border = "3px solid #000000"     
+hd.style.backgroundColor = "#000000";
+hd.style.borderTopLeftRadius = ".15em";
+hd.style.borderTopRightRadius = ".15em";
+hd.style.padding = "6px";
+hd.style.cursor = 'move';
+hd.style.boxShadow = "1px 1px 1px 0px #888888";
+hd.addEventListener("mouseover", dragElement);
+hd.addEventListener("mouseout", nodrag);
+cd.appendChild(hd);
 
 
 var tb = document.createElement("div");
@@ -254,12 +251,6 @@ var colorid = this.getAttribute("colorid");
   this.style.border = "3px solid "+colorid;
   this.style.color = "#41f49d";
   this.style.transition = "all 186ms cubic-bezier(.9,.37,.66,.96)";
-}
-
-function nodrag(){
-  this.style.border = "0px solid #5E9ED6";
-  this.style.background = "#000000";
-  this.style.transition = "all 166ms";
 }
 
 function rmvPlaceholder(){
