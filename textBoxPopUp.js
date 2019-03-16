@@ -9,6 +9,7 @@ var fixCase = (s) => s.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + 
 var timer = new Date().getTime().toString().replace(/\d{4}$/, '0000');
 var rando = (n) => Math.round(Math.random()*n);
 
+
 var tsvTo2dArr = (tsv) => tsv.split(/\r|\n/)
 .map(itm=> itm.split(/(?<=^|\t)/));
 
@@ -155,7 +156,7 @@ tf.setAttribute("id", id+"_textfile");
 tf.setAttribute("textholder", "filename.txt");
 tf.setAttribute("contenteditable", "true");
 tf.setAttribute("colorid", "#c4c4c4");
-tf.innerText = 'filename.txt';
+tf.innerHTML = tf.getAttribute("textholder");
 tf.style.width = "36%";
 tf.style.padding = "6px";
 tf.style.cursor = "text";
@@ -177,9 +178,9 @@ hd.appendChild(tf);
 
 var tb = document.createElement("div");
 tb.setAttribute("id", id+"_textarea");
-tb.setAttribute("textholder", '"text area"');
+tb.setAttribute("textholder", 'Take basic notes:<br>Save as .txt file<br>ame file and press enter<br><br>Translate TSV to JSON:<br>Save as .json with headers as keys<br><br>Run code:<br>Output will reaplce the code you wrote in the text area<br>Click the green button to run');
 tb.setAttribute("contenteditable", "true");
-tb.innerText = '"text area"';
+tb.innerHTML = tb.getAttribute("textholder");
 // tb.style.width = "99%";
 tb.style.height = "92%";
 tb.style.padding = "3px";
@@ -263,14 +264,14 @@ function nodrag(){
 
 function rmvPlaceholder(){
   var txt = this.getAttribute("textholder");
-  if(new RegExp(txt.replace(/"/g, '"{0,1}')).test(this.innerText)){
-    this.innerText = "";
+  if(new RegExp(txt).test(this.innerHTML)){
+    this.innerHTML = "";
     this.style.color = "#c4c4c4";
   }
 }
 function addPlaceholder(){
-  if(/^.{0}$/.test(this.innerText)){
-    this.innerText = this.getAttribute("textholder");
+  if(/^.{0}$/.test(this.innerHTML)){
+    this.innerHTML = this.getAttribute("textholder");
     this.style.color = "#474747";
   }
 }
