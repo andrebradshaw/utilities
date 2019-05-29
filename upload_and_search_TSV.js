@@ -1,57 +1,42 @@
-var el = (tag) => document.createElement(tag);
-var ap2 = (p,c) => p.appendChild(c);
-var attr = (elm,arr) => elm.setAttribute(arr[0], arr[1]);
+var ele = (t) => document.createElement(t);
+var attr = (o, k, v) => o.setAttribute(k, v);
+
+var reg = (o, n) => o ? o[n] : '';
+var cn = (o, s) => o ? o.getElementsByClassName(s) : console.log(o);
+var tn = (o, s) => o ? o.getElementsByTagName(s) : console.log(o);
+var gi = (o, s) => o ? o.getElementById(s) : console.log(o);
+
+var unq = (arr) => arr.filter((e, p, a) => a.indexOf(e) == p);
+
+var matchAllregXarr = (t, x) => x.every(r => r.test(t));
+
+
 var doc = document;
 
+var popCont = ele("div");
+doc.body.appendChild(popCont);
+attr(popCont, 'style', `display: inline-block; width: 300px; height: 400px; position: fixed; top: 20%; left: 50%; background: transparent; border-radius: .15em; padding: 3px; z-index: 10000;`)
 
-var popCont = el("div");
-ap2(doc.body,popCont);
-attr( popCont, ["id", "pop_FileUploader"] );
+var head = ele('div');
+popCont.appendChild(head);
+doc.body.appendChild(popCont);
+attr(head, 'style', `display: inline-block; width: 100%; background: lightgrey; border-radius: .15em; padding: 3px; z-index: 10000;`)
 
-popCont.style.display = "inline-block";
-popCont.style.position = "fixed";
-popCont.style.top = "20%";
-popCont.style.left = "50%";
-popCont.style.width = "20%";
-popCont.style.height = "11%";
-popCont.style.background = "lightgrey";
-popCont.style.borderRadius = "1em";
-popCont.style.padding = "3px";
-popCont.style.zIndex = "10000";
-popCont.style.fontFamily = '"Courier New", monospace';
-
-var closeBtn = el("button");
-attr( closeBtn, ["id", "note_btn_close"] );
-ap2( popCont, closeBtn );
-closeBtn.innerText = "+";
-closeBtn.style.position = "absolute";
-closeBtn.style.background = "transparent";
-closeBtn.style.display = "inline-block";
-closeBtn.style.width = "1%";
-closeBtn.style.height = "2%";
-closeBtn.style.transform = "scale(4.5, 4.5) translate(3px, -6px) rotate(45deg)";
-closeBtn.style.borderRadius = "1em";
-closeBtn.style.transition = "all 366ms";
-closeBtn.style.transitionTimingFunction = "cubic-bezier(1,-1.12,.18,1.93)";
-closeBtn.style.padding = "0px";
-closeBtn.style.boxShadow = "0px";
-closeBtn.style.border = "0px";
-closeBtn.style.cursor = "pointer";
-closeBtn.style.userSelect = "none";
-closeBtn.style.fontFamily = '"Courier New", monospace';
-closeBtn.style.fontWeight = "bold";
-closeBtn.style.color = "Crimson";
+var closeBtn = ele("button");
+attr(closeBtn, "id", "note_btn_close");
+head.appendChild(closeBtn);
+attr(closeBtn,'style',`background: transparent; display: inline-block; width: 22px; height: 22px; border-radius: 50%; transition: all 366ms; transition-timing-function: cubic-bezier(1,-1.12,.18,1.93); padding: 0px; boxShadow: 0px; border: 0px; cursor: pointer; userSelect: none; font-weight: bold; border: 3px solid Crimson;`);
 closeBtn.addEventListener("click", close);
 
-var uploadElm = el("input");
-attr( uploadElm, ["id", "customFileInput"] );
-attr( uploadElm, ["type", "file"] );
-ap2(popCont,uploadElm);
+var uploadElm = ele("input");
+attr( uploadElm, "id", "customFileInput" );
+attr( uploadElm, "type", "file" );
+popCont.appendChild(uploadElm);
 uploadElm.style.transform = "scale(1.1, 1.1) translate(5%, 80%)";
 uploadElm.addEventListener("change", handleFiles);
 
 function close() {
-  document.body.removeChild(popCont);
+  popCont.outerHTML = '';
 }
 
 var jdat_file = '';
@@ -69,7 +54,7 @@ function getAsText(fileToRead) {
 }
 
 function loadHandler(event) {
-  jdat_file = event.target.result;
+  jdat_file = JSON.parse(event.target.result);
   close();
 }
 
@@ -123,4 +108,4 @@ function runFilters(targ, search){
 
 }
 
-runFilters('University 1', 'UCLA Extension OR Santa Barbara');
+// runFilters('University 1', 'UCLA Extension OR Santa Barbara');
