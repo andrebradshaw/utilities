@@ -103,8 +103,7 @@ function tsv2array(){
 var filterTableByCol = (t,n,x) => t.filter(el=> matchAllregXarr(el[n],x));
 var colByIndex = (t,i) => t.map(el=> el[i]);
 
-function runFilters(targ, search){
-  var table = tsv2array();
+function runFilters(table, targ, search){
   var header = table[0];
   var temp = [];
   temp.push(header);
@@ -114,10 +113,10 @@ function runFilters(targ, search){
 
   var res = filterTableByCol(table,targI,x);
   res.forEach(el=> temp.push(el));
-  createTableView(temp);
   console.log(temp);
-
+  return temp;
 }
+
 createUploadHTML()
 
 
@@ -138,6 +137,7 @@ function createSearchView(){
   attr(sBtn, 'style',`padding: 4px; float: right; background: #fff; color: #004471; border: 3px solid #004471; border-radius: .15em; cursor: pointer;`);
   head.appendChild(sBtn);
   sBtn.innerText = 'Search';
+  sBtn.addEventListener('click', runTSVSearch);
 
   var tab = ele('div');
   attr(tab,'id','tsv_search_body');
@@ -163,10 +163,35 @@ function createSearchView(){
 
     var t_cls = ele('div');
     tr.appendChild(t_cls);
-    t_cls.innerText = 'x';
+    t_cls.innerText = 'X';
     attr(t_cls,'style',`padding: 1px; color: Crimson; float: right; cursor: pointer;`);
     t_cls.addEventListener('click', hidebooler);      
   }
+}
+
+function runTSVSearch(){
+  var paramValArr = Array.from(tn(gi(doc, 'tsv_search_body'),'input')).filter(i=> i.value).map(i=> [i.value,i.getAttribute('csv_data_ref_bool'),i.getAttribute('csv_data_ref_id')]);
+  var mainTable = tsv2array();
+  var mainHeader = mainTable[0];
+  var boolParams = paramValArr.filter(el=> el[1] == 'string');
+//   var matches_dupeTable = [];
+//   for(var i=0; i<boolParams.length; i++){
+//     var targI = mainHeader.indexOf(boolParams[i][2]);
+//     var bstring = parseAsRegexArr(boolParams[i][0]);
+//     var filtered = filterTableByCol(mainTable,targI,bstring);
+//     matches_dupeTable.push(filtered);
+//   }
+
+  var filteredTable = mainTable.filter(el=> {
+    boolParams.every(i=> {
+      var targI = mainHeader.indexOf(i[2]);
+      var bstring = parseAsRegexArr(i[0]);
+      return matchAllregXarr(el[targI],bstring);
+//       var filtered = filterTableByCol(mainTable,targI,bstring);
+    });
+  });
+createTableView(filteredTable);
+//   var filterTableByCol = (t,n,x) => t.filter(el=> matchAllregXarr(el[n],x));
 }
 
 function hidebooler(){
