@@ -183,13 +183,15 @@ function runTSVSearch(){
 //   }
 
   var filteredTable = mainTable.filter(el=> {
-    boolParams.every(i=> {
+    var isMatched = boolParams.every(i=> {
       var targI = mainHeader.indexOf(i[2]);
       var bstring = parseAsRegexArr(i[0]);
       return matchAllregXarr(el[targI],bstring);
 //       var filtered = filterTableByCol(mainTable,targI,bstring);
     });
+    return isMatched;
   });
+console.log(filteredTable);
 createTableView(filteredTable);
 //   var filterTableByCol = (t,n,x) => t.filter(el=> matchAllregXarr(el[n],x));
 }
@@ -199,12 +201,11 @@ function hidebooler(){
 }
 
 function createTableView(table){
-  var par = gi(doc,'uploader_container');
-  attr(par, 'style', `display: inline-block; width: 80%; height: 90%; position: fixed; top: 1%; left: 1%; background: transparent; border-radius: .15em; padding: 3px; z-index: 10000;`);
+  var par = ele('div');
+  attr(par,'id','tsv_search_res_cont');
+  attr(par, 'style', `display: inline-block; width: 70%; height: 90%; position: fixed; top: 1%; left: 28%; background: transparent; border-radius: .15em; padding: 3px; z-index: 10000;`);
+  doc.body.appendChild(par);
 
-  var bod = gi(doc,'tsv_contBody');
-  if(bod) bod.outerHTML = '';
-  
   var tab = ele('table');
   attr(tab,'id','tsv_table_body');
   attr(tab, 'style', `display: inline-block; width: 100%; height: 100%; background: #fff; border: 1px solid #004471; order-radius: .15em; padding: 3px; overflow-y: scroll; overflow-x: scroll;`);
