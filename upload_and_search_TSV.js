@@ -10,37 +10,45 @@ var unq = (arr) => arr.filter((e, p, a) => a.indexOf(e) == p);
 
 var matchAllregXarr = (t, x) => x.every(r => r.test(t));
 
-
 var doc = document;
-
-var popCont = ele("div");
-doc.body.appendChild(popCont);
-attr(popCont, 'style', `display: inline-block; width: 300px; height: 400px; position: fixed; top: 20%; left: 50%; background: transparent; border-radius: .15em; padding: 3px; z-index: 10000;`)
-
-var head = ele('div');
-popCont.appendChild(head);
-doc.body.appendChild(popCont);
-attr(head, 'style', `display: inline-block; width: 100%; background: lightgrey; border-radius: .15em; padding: 3px; z-index: 10000;`)
-
-var closeBtn = ele("button");
-attr(closeBtn, "id", "note_btn_close");
-head.appendChild(closeBtn);
-attr(closeBtn,'style',`background: transparent; display: inline-block; width: 22px; height: 22px; border-radius: 50%; transition: all 366ms; transition-timing-function: cubic-bezier(1,-1.12,.18,1.93); padding: 0px; boxShadow: 0px; border: 0px; cursor: pointer; userSelect: none; font-weight: bold; border: 3px solid Crimson;`);
-closeBtn.addEventListener("click", close);
-
-var uploadElm = ele("input");
-attr( uploadElm, "id", "customFileInput" );
-attr( uploadElm, "type", "file" );
-popCont.appendChild(uploadElm);
-uploadElm.style.transform = "scale(1.1, 1.1) translate(5%, 80%)";
-uploadElm.addEventListener("change", handleFiles);
-
-function close() {
-  popCont.outerHTML = '';
-}
 
 var jdat_file = '';
 
+function createUploadHTML(){
+  if(gi(doc,'uploader_container')) gi(doc,'uploader_container').outerHTML = '';
+
+  var popCont = ele("div");
+  doc.body.appendChild(popCont);
+  attr(popCont,'id','uploader_container');
+  attr(popCont, 'style', `display: inline-block; width: 300px; height: 400px; position: fixed; top: 20%; left: 50%; background: transparent; border-radius: .15em; padding: 3px; z-index: 10000;`);
+
+  var head = ele('div');
+  popCont.appendChild(head);
+  doc.body.appendChild(popCont);
+  attr(head, 'style', `display: inline-block; width: 100%; background: #004471; border-radius: .15em; padding: 3px;`);
+  
+  var closeBtn = ele("button");
+  attr(closeBtn, "id", "note_btn_close");
+  head.appendChild(closeBtn);
+  attr(closeBtn,'style',`background: transparent; display: inline-block; width: 22px; height: 22px; border-radius: 50%; transition: all 366ms; transition-timing-function: cubic-bezier(1,-1.12,.18,1.93); padding: 0px; border: 0px; cursor: pointer; user-select: none; font-weight: bold; border: 3px solid Crimson;`);
+  closeBtn.addEventListener("click", close);
+
+  var cont = ele('div');
+  popCont.appendChild(cont);
+  attr(cont, 'id', 'tsv_contBody');
+  attr(cont, 'style', `display: inline-block; width: 100%; height: 40%; background: #fff; border: 1px dotted #004471; order-radius: .15em; padding: 3px;`);
+
+  var uploadElm = ele("input");
+  attr( uploadElm, "id", "customFileInput" );
+  attr( uploadElm, "type", "file" );
+  cont.appendChild(uploadElm);
+  uploadElm.style.transform = "scale(1.1, 1.1) translate(5%, 80%)";
+  uploadElm.addEventListener("change", handleFiles);
+
+  function close() {
+    gi(doc,'uploader_container').outerHTML = '';
+  }
+}
 
 function handleFiles() {
   window.FileReader ? getAsText(this.files[0]) : alert('FileReader are not supported in this browser.');
@@ -54,7 +62,7 @@ function getAsText(fileToRead) {
 }
 
 function loadHandler(event) {
-  jdat_file = JSON.parse(event.target.result);
+  jdat_file = event.target.result;
   close();
 }
 
@@ -103,9 +111,35 @@ function runFilters(targ, search){
 
   var res = filterTableByCol(table,targI,x);
   res.forEach(el=> temp.push(el));
-
+  createTableView(temp);
   console.log(temp);
 
 }
-
+createUploadHTML()
 // runFilters('University 1', 'UCLA Extension OR Santa Barbara');
+
+function createTableView(table){
+  var par = gi(doc,'uploader_container');
+  attr(par, 'style', `display: inline-block; width: 80%; height: 90%; position: fixed; top: 5%; left: 5%; background: transparent; border-radius: .15em; padding: 3px; z-index: 10000;`);
+
+  var bod = gi(doc,'tsv_contBody');
+  bod.outerHTML = '';
+  
+  var tab = ele('table');
+  attr(tab,'id','tsv_table_body');
+  attr(tab, 'style', `display: inline-block; width: 100%; height: 100%; background: #fff; border: 1px solid #004471; order-radius: .15em; padding: 3px; overflow-y: scroll; overflow-x: scroll;`);
+  par.appendChild(tab)
+
+  for(var r=0; r<table.length; r++){
+    var tr = ele('tr');
+    tab.appendChild(tr);
+    attr(tr,'style',`padding: 4px; width: 98%; border: 1px dotted #004471;`);
+    for(var d=0; d<table[r].length; d++){
+      var td = ele('td');
+      attr(td,'style',`padding: 4px; width: 98%; border: 1px dotted #004471;`);
+      td.innerText = table[r][d];
+      tr.appendChild(td);
+    }
+  }
+
+}
