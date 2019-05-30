@@ -25,6 +25,7 @@ function createUploadHTML(){
   var head = ele('div');
   popCont.appendChild(head);
   doc.body.appendChild(popCont);
+  attr(head, 'id', 'tsv_main_top_header');
   attr(head, 'style', `display: inline-block; width: 100%; background: #004471; border-radius: .15em; padding: 3px;`);
   
   var closeBtn = ele("button");
@@ -45,9 +46,10 @@ function createUploadHTML(){
   uploadElm.style.transform = "scale(1.1, 1.1) translate(5%, 80%)";
   uploadElm.addEventListener("change", handleFiles);
 
-  function close() {
-    gi(doc,'uploader_container').outerHTML = '';
-  }
+}
+
+function close() {
+  gi(doc,'uploader_container').outerHTML = '';
 }
 
 function handleFiles() {
@@ -63,7 +65,7 @@ function getAsText(fileToRead) {
 
 function loadHandler(event) {
   jdat_file = event.target.result;
-  close();
+  createSearchView();
 }
 
 function errorHandler(evt) {
@@ -99,6 +101,7 @@ function tsv2array(){
 }
 
 var filterTableByCol = (t,n,x) => t.filter(el=> matchAllregXarr(el[n],x));
+var colByIndex = (t,i) => t.map(el=> el[i]);
 
 function runFilters(targ, search){
   var table = tsv2array();
@@ -116,19 +119,62 @@ function runFilters(targ, search){
 
 }
 createUploadHTML()
+
+
 // runFilters('University 1', 'UCLA Extension OR Santa Barbara');
+
+function createSearchView(){
+  var table = tsv2array();
+  var header = table[0];
+
+  var par = gi(doc,'uploader_container');
+  attr(par, 'style', `display: inline-block; max-width: 80%; max-height: 90%; position: fixed; top: 1%; left: 1%; background: transparent; border-radius: .15em; padding: 3px; z-index: 10000;`);
+
+  var bod = gi(doc,'tsv_contBody');
+  if(bod) bod.outerHTML = '';
+
+  var head = gi(doc, 'tsv_main_top_header');
+  var sBtn = ele('div');
+  attr(sBtn, 'style',`padding: 4px; float: right; background: #fff; color: #004471; border: 3px solid #004471; border-radius: .15em; cursor: pointer;`);
+  head.appendChild(sBtn);
+  sBtn.innerText = 'Search';
+
+  var tab = ele('div');
+  attr(tab,'id','tsv_search_body');
+  attr(tab, 'style', `display: inline-block; width: 100%; max-height: 95%; background: #fff; border: 1px solid #004471; border-radius: .15em; padding: 3px; overflow-y: scroll; overflow-x: scroll;`);
+  par.appendChild(tab);
+  for(var r=0; r<header.length; r++){
+    var colIsNum = colByIndex(table,r).some(el=> Number.isInteger(el));
+    var p_type = colIsNum ? '2.8 - 18' : 'boolean search'; 
+    var tr = ele('div');
+    tab.appendChild(tr);    
+    
+    var t_lab = ele('div');
+    tr.appendChild(t_lab);
+    t_lab.innerText = header[r];
+
+    var t_val = ele('input');
+    tr.appendChild(t_val);
+    attr(t_val,'placeholder',p_type);
+    attr(t_val,'csv_data_ref_id',header[r]);
+    attr(t_val,'style',`padding: 4px; border: 1px solid #004471; border-radius: .15em;`);
+
+  }
+}
+
+
 
 function createTableView(table){
   var par = gi(doc,'uploader_container');
-  attr(par, 'style', `display: inline-block; width: 80%; height: 90%; position: fixed; top: 5%; left: 5%; background: transparent; border-radius: .15em; padding: 3px; z-index: 10000;`);
+  attr(par, 'style', `display: inline-block; width: 80%; height: 90%; position: fixed; top: 1%; left: 1%; background: transparent; border-radius: .15em; padding: 3px; z-index: 10000;`);
 
   var bod = gi(doc,'tsv_contBody');
-  bod.outerHTML = '';
+  if(bod) bod.outerHTML = '';
   
   var tab = ele('table');
   attr(tab,'id','tsv_table_body');
   attr(tab, 'style', `display: inline-block; width: 100%; height: 100%; background: #fff; border: 1px solid #004471; order-radius: .15em; padding: 3px; overflow-y: scroll; overflow-x: scroll;`);
-  par.appendChild(tab)
+  par.appendChild(tab);
 
   for(var r=0; r<table.length; r++){
     var tr = ele('tr');
