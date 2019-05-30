@@ -114,6 +114,7 @@ function errorHandler(evt) {
 
 var matchAllregXarr = (t, x) => x.every(r => r.test(t));
 var parseIfNum = (s)=> /^[\d+|$|\.|,|-]+$/.test(s) && /\d-\d/.test(s) === false ? parseFloat(s.replace(/\$|\,/)) : s;
+/* TODO -- account for EU and other monitary symbols and syntax */
 
 function parseAsRegexArr(bool) {
   var checkSimpleOR = (s) => /\bor\b/i.test(s) && /\(/.test(s) === false;
@@ -131,7 +132,11 @@ function parseAsRegexArr(bool) {
     var xArr = ands.concat(orArr).filter(i => i != '').map(x => new RegExp(x, 'i'));
     return xArr;
   }
-}
+} /* TODO: 
+    Need condition to check for search types, which will be defined by a toggle switch || options
+    Allow for Boolean Regex (wordOne.{0,19}wordTwo) AND (some other stuff)  
+    Allow for Number query and string query?
+*/
 
 function tsv2array(){
   var rows = jdat_file.split(/\n/);
