@@ -141,11 +141,12 @@ function createSearchView(){
 
   var tab = ele('div');
   attr(tab,'id','tsv_search_body');
-  attr(tab, 'style', `display: inline-block; width: 100%; max-height: 95%; background: #fff; border: 1px solid #004471; border-radius: .15em; padding: 3px; overflow-y: scroll; overflow-x: scroll;`);
+  attr(tab, 'style', `display: inline-block; width: 100%; height: 90%; background: #fff; border: 1px solid #004471; border-radius: .15em; padding: 3px;`);
   par.appendChild(tab);
   for(var r=0; r<header.length; r++){
     var colIsNum = colByIndex(table,r).some(el=> Number.isInteger(el));
     var p_type = colIsNum ? '2.8 - 18' : 'boolean search'; 
+    var isBool = colIsNum ? 'number' : 'string';
     var tr = ele('div');
     tab.appendChild(tr);    
     
@@ -157,12 +158,20 @@ function createSearchView(){
     tr.appendChild(t_val);
     attr(t_val,'placeholder',p_type);
     attr(t_val,'csv_data_ref_id',header[r]);
+    attr(t_val,'csv_data_ref_bool',isBool);
     attr(t_val,'style',`padding: 4px; border: 1px solid #004471; border-radius: .15em;`);
 
+    var t_cls = ele('div');
+    tr.appendChild(t_cls);
+    t_cls.innerText = 'x';
+    attr(t_cls,'style',`padding: 1px; color: Crimson; float: right; cursor: pointer;`);
+    t_cls.addEventListener('click', hidebooler);      
   }
 }
 
-
+function hidebooler(){
+  this.parentElement.outerHTML = '';
+}
 
 function createTableView(table){
   var par = gi(doc,'uploader_container');
