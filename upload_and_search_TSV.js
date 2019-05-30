@@ -13,6 +13,44 @@ var matchAllregXarr = (t, x) => x.every(r => r.test(t));
 var doc = document;
 
 var jdat_file = '';
+var tableOutput; 
+
+function downloadr(arr2D, filename) {
+  if (/\.tsv$|\.csv$/.test(filename) === true) {
+    var data = '';
+    arr2D.forEach(row => {
+      var arrRow = '';
+      row.forEach(col => {
+        col ? arrRow = arrRow + col.toString() + '\t' : arrRow = arrRow + ' \t';
+      });
+      data = data + arrRow + '\r';
+    });
+  }
+
+  if (/\.json$|.js$/.test(filename) === true) {
+    var data = JSON.stringify(arr2D);
+    var type = 'data:application/json;charset=utf-8,';
+  } else {
+    var type = 'data:text/plain;charset=utf-8,';
+  }
+  var file = new Blob([data], {
+    type: type
+  });
+  if (window.navigator.msSaveOrOpenBlob) {
+    window.navigator.msSaveOrOpenBlob(file, filename);
+  } else {
+    var a = document.createElement('a'),
+      url = URL.createObjectURL(file);
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }, 10);
+  }
+}
 
 function createUploadHTML(){
   if(gi(doc,'uploader_container')) gi(doc,'uploader_container').outerHTML = '';
@@ -119,9 +157,6 @@ function runFilters(table, targ, search){
 
 createUploadHTML()
 
-
-// runFilters('University 1', 'UCLA Extension OR Santa Barbara');
-
 function createSearchView(){
   var table = tsv2array();
   var header = table[0];
@@ -174,33 +209,38 @@ function runTSVSearch(){
   var mainTable = tsv2array();
   var mainHeader = mainTable[0];
   var boolParams = paramValArr.filter(el=> el[1] == 'string');
-//   var matches_dupeTable = [];
-//   for(var i=0; i<boolParams.length; i++){
-//     var targI = mainHeader.indexOf(boolParams[i][2]);
-//     var bstring = parseAsRegexArr(boolParams[i][0]);
-//     var filtered = filterTableByCol(mainTable,targI,bstring);
-//     matches_dupeTable.push(filtered);
-//   }
-
   var filteredTable = mainTable.filter(el=> {
     var isMatched = boolParams.every(i=> {
       var targI = mainHeader.indexOf(i[2]);
       var bstring = parseAsRegexArr(i[0]);
       return matchAllregXarr(el[targI],bstring);
-//       var filtered = filterTableByCol(mainTable,targI,bstring);
     });
     return isMatched;
   });
-console.log(filteredTable);
-createTableView(filteredTable);
-//   var filterTableByCol = (t,n,x) => t.filter(el=> matchAllregXarr(el[n],x));
+  tableOutput = [mainHeader].concat(filteredTable);
+  console.log(tableOutput);
+  createTableView(tableOutput);
 }
 
 function hidebooler(){
   this.parentElement.outerHTML = '';
 }
 
+function saveSearchRes(){
+  downloadr(tableOutput,'filtered_file.tsv');
+}
 function createTableView(table){
+  var tophead = gi(doc,'tsv_main_top_header');
+  if(gi(doc,'download_tsv_searchResbtn')) gi(doc,'download_tsv_searchResbtn').outerHTML = '';
+
+  var dl_TSV = ele('div');
+  attr(dl_TSV, 'id','download_tsv_searchResbtn');
+  attr(dl_TSV, 'style',`padding: 4px; float: right; background: #fff; color: #004471; border: 3px solid #004471; border-radius: .15em; cursor: pointer;`);
+  tophead.appendChild(dl_TSV);
+  dl_TSV.innerText = 'Download';
+  dl_TSV.addEventListener('click', saveSearchRes);
+
+  if(gi(doc,'tsv_search_res_cont')) gi(doc,'tsv_search_res_cont').outerHTML = '';
   var par = ele('div');
   attr(par,'id','tsv_search_res_cont');
   attr(par, 'style', `display: inline-block; width: 70%; height: 90%; position: fixed; top: 1%; left: 28%; background: transparent; border-radius: .15em; padding: 3px; z-index: 10000;`);
