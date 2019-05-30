@@ -88,6 +88,7 @@ function createUploadHTML(){
 
 function close() {
   gi(doc,'uploader_container').outerHTML = '';
+  if(gi(doc,'tsv_search_res_cont')) gi(doc,'tsv_search_res_cont').outerHTML = '';
 }
 
 function handleFiles() {
