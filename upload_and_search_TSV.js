@@ -170,8 +170,6 @@ function runFilters(table, targ, search){
   return temp;
 }
 
-createUploadHTML()
-
 function createSearchView(){
   var table = tsv2array();
   var header = table[0];
@@ -299,3 +297,4 @@ function createTableView(table){
   }
 
 }
+createUploadHTML();
