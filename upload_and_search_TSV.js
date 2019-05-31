@@ -18,6 +18,14 @@ var doc = document;
 var jdat_file = '';
 var tableOutput; 
 
+function hoverOutBtn() {
+var b = this.style.background;
+var c = this.style.color;
+this.style.background = c;
+this.style.color = b;
+this.style.transition = "all 173ms";
+}
+
 function downloadr(arr2D, filename) {
   if (/\.tsv$|\.csv$/.test(filename) === true) {
     var data = '';
@@ -61,7 +69,7 @@ function createUploadHTML(){
   var popCont = ele("div");
   doc.body.appendChild(popCont);
   attr(popCont,'id','uploader_container');
-  attr(popCont, 'style', `display: inline-block; width: 300px; height: 400px; position: fixed; top: 20%; left: 50%; background: transparent; border-radius: .15em; padding: 3px; z-index: 10000;`);
+  attr(popCont, 'style', `display: inline-block; width: 260px; height: 400px; position: fixed; top: 20%; left: 50%; background: transparent; border-radius: .15em; padding: 3px; z-index: 10000;`);
 
   var head = ele('div');
   popCont.appendChild(head);
@@ -72,8 +80,10 @@ function createUploadHTML(){
   var closeBtn = ele("button");
   attr(closeBtn, "id", "note_btn_close");
   head.appendChild(closeBtn);
-  attr(closeBtn,'style',`background: transparent; display: inline-block; width: 22px; height: 22px; border-radius: 50%; transition: all 366ms; transition-timing-function: cubic-bezier(1,-1.12,.18,1.93); padding: 0px; border: 0px; cursor: pointer; user-select: none; font-weight: bold; border: 3px solid Crimson;`);
+  attr(closeBtn,'style',`background: transparent; display: inline-block; width: 22px; height: 22px; border-radius: 50%; transition: all 366ms; transition-timing-function: cubic-bezier(1,-1.12,.18,1.93); padding: 0px; border: 0px; cursor: pointer; user-select: none; font-weight: bold; border: 3px solid Crimson; color: Crimson;`);
   closeBtn.addEventListener("click", close);
+  closeBtn.addEventListener('mouseover',hoverOutBtn);
+  closeBtn.addEventListener('mouseout',hoverOutBtn);
 
   var cont = ele('div');
   popCont.appendChild(cont);
@@ -174,10 +184,12 @@ function createSearchView(){
 
   var head = gi(doc, 'tsv_main_top_header');
   var sBtn = ele('div');
-  attr(sBtn, 'style',`padding: 4px; float: right; background: #fff; color: #004471; border: 3px solid #004471; border-radius: .15em; cursor: pointer;`);
+  attr(sBtn, 'style',`padding: 6px; text-align: center; background: #004471; color: #fff; border: 2px solid #fff; border-radius: .15em; cursor: pointer;`);
   head.appendChild(sBtn);
   sBtn.innerText = 'Search';
   sBtn.addEventListener('click', runTSVSearch);
+  sBtn.addEventListener('mouseover',hoverOutBtn);
+  sBtn.addEventListener('mouseout',hoverOutBtn);
 
   var tab = ele('div');
   attr(tab,'id','tsv_search_body');
@@ -255,10 +267,12 @@ function createTableView(table){
 
   var dl_TSV = ele('div');
   attr(dl_TSV, 'id','download_tsv_searchResbtn');
-  attr(dl_TSV, 'style',`padding: 4px; float: right; background: #fff; color: #004471; border: 3px solid #004471; border-radius: .15em; cursor: pointer;`);
+  attr(dl_TSV, 'style',`padding: 6px; text-align: center; background: #004471; color: #fff; border: 2px solid #fff; border-radius: .15em; cursor: pointer;`);
   tophead.appendChild(dl_TSV);
-  dl_TSV.innerText = 'Download';
+  dl_TSV.innerText = `Save ${(table.length-1)} results`;
   dl_TSV.addEventListener('click', saveSearchRes);
+  dl_TSV.addEventListener('mouseover',hoverOutBtn);
+  dl_TSV.addEventListener('mouseout',hoverOutBtn);
 
   if(gi(doc,'tsv_search_res_cont')) gi(doc,'tsv_search_res_cont').outerHTML = '';
   var par = ele('div');
@@ -271,17 +285,17 @@ function createTableView(table){
   attr(tab, 'style', `display: inline-block; width: 100%; height: 100%; background: #fff; border: 1px solid #004471; order-radius: .15em; padding: 3px; overflow-y: scroll; overflow-x: scroll;`);
   par.appendChild(tab);
 
-  for(var r=0; r<table.length; r++){
+  var maxTable = table.length > 1000 ? 1000 : table.length;
+  for(var r=0; r<maxTable; r++){
     var tr = ele('tr');
     tab.appendChild(tr);
     r == 0 ? attr(tr,'style',`padding: 4px; width: 98%; border: 1px dotted #004471; background: #004471;  color: #fff`) : attr(tr,'style',`padding: 4px; width: 98%; border: 1px dotted #004471;`);
     for(var d=0; d<table[r].length; d++){
       var td = ele('td');
-      r == 0 ? attr(td,'style',`padding: 4px; width: 98%; border: 1px dotted #fff;`) : attr(td,'style',`padding: 4px; width: 98%; border: 1px dotted #004471;`);
+      r == 0 ? attr(td,'style',`padding: 4px; border: 1px dotted #fff;`) : attr(td,'style',`padding: 4px; border: 1px dotted #004471;`);
       td.innerText = table[r][d];
       tr.appendChild(td);
     }
   }
 
 }
-window.addEventListener('keydown', (event) => { if(event.key.toString() == 'Enter') runTSVSearch() });
