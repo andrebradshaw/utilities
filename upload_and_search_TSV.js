@@ -132,11 +132,7 @@ function parseAsRegexArr(bool) {
     var xArr = ands.concat(orArr).filter(i => i != '').map(x => new RegExp(x, 'i'));
     return xArr;
   }
-} /* TODO: 
-    Need condition to check for search types, which will be defined by a toggle switch || options
-    Allow for Boolean Regex (wordOne.{0,19}wordTwo) AND (some other stuff)  
-    Allow for Number query and string query?
-*/
+}
 
 function tsv2array(){
   var rows = jdat_file.split(/\n/);
@@ -269,4 +265,10 @@ function createTableView(table){
     }
   }
 
+}
+
+function numberSearch(el){
+  
+  var greater = reg(/^[\d*\.\d*-]+/.exec(years), 0) ? parseFloat(reg(/^[\d*\.\d*-]+/.exec(years), 0)) : 0;
+  var lesser = reg(/[\d*\.\d*-]+$/.exec(years), 0) ? parseFloat(reg(/[\d*\.\d*-]+$/.exec(years), 0)) : 0;
 }
