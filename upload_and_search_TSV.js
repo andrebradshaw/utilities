@@ -209,9 +209,7 @@ function createSearchView(){
   }
 }
 
-
 function checkNumberCol(target,query){
-console.log(target)
   if(Number.isInteger(target)){
     var greater = reg(/^[\d*\.\d*-]+/.exec(query), 0) ? parseFloat(reg(/^[\d*\.\d*-]+/.exec(query), 0)) : 0;
     var lesser = reg(/[\d*\.\d*-]+$/.exec(query), 0) ? parseFloat(reg(/[\d*\.\d*-]+$/.exec(query), 0)) : 0;
@@ -286,3 +284,4 @@ function createTableView(table){
   }
 
 }
+window.addEventListener('keydown', (event) => { if(event.key.toString() == 'Enter') runTSVSearch() });
