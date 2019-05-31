@@ -270,8 +270,12 @@ function createTableView(table){
 
 }
 
-function numberSearch(el){
-  
-  var greater = reg(/^[\d*\.\d*-]+/.exec(years), 0) ? parseFloat(reg(/^[\d*\.\d*-]+/.exec(years), 0)) : 0;
-  var lesser = reg(/[\d*\.\d*-]+$/.exec(years), 0) ? parseFloat(reg(/[\d*\.\d*-]+$/.exec(years), 0)) : 0;
+function checkNumberCol(target,query){
+  if(Number.isInteger(target)){
+    var greater = reg(/^[\d*\.\d*-]+/.exec(query), 0) ? parseFloat(reg(/^[\d*\.\d*-]+/.exec(query), 0)) : 0;
+    var lesser = reg(/[\d*\.\d*-]+$/.exec(query), 0) ? parseFloat(reg(/[\d*\.\d*-]+$/.exec(query), 0)) : 0;
+    return target >= greater && target <= lesser ? true : false;
+  }else{
+    return false;
+  }
 }
