@@ -1,6 +1,9 @@
 /*
   DEMO Video: https://youtu.be/b8BbmCk8OL0 
 */
+/*
+  DEMO Video: https://youtu.be/b8BbmCk8OL0 
+*/
 var ele = (t) => document.createElement(t);
 var attr = (o, k, v) => o.setAttribute(k, v);
 
@@ -186,7 +189,7 @@ function createSearchView(){
   for(var r=0; r<header.length; r++){
     var colIsNum = colByIndex(table,r).some(el=> Number.isInteger(el));
     var p_type = colIsNum ? '2.8 - 18' : 'boolean search'; 
-    var isBool = colIsNum ? 'number' : 'string';
+    var isBool = colIsNum ? 'num' : 'str';
     var tr = ele('div');
     tab.appendChild(tr);    
     
@@ -209,18 +212,35 @@ function createSearchView(){
   }
 }
 
+
+function checkNumberCol(target,query){
+console.log(target)
+  if(Number.isInteger(target)){
+    var greater = reg(/^[\d*\.\d*-]+/.exec(query), 0) ? parseFloat(reg(/^[\d*\.\d*-]+/.exec(query), 0)) : 0;
+    var lesser = reg(/[\d*\.\d*-]+$/.exec(query), 0) ? parseFloat(reg(/[\d*\.\d*-]+$/.exec(query), 0)) : 0;
+    return target >= greater && target <= lesser ? true : false;
+  }else{
+    return false;
+  }
+}
+
 function runTSVSearch(){
   var paramValArr = Array.from(tn(gi(doc, 'tsv_search_body'),'input')).filter(i=> i.value).map(i=> [i.value,i.getAttribute('csv_data_ref_bool'),i.getAttribute('csv_data_ref_id')]);
   var mainTable = tsv2array();
   var mainHeader = mainTable[0];
-  var boolParams = paramValArr.filter(el=> el[1] == 'string');
+  var boolParams = paramValArr.filter(el=> el[1] == 'str');
+  var numParams =  paramValArr.filter(el=> el[1] == 'num');
   var filteredTable = mainTable.filter(el=> {
-    var isMatched = boolParams.every(i=> {
+    var isMatchedStr = boolParams.every(i=> {
       var targI = mainHeader.indexOf(i[2]);
       var bstring = parseAsRegexArr(i[0]);
       return matchAllregXarr(el[targI],bstring);
     });
-    return isMatched;
+    var isMatchedNum = numParams.every(i=> {
+      var targI = mainHeader.indexOf(i[2]);
+      return checkNumberCol(el[targI],i[0]);
+    });
+    return isMatchedStr && isMatchedNum;
   });
   tableOutput = [mainHeader].concat(filteredTable);
   console.log(tableOutput);
@@ -259,23 +279,13 @@ function createTableView(table){
   for(var r=0; r<table.length; r++){
     var tr = ele('tr');
     tab.appendChild(tr);
-    attr(tr,'style',`padding: 4px; width: 98%; border: 1px dotted #004471;`);
+    r == 0 ? attr(tr,'style',`padding: 4px; width: 98%; border: 1px dotted #004471; background: #004471;  color: #fff`) : attr(tr,'style',`padding: 4px; width: 98%; border: 1px dotted #004471;`);
     for(var d=0; d<table[r].length; d++){
       var td = ele('td');
-      attr(td,'style',`padding: 4px; width: 98%; border: 1px dotted #004471;`);
+      r == 0 ? attr(td,'style',`padding: 4px; width: 98%; border: 1px dotted #fff;`) : attr(td,'style',`padding: 4px; width: 98%; border: 1px dotted #004471;`);
       td.innerText = table[r][d];
       tr.appendChild(td);
     }
   }
 
-}
-
-function checkNumberCol(target,query){
-  if(Number.isInteger(target)){
-    var greater = reg(/^[\d*\.\d*-]+/.exec(query), 0) ? parseFloat(reg(/^[\d*\.\d*-]+/.exec(query), 0)) : 0;
-    var lesser = reg(/[\d*\.\d*-]+$/.exec(query), 0) ? parseFloat(reg(/[\d*\.\d*-]+$/.exec(query), 0)) : 0;
-    return target >= greater && target <= lesser ? true : false;
-  }else{
-    return false;
-  }
 }
