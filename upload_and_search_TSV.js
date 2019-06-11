@@ -126,7 +126,7 @@ function errorHandler(evt) {
 
 
 var matchAllregXarr = (t, x) => x.every(r => r.test(t));
-var parseIfNum = (s)=> /^[\d+|$|\.|,|-]+$/.test(s) && /\d-\d/.test(s) === false ? parseFloat(s.replace(/\$|\,/)) : s;
+var parseIfNum = (s)=> /^[\d+|$|\.|,|-]+$/.test(s) && /\d-\d/.test(s) === false ? parseFloat(s.replace(/\$|\,/g,'')) : s;
 /* TODO -- account for EU and other monitary symbols and syntax */
 
 function parseAsRegexArr(bool) {
