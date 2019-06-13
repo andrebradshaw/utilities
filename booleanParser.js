@@ -3,6 +3,7 @@ Operators:
   OR == any of the words, should be enclosed in parentheses, not case sensitive
   AND == all of these words / groups of OR, not case sensitive
   * == zero or one word
+  " == word boundary. Quotes are not necessary unless you need a word boundary
 */
 
 function parseAsRegexArr(bool) {
