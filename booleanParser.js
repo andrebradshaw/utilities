@@ -31,5 +31,5 @@ function booleanSearch(bool,target){
 }
 
 /*usage*/ 
-booleanSearch('public AND (click OR repo)','Navigate your code with ease. In select public repositories, you can now click on function and method calls to jump to their definitions in the same repository.');
+booleanSearch('select * repo AND (click OR repo)','Navigate your code with ease. In select public repositories, you can now click on function and method calls to jump to their definitions in the same repository.');
 //expected output == true
