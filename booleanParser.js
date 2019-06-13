@@ -1,3 +1,10 @@
+/*
+Operators: 
+  OR == any of the words, should be enclosed in parentheses, not case sensitive
+  AND == all of these words / groups of OR, not case sensitive
+  * == zero or one word
+*/
+
 function parseAsRegexArr(bool) {
   function rxReady(s){ return s ? s.replace(/"/g, '\\b').trim().replace(/\)/g, '').replace(/\(/g, '').replace(/\s+/g, '.{0,2}').replace(/\//g, '\\/').replace(/\+/g, '\\+').replace(/\s*\*\s*/g, '\\s*\\w*\\s+') : s;}
   function checkSimpleOR(s) { return /\bor\b/i.test(s) && /\(/.test(s) === false;}
