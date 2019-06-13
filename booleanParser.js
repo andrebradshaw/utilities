@@ -1,4 +1,5 @@
 /*
+supports ES5
 Operators: 
   OR == any of the words, should be enclosed in parentheses, not case sensitive
   AND == all of these words / groups of OR, not case sensitive
