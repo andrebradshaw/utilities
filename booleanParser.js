@@ -16,3 +16,13 @@ function parseAsRegexArr(bool) {
   }
 }
 
+function booleanSearch(bool,target){
+  var arr = parseAsRegexArr(bool);
+  return arr.every(function(x){
+    return x.test(target);
+  });
+}
+
+/*usage*/ 
+booleanSearch('public AND (click OR repo)','Navigate your code with ease. In select public repositories, you can now click on function and method calls to jump to their definitions in the same repository.');
+//expected output == true
