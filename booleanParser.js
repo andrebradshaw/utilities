@@ -19,8 +19,8 @@ function parseAsRegexArr(bool) {
     var orMatch = bool ? bool.match(new RegExp(orx, 'g')) : [];
     var orArr = orMatch ? orMatch.map(function(b) {return rxReady(b.replace(/\s+OR\s+|\s*\|\s*/gi, '|'))}) : [];
     var noOrs = bool ? bool.replace(new RegExp(orx, 'g'), '').split(/\s+[AND\s+]+/i) : bool;
-    var ands = noOrs ? noOrs.map(a => rxReady(a)) : [];
-    var xArr = ands.concat(orArr).filter(i => i != '').map(x => new RegExp(x, 'i'));
+    var ands = noOrs ? noOrs.map(function(a) { return rxReady(a)}) : [];
+    var xArr = ands.concat(orArr).filter(function(i){ return i != ''}).map(function(x){return new RegExp(x, 'i')});
     return xArr;
   }
 }
