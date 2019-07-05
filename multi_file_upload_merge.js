@@ -40,11 +40,9 @@ var textFile = '';
 async function handleFiles() {
   var files = this.files;
   for(var i=0; i<files.length; i++){
-    if(/\.json/i.test(files[i].name)) {
+    if(/\.json/i.test(files[i].name))
       await getAsJson(files[i]);
-    }else{
-      await getAsText(files[i]);
-    }
+      else await getAsText(files[i]);
   }
   gi(document,'pop_FileUploader').outerHTML = '';
 }
