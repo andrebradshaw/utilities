@@ -62,7 +62,7 @@ function getAsText(fileToRead) {
 
 var loadHandleJson = (e) => Array.isArray(JSON.parse(e.target.result)) ? JSON.parse(e.target.result).forEach(i=> fileArray.push(i)) : fileArray.push(JSON.parse(e.target.result));
 
-var loadHandleText = (e) => textFile = textFile + event.target.result;
+var loadHandleText = (e) => textFile = textFile + e.target.result;
 
 function errorHandler(evt) {
   if (evt.target.error.name == "NotReadableError") alert("Bad file! Not sure what you are trying to do.");
