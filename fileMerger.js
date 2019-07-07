@@ -92,43 +92,55 @@ async function createUploadHTML() {
 
 async function handleFiles() {
   var fileArray = [];
+  var csvFile = '';
+  var tsvFile = '';
   var textFile = '';
 
   var loadHandleJson = (e) => Array.isArray(JSON.parse(e.target.result)) ? JSON.parse(e.target.result).forEach(i => fileArray.push(i)) : fileArray.push(JSON.parse(e.target.result));
-  var loadHandleText = (e) => textFile = textFile + e.target.result;
+  var loadHandleCsv = (e) => csvFile = csvFile + '\r' + e.target.result;
+  var loadHandleTsv = (e) => tsvFile = tsvFile + '\r' + e.target.result;
+  var loadHandleTxt = (e) => textFile = textFile + '\n' + e.target.result;
 
   function getAsText(f) {
-  var reader = new FileReader();
-  reader.readAsText(f);
-  if (/\.json/i.test(f.name))
-    reader.onload = loadHandleJson;
-  else
-    reader.onload = loadHandleText;
+    var reader = new FileReader();
+    reader.readAsText(f);
+    if (/\.json/i.test(f.name)) reader.onload = loadHandleJson;
+    if (/\.csv/i.test(f.name)) reader.onload = loadHandleCsv;
+    if (/\.tsv/i.test(f.name)) reader.onload = loadHandleTsv;
+    if (/\.txt/i.test(f.name)) reader.onload = loadHandleTxt;
   }
-
   var files = this.files;
   for (var i = 0; i < files.length; i++) {
     await getAsText(files[i]);
   }
-  var filetypes = await unq(Array.from(this.files).map(f=> reg(/(?<=\w+\.)\w+$/.exec(f.name),0)));
+  var filetypes = await unq(Array.from(this.files).map(f=> reg(/(?<=\.)\w+$/.exec(f.name),0)));
+  console.log(unq(Array.from(this.files).map(f=> f.name)));
+
   gi(document, 'pop_FileUploader').outerHTML = '';
   await delay(1111);
-  await createDownloadBtns(filetypes,fileArray,textFile);
+  await createDownloadBtns(filetypes,fileArray,[csvFile,tsvFile,textFile]);
 }
 
 
 
-async function createDownloadBtns(filetypes,arr,text) {
+async function createDownloadBtns(filetypes,arr,tarr) {
   if(gi(document, 'download_cont')) gi(document, 'download_cont').outerHTML = '';
   console.log(filetypes);
 
+  var csv = tarr[0];
+  var tsv = tarr[1];
+  var text = tarr[2];
+
   var jsonTypes = filetypes.filter(el=> /json/i.test(el)).toString();
-  var textTypes = filetypes.filter(el=> /json/i.test(el) === false).toString();
+  var tsvTypes = filetypes.filter(el=> /tsv/i.test(el)).toString();
+  var csvTypes = filetypes.filter(el=> /csv/i.test(el)).toString();
+  var textTypes = filetypes.filter(el=> /txt/i.test(el)).toString();
+
 
   var cont = ele("div");
   document.body.appendChild(cont);
   attr(cont, "id", "download_cont");
-  attr(cont, 'style', 'position: fixed; top: 20%; left: 50%; width: 380px; height: 420px; background: transparent; border: 1px solid #616161; border-radius: 0.25em; z-index: 12000;');
+  attr(cont, 'style', 'position: fixed; top: 20%; left: 50%; width: 380px; height: 420px; background: transparent; border: 1.8px solid #004471; border-radius: 0.25em; z-index: 12000;');
 
   var head = ele("div");
   attr(head, "id", "download_header");
@@ -151,12 +163,10 @@ async function createDownloadBtns(filetypes,arr,text) {
 
   console.log(arr);
 
-  if(arr.length > 0){
-    createDownloadCont(jsonTypes);
-  }
-  if(text){
-    createDownloadCont(textTypes);
-  }
+  if(arr.length > 0) createDownloadCont(jsonTypes);
+  if(tsv) createDownloadCont(tsvTypes);
+  if(csv) createDownloadCont(csvTypes);
+  if(text) createDownloadCont(textTypes);
 
   function createDownloadCont(types){
     var dbody = ele("div");
@@ -167,7 +177,7 @@ async function createDownloadBtns(filetypes,arr,text) {
     var hinput = ele("input");
     attr(hinput, "class", "download_namer_text");
     attr(hinput, "placeholder", "name as "+types.replace(/,/g, ' or '));
-    attr(hinput, 'style', 'background: #fff; color: #004471; border-radius: 0.25em; border: 1px solid #004471; padding: 6px; cursor: text; padding: 6px;');
+    attr(hinput, 'style', 'background: #fff; color: #004471; border-radius: 0.25em; border: 1px solid #004471; padding: 6px; cursor: text;');
     dbody.appendChild(hinput);
 
     var dlBtn = ele("button");
