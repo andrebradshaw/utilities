@@ -1,12 +1,9 @@
-/*NOT IN WORKING ORDER*/
-
-async function initFilerMerger(){
-
 var gi = (o, s) => o ? o.getElementById(s) : console.log(o);
 var ele = (t) => document.createElement(t);
 var attr = (o, k, v) => o.setAttribute(k, v);
 var unq = (arr) => arr.filter((e, p, a) => a.indexOf(e) == p);
 var reg = (o, n) => o ? o[n] : '';
+var delay = (ms) => new Promise(res => setTimeout(res, ms));
 
 function downloadr(arr2D, filename) {
   var data = /\.json$|.js$/.test(filename) ? JSON.stringify(arr2D) : arr2D;
@@ -64,7 +61,7 @@ function dragElement() {
   }
 }
 
-function createUploadHTML() {
+async function createUploadHTML() {
   if (gi(document, 'pop_FileUploader')) gi(document, 'pop_FileUploader').outerHTML = '';
   var popCont = ele("div");
   document.body.appendChild(popCont);
@@ -85,7 +82,7 @@ function createUploadHTML() {
   attr(uploadElm, "multiple", "true");
   popCont.appendChild(uploadElm);
   uploadElm.style.transform = "scale(1.1, 1.1) translate(5%, 80%)";
-  uploadElm.addEventListener("change", handleFiles);
+  uploadElm.addEventListener("change", await handleFiles);
 
   function close() {
     document.body.removeChild(popCont);
@@ -93,46 +90,49 @@ function createUploadHTML() {
 }
 
 
-var fileArray = [];
-var textFile = '';
+async function handleFiles() {
+  var fileArray = [];
+  var textFile = '';
 
-var loadHandleJson = (e) => Array.isArray(JSON.parse(e.target.result)) ? JSON.parse(e.target.result).forEach(i => fileArray.push(i)) : fileArray.push(JSON.parse(e.target.result));
-var loadHandleText = (e) => textFile = textFile + e.target.result;
+  var loadHandleJson = (e) => Array.isArray(JSON.parse(e.target.result)) ? JSON.parse(e.target.result).forEach(i => fileArray.push(i)) : fileArray.push(JSON.parse(e.target.result));
+  var loadHandleText = (e) => textFile = textFile + e.target.result;
 
-function getAsText(f) {
+  function getAsText(f) {
   var reader = new FileReader();
   reader.readAsText(f);
   if (/\.json/i.test(f.name))
     reader.onload = loadHandleJson;
   else
     reader.onload = loadHandleText;
-}
+  }
 
-async function handleFiles() {
   var files = this.files;
   for (var i = 0; i < files.length; i++) {
     await getAsText(files[i]);
   }
   var filetypes = await unq(Array.from(this.files).map(f=> reg(/(?<=\w+\.)\w+$/.exec(f.name),0)));
   gi(document, 'pop_FileUploader').outerHTML = '';
-  createDownloadBtns(filetypes,fileArray,textFile);
+  await delay(1111);
+  await createDownloadBtns(filetypes,fileArray,textFile);
 }
 
 
 
-function createDownloadBtns(filetypes,fileArray,textFile) {
+async function createDownloadBtns(filetypes,arr,text) {
+  if(gi(document, 'download_cont')) gi(document, 'download_cont').outerHTML = '';
   console.log(filetypes);
-  var jsonTypes = filetypes.filter(el=> /json/i.test(el));
-  var textTypes = filetypes.filter(el=> /json/i.test(el) === false);
+
+  var jsonTypes = filetypes.filter(el=> /json/i.test(el)).toString();
+  var textTypes = filetypes.filter(el=> /json/i.test(el) === false).toString();
 
   var cont = ele("div");
   document.body.appendChild(cont);
   attr(cont, "id", "download_cont");
-  attr(cont, 'style', 'position: fixed; top: 20%; left: 50%; width: 380px; background: transparent; border: 1px solid #616161; border-radius: 0.25em; z-index: 12000;');
+  attr(cont, 'style', 'position: fixed; top: 20%; left: 50%; width: 380px; height: 420px; background: transparent; border: 1px solid #616161; border-radius: 0.25em; z-index: 12000;');
 
   var head = ele("div");
   attr(head, "id", "download_header");
-  attr(head, 'style', 'background: #004471; border-top-right-radius: 0.25em; border-top-left-radius: 0.25em; padding: 0px; cursor: move;');
+  attr(head, 'style', 'background: #004471; height: 9%; border-top-right-radius: 0.25em; border-top-left-radius: 0.25em; padding: 0px; cursor: move;');
   cont.appendChild(head);
   head.addEventListener("mouseover", dragElement);
 
@@ -146,49 +146,47 @@ function createDownloadBtns(filetypes,fileArray,textFile) {
 
   var body = ele("div");
   attr(body, "id", "download_body");
-  attr(body, 'style', 'background: #fff; border-bottom-right-radius: 0.25em; border-bottom-left-radius: 0.25em; padding: 6px;');
+  attr(body, 'style', 'background: #fff; height: 90%; border-bottom-right-radius: 0.25em; border-bottom-left-radius: 0.25em; padding: 6px;');
   cont.appendChild(body);
 
-  console.log(fileArray);
+  console.log(arr);
 
-  if(fileArray.length > 0){
-console.log(fileArray.length);
+  if(arr.length > 0){
     createDownloadCont(jsonTypes);
   }
-  if(textFile){
-console.log(textFile);
+  if(text){
     createDownloadCont(textTypes);
   }
+
   function createDownloadCont(types){
     var dbody = ele("div");
     attr(dbody, "class", "download_body_type");
-    attr(dbody, 'style', 'background: #fff; height: 15px; border-radius: 0.25em; 0.25em; padding: 6px;');
-    cont.appendChild(dbody);
+    attr(dbody, 'style', 'background: #fff; height: 15px; border-radius: 0.25em; padding: 6px;');
+    body.appendChild(dbody);
 
     var hinput = ele("input");
     attr(hinput, "class", "download_namer_text");
-    attr(hinput, "placeholder", "name file / "+types.toString());
-    attr(hinput, 'style', 'background: #fff; color: #004471; border-radius: 0.25em; padding: 0px; cursor: text; padding: 6px;');
+    attr(hinput, "placeholder", "name as "+types.replace(/,/g, ' or '));
+    attr(hinput, 'style', 'background: #fff; color: #004471; border-radius: 0.25em; border: 1px solid #004471; padding: 6px; cursor: text; padding: 6px;');
     dbody.appendChild(hinput);
 
-    var dlBtn = ele("div");
+    var dlBtn = ele("button");
     attr(dlBtn, "class", "downloadr_btn");
-    attr(dlBtn, 'style', 'background: #fff; color: #004471; border-radius: 0.25em; padding: 0px; cursor: text; padding: 6px;');
+    attr(dlBtn, 'style', 'background: #fff; color: #004471; border-radius: 0.25em; padding: 6px; cursor: pointer;');
     dbody.appendChild(dlBtn);
-    dbody.innerText = 'download';
+    dlBtn.innerText = 'download';
     dlBtn.onclick = downloadFileByType;
   }
 
   function downloadFileByType(){
     var filename = this.parentElement.firstChild.value;
-    if(/\.json/.test(filename)) downloadr(fileArray,filename);
-    else downloadr(textFile,filename);
+    if(/\.json/.test(filename)) downloadr(arr,filename);
+    else downloadr(text,filename);
   }
   function close() {
     document.body.removeChild(cont);
   }
 
 }
+
 createUploadHTML();
-}
-initFilerMerger()
