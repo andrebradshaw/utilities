@@ -1,3 +1,8 @@
+/*
+Merges  JSON, CSV, TSV and TXT file formats. 
+Script figures out what formats match, so you can upload multiple file types at once. 
+*/
+
 var gi = (o, s) => o ? o.getElementById(s) : console.log(o);
 var ele = (t) => document.createElement(t);
 var attr = (o, k, v) => o.setAttribute(k, v);
@@ -114,8 +119,6 @@ async function handleFiles() {
     await getAsText(files[i]);
   }
   var filetypes = await unq(Array.from(this.files).map(f=> reg(/(?<=\.)\w+$/.exec(f.name),0)));
-  console.log(unq(Array.from(this.files).map(f=> f.name)));
-
   gi(document, 'pop_FileUploader').outerHTML = '';
   await delay(1111);
   await createDownloadBtns(filetypes,fileArray,[csvFile,tsvFile,textFile]);
@@ -125,7 +128,6 @@ async function handleFiles() {
 
 async function createDownloadBtns(filetypes,arr,tarr) {
   if(gi(document, 'download_cont')) gi(document, 'download_cont').outerHTML = '';
-  console.log(filetypes);
 
   var csv = tarr[0];
   var tsv = tarr[1];
@@ -140,28 +142,26 @@ async function createDownloadBtns(filetypes,arr,tarr) {
   var cont = ele("div");
   document.body.appendChild(cont);
   attr(cont, "id", "download_cont");
-  attr(cont, 'style', 'position: fixed; top: 20%; left: 50%; width: 380px; height: 420px; background: transparent; border: 1.8px solid #004471; border-radius: 0.25em; z-index: 12000;');
+  attr(cont, 'style', 'position: fixed; top: 20%; left: 50%; width: 360px; height: 360px; background: transparent; z-index: 12000;');
 
   var head = ele("div");
   attr(head, "id", "download_header");
-  attr(head, 'style', 'background: #004471; height: 9%; border-top-right-radius: 0.25em; border-top-left-radius: 0.25em; padding: 0px; cursor: move;');
+  attr(head, 'style', 'background: #004471; height: 9%; border: 1.5px solid #004471; border-top-right-radius: 0.25em; border-top-left-radius: 0.25em; padding: 0px; cursor: move;');
   cont.appendChild(head);
   head.addEventListener("mouseover", dragElement);
 
 
   var closeBtn = ele("div");
   attr(closeBtn, "id", "search_btn_close");
-  attr(closeBtn, 'style', 'background: transparent; width: 15px; height: 15px; transform: scale(1.8, 1.2); border-radius: 1em; padding: 0px; color: Crimson; cursor: pointer');
+  attr(closeBtn, 'style', 'background: transparent; width: 15px; height: 15px; transform: scale(1.8, 1.2) translate(4px, 2px); border-radius: 1em; padding: 0px; color: Crimson; cursor: pointer');
   head.appendChild(closeBtn);
   closeBtn.innerText = "X";
   closeBtn.addEventListener("click", close);
 
   var body = ele("div");
   attr(body, "id", "download_body");
-  attr(body, 'style', 'background: #fff; height: 90%; border-bottom-right-radius: 0.25em; border-bottom-left-radius: 0.25em; padding: 6px;');
+  attr(body, 'style', 'background: #fff; height: 90%; border: 1.5px solid #004471; border-bottom-right-radius: 0.25em; border-bottom-left-radius: 0.25em; padding: 6px;');
   cont.appendChild(body);
-
-  console.log(arr);
 
   if(arr.length > 0) createDownloadCont(jsonTypes);
   if(tsv) createDownloadCont(tsvTypes);
@@ -171,12 +171,16 @@ async function createDownloadBtns(filetypes,arr,tarr) {
   function createDownloadCont(types){
     var dbody = ele("div");
     attr(dbody, "class", "download_body_type");
-    attr(dbody, 'style', 'background: #fff; height: 15px; border-radius: 0.25em; padding: 6px;');
+    attr(dbody, 'style', 'background: #fff; border-radius: 0.25em; padding: 6px;');
     body.appendChild(dbody);
+
+    var label = ele('div');
+    label.innerText = 'Merged '+types+' files';
+    dbody.appendChild(label);
 
     var hinput = ele("input");
     attr(hinput, "class", "download_namer_text");
-    attr(hinput, "placeholder", "name as "+types.replace(/,/g, ' or '));
+    attr(hinput, "placeholder", "new_filename."+types);
     attr(hinput, 'style', 'background: #fff; color: #004471; border-radius: 0.25em; border: 1px solid #004471; padding: 6px; cursor: text;');
     dbody.appendChild(hinput);
 
