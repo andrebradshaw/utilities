@@ -2,8 +2,8 @@
 Merges  JSON, CSV, TSV and TXT file formats. 
 Script figures out what formats match, so you can upload multiple file types at once. 
 */
-
 var gi = (o, s) => o ? o.getElementById(s) : console.log(o);
+var tn = (o, s) => o ? o.getElementsByTagName(s) : console.log(o);
 var ele = (t) => document.createElement(t);
 var attr = (o, k, v) => o.setAttribute(k, v);
 var unq = (arr) => arr.filter((e, p, a) => a.indexOf(e) == p);
@@ -193,9 +193,11 @@ async function createDownloadBtns(filetypes,arr,tarr) {
   }
 
   function downloadFileByType(){
-    var filename = this.parentElement.firstChild.value;
+    var filename = tn(this.parentElement,'input')[0].value;
     if(/\.json/.test(filename)) downloadr(arr,filename);
-    else downloadr(text,filename);
+    if(/\.txt/.test(filename)) downloadr(text,filename);
+    if(/\.tsv/.test(filename)) downloadr(tsv,filename);
+    if(/\.csv/.test(filename)) downloadr(csv,filename);
   }
   function close() {
     document.body.removeChild(cont);
