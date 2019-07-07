@@ -1,6 +1,7 @@
 /*
 Merges  JSON, CSV, TSV and TXT file formats. 
 Script figures out what formats match, so you can upload multiple file types at once. 
+Test/Demo video: https://youtu.be/Wh-_gzoq5I0
 */
 var gi = (o, s) => o ? o.getElementById(s) : console.log(o);
 var tn = (o, s) => o ? o.getElementsByTagName(s) : console.log(o);
