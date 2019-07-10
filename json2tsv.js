@@ -14,16 +14,21 @@ var lens = Math.max(...firstLevel.map(el=> el.length));
 var header = unq(firstLevel.map(el=> el.map(itm=> itm[0])).flat());
 var table = [header];
 
+var str = (o) => typeof o == 'object' ? JSON.stringify(o).replace(/\n|\r/g, ' ') : o.toString().replace(/\n|\r/g, ' ');
+
+
 for(var i=0; i<firstLevel.length; i++){
   var arr = [];
+  var row = [];
   for(var s=0; s<firstLevel[i].length; s++){
     var place = header.indexOf(firstLevel[i][s][0]);
-    var item = typeof firstLevel[i][s][1];
-	if(item == 'object') arr[place] = JSON.stringify(firstLevel[i][s][1]).replace(/\n|\r/g, ''); 
-	if(item == 'string') arr[place] = firstLevel[i][s][1].replace(/\n|\r/g, '');
-	else arr[place] = firstLevel[i][s][1];
+	arr[place] = firstLevel[i][s][1];
   }
-  table.push(arr);
+  for(var a=0; a<arr.length; a++){
+    if(arr[a]) row.push(arr[a]);
+	else row.push('');
+  }
+  table.push(row);
 }
 
 function downloadr(arr2D, filename) {
@@ -45,5 +50,5 @@ function downloadr(arr2D, filename) {
     }, 10);
   }
 }
-downloadr(table.map(el=> el.map(itm=> itm ? itm : '' )),'test.tsv')
-
+var output = table.map(el=> el.map(itm=> str(itm)));
+downloadr(output,'test.tsv');
