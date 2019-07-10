@@ -1,14 +1,67 @@
-var reg = (o, n) => o ? o[n] : '';
-var cn = (o, s) => o ? o.getElementsByClassName(s) : console.log(o);
-var tn = (o, s) => o ? o.getElementsByTagName(s) : console.log(o);
 var gi = (o, s) => o ? o.getElementById(s) : console.log(o);
-var rando = (n) => Math.round(Math.random() * n);
-var delay = (ms) => new Promise(res => setTimeout(res, ms));
-var unq = (arr) => arr.filter((e, p, a) => a.indexOf(e) == p);
-var delay = (ms) => new Promise(res => setTimeout(res, ms));
 var ele = (t) => document.createElement(t);
 var attr = (o, k, v) => o.setAttribute(k, v);
+var unq = (arr) => arr.filter((e, p, a) => a.indexOf(e) == p);
+var delay = (ms) => new Promise(res => setTimeout(res, ms));
 
+function createUploadHTML(){
+
+if(gi(document,'pop_FileUploader')) gi(document,'pop_FileUploader').outerHTML = '';
+
+var popCont = ele("div");
+document.body.appendChild(popCont);
+attr(popCont, "id", "pop_FileUploader");
+attr(popCont, 'style','position: fixed; top: 20%; left: 50%; width: 280px; height: 100px; background: lightgrey; border: 1px solid #616161; border-radius: .5em; padding: 6px; z-index: 12000;');
+
+var closeBtn = ele("div");
+attr(closeBtn, "id", "note_btn_close");
+attr(closeBtn, 'style','background: transparent; width: 15px; height: 15px; transform: scale(1.8, 1.2); border-radius: 1em; padding: 0px; color: Crimson; cursor: pointer');
+popCont.appendChild(closeBtn);
+closeBtn.innerText = "X";
+closeBtn.addEventListener("click", close);
+
+var uploadElm = ele("input");
+attr(uploadElm, "id", "customFileInput");
+attr(uploadElm, "type", "file");
+attr(uploadElm, "name", "file[]");
+attr(uploadElm, "multiple", "true");
+popCont.appendChild(uploadElm);
+uploadElm.style.transform = "scale(1.1, 1.1) translate(5%, 80%)";
+uploadElm.addEventListener("change", handleFiles);
+
+function close() {
+  document.body.removeChild(popCont);
+}
+}
+
+createUploadHTML();
+
+var fileArray = [];
+var textFile = '';
+
+var loadHandleJson = (e) => Array.isArray(JSON.parse(e.target.result)) ? JSON.parse(e.target.result).forEach(i=> fileArray.push(i)) : fileArray.push(JSON.parse(e.target.result));
+var loadHandleText = (e) => textFile = textFile + e.target.result;
+
+async function handleFiles() {
+  var files = this.files;
+  for(var i=0; i<files.length; i++){
+    await getAsText(files[i]);
+  }
+  gi(document,'pop_FileUploader').outerHTML = '';
+  await delay(1000);
+  convertToTSV();
+}
+
+function getAsText(f) {
+  var reader = new FileReader();
+  reader.readAsText(f);
+  if(/\.json/i.test(f.name))
+    reader.onload = loadHandleJson;
+  else
+    reader.onload = loadHandleText;
+}
+
+function convertToTSV(){
 var firstLevel = fileArray.map(el=> Object.entries(el));
 var lens = Math.max(...firstLevel.map(el=> el.length));
 var header = unq(firstLevel.map(el=> el.map(itm=> itm[0])).flat());
@@ -51,4 +104,5 @@ function downloadr(arr2D, filename) {
   }
 }
 var output = table.map(el=> el.map(itm=> str(itm)));
-downloadr(output,'test.tsv');
+downloadr(output,'converted_file.tsv');
+}
