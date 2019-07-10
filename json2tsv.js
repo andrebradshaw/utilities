@@ -1,3 +1,6 @@
+/*
+DEMO: https://youtu.be/eQ-jsCt4eA8
+*/
 var gi = (o, s) => o ? o.getElementById(s) : console.log(o);
 var ele = (t) => document.createElement(t);
 var attr = (o, k, v) => o.setAttribute(k, v);
