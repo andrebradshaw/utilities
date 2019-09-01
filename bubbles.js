@@ -22,8 +22,8 @@ var colors = ['#ff1a0a','#ff430a','#ff6a00','#ffa463','#ffceab','#ffe0ab','#ffc1
     var startPos = 100;
     var startRad = rando(6) / 10;
     var endRad = rando(10) / 10;
-    var x = rando(160);
-    var y = rando(120);
+    var x = rando(180);
+    var y = rando(160);
     var altColor = colors[rando((colors.length-1))];
     var color = `#${genColor(5)}`;
     var time = (rando(20) / 10);
@@ -52,12 +52,12 @@ function resetPos(){
     elm.style.transition = `all ${rando(600)}ms ease-in-out`;
   }
 }
-async function celebrate() {
+function celebrate() {
   if(gi(document,'celebrationParent')) gi(document,'celebrationParent').outerHTML = '';
     var balls = randomBalls();
     var sv = ele('div');
     attr(sv,'id','celebrationParent');
-    attr(sv,'style','position: fixed; z-index: 11111; top: 20%; left: 20%; width: 50%; height: 50%; background: #000; clip-path: circle(30%);');
+    attr(sv,'style','position: fixed; z-index: 11111; top: 20%; left: 20%; width: 500px; height: 500px; background: #000; clip-path: circle(30%);');
     document.body.appendChild(sv);
     sv.innerHTML = `<svg viewBox="0 0 220 220">${balls}</svg>`;
     sv.onclick = resetPos;
