@@ -1,3 +1,7 @@
+//new and simple version. The method below is over engineered
+var parseSearch = (str)=> /\\|\[|\?|\.\+/.test(str) ? str.split(/\s{0,}\band\b\s{0,}/i).map(el=> el.replace(/\s{0,}\bor\b\s{0,}/ig, '|')).map(el=> new RegExp(el,'i')) : str.split(/\s{0,}\band\b\s{0,}/i).map(el=> el.replace(/\s{0,}\bor\b\s{0,}/ig, '|').replace(/"/g,'\\b').replace(/\(/g,'').replace(/\)/g,'')).map(el=> new RegExp(el,'i'));
+var regXall = (x,s) => x.map(el=> el.test(s));
+
 /*
 supports ES5, 
 supports regex in place of string, this is so a user can select a different search type (boolean vs regex), but we still process the search with the same script.
