@@ -1,0 +1,5 @@
+var letterVariants = [
+alpha: "a",
+variants: ["á","Á","à","À","ȧ","Ȧ","â","Â","ä","Ä","ǎ","Ǎ","ă","Ă","ā","Ā","ã","Ã","å","Å","ą","Ą","ⱥ","Ⱥ","ấ","Ấ","ầ","Ầ","ắ","Ắ","ằ","Ằ","ǡ","Ǡ","ǻ","Ǻ","ǟ","Ǟ","ẫ","Ẫ","ẵ","Ẵ","ả","Ả","ȁ","Ȁ","ȃ","Ȃ","ẩ","Ẩ","ẳ","Ẳ","ạ","Ạ","ḁ","Ḁ","ậ","Ậ","ặ","Ặ","æ","Æ","ǽ","Ǽ","ǣ","Ǣ"],
+variants2: [["á",true],["Á",false],["à",true],["À",false],["ȧ",true],["Ȧ",false],["â",true],["Â",false],["ä",true],["Ä",false],["ǎ",true],["Ǎ",false],["ă",true],["Ă",false],["ā",true],["Ā",false],["ã",true],["Ã",false],["å",true],["Å",false],["ą",true],["Ą",false],["ⱥ",true],["Ⱥ",false],["ấ",true],["Ấ",false],["ầ",true],["Ầ",false],["ắ",true],["Ắ",false],["ằ",true],["Ằ",false],["ǡ",true],["Ǡ",false],["ǻ",true],["Ǻ",false],["ǟ",true],["Ǟ",false],["ẫ",true],["Ẫ",false],["ẵ",true],["Ẵ",false],["ả",true],["Ả",false],["ȁ",true],["Ȁ",false],["ȃ",true],["Ȃ",false],["ẩ",true],["Ẩ",false],["ẳ",true],["Ẳ",false],["ạ",true],["Ạ",false],["ḁ",true],["Ḁ",false],["ậ",true],["Ậ",false],["ặ",true],["Ặ",false],["æ",true],["Æ",false],["ǽ",true],["Ǽ",false],["ǣ",true],["Ǣ",false]]
+]
