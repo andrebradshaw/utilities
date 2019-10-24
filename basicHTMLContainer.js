@@ -9,7 +9,7 @@ var ele = (t) => document.createElement(t);
 var attr = (o, k, v) => o.setAttribute(k, v);
 
   function dragElement() {
-    var el = this;
+    var el = this.parentElement;
     var pos1 = 0,
       pos2 = 0,
       pos3 = 0,
