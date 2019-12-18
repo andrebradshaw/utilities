@@ -294,3 +294,11 @@ function getLatinFromSlav(arr,slav){
   return arr.filter(el=> el.slav.some(i=> i == slav)).map(el=> el.latin).flat();
 }
 getLatinFromSlav(slav_latin,'Евгений')
+
+function lookup(table, name){
+	var slav = table.filter(el=> el.slav.some(i=> i==name)) 
+	var latin = table.filter(el=> el.latin.some(i=> i==name)) 
+	if(slav.length) return slav.flat()
+	if(latin.length) return latin.flat()
+}
+
