@@ -1,0 +1,1 @@
+javascript:(function()%7Bfunction%20addSS()%7Bvar%20win%20%3D%20window.location.href%3Bif(%20%2Fyoutu.%7B0%2C1%7Dbe%2F.test(win)%20)%20window.open(win.replace(%2Fyoutu%2F%2C%20'ssyoutu')%2C'_self')%3B%7DaddSS()%7D)()
