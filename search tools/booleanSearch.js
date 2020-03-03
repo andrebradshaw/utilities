@@ -2,11 +2,12 @@ var parseStringAsXset = (str) => str ? regXready(str).split(/\s+\band\b\s+|(?<!\
 var regXready = (str) => str && typeof str == 'string' ? str.replace(/\[/g,'\\W').replace(/\]/g,'\\W').replace(/\{/g,'\\W').replace(/\}/g,'\\W').replace(/\\/g,'\\W').replace(/\//g,'\\W').replace(/\?/g,'\\W').replace(/\+/g,' and ') : '';
 var xrSearch = (search,target) => search.every(x=> x.test(target));
 
-function searchJobsByTitle(file,searchstring){
+function searchJobsByNamedObj(records,obj_name,searchstring){
   var xarr = parseStringAsXset(searchstring);
   if(xarr){
-    return file.filter( record=> record.jobs.length && record.jobs.some( j=> xrSearch(xarr,j.job_title) ) );
+    return records.filter( record=> record.jobs.length && record.jobs.some( j=> xrSearch(xarr,j[obj_name]) ) );
   }else{return false}
 }
 
-searchJobsByTitle(fileArray,'Talent Acquisition OR recruiter OR sourcer')
+
+searchJobsByNamedObj(fileArray,'job_title','Talent Acquisition OR recruiter OR sourcer')
