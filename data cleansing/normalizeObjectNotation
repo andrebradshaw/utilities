@@ -1,6 +1,6 @@
- function normalizeObjectNotation(key){
-  return key && typeof key == 'string' && /[A-Z]/.test(key) && /\s+/.test(key) == false
+function normalizeObjectNotation(key){
+  return key && typeof key == 'string' && /[A-Z]/.test(key) && /\W+/.test(key) == false
   ? key.trim().split(/(?=[A-Z])/).reduce((a,b)=> a+'_'+b).replace(/^\d+/, '').toLowerCase() 
-  : key && typeof key == 'string' ? key.trim().replace(/\s+/g, '_').replace(/^\d+/, '').toLowerCase() 
+  : key && typeof key == 'string' ? key.trim().replace(/\W+/g, '_').replace(/^\d+/, '').toLowerCase() 
   : 'failed_object';
 }
