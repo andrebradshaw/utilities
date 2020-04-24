@@ -1,4 +1,3 @@
-
 async function handleFetch(url,params_obj,type){ //all arguments are required
   if(params_obj && url){
     var res = await fetch(url,params_obj).catch(err=> { console.log([err,url,params_obj]); return false });
@@ -24,7 +23,7 @@ async function handleFetch(url,params_obj,type){ //all arguments are required
         return false; 
       }
     }
-    if(res.status > 499) {
+    if(res.status > 499 && res.status < 900) {
       await delay(3110);
       var res = await fetch(url,params_obj).catch(err=> { console.log([err,url,params_obj]); return false });
       if(res.status > 199 && res.status < 300){
@@ -38,5 +37,9 @@ async function handleFetch(url,params_obj,type){ //all arguments are required
         return false; 
       }
     }
-  }
+    if(res.status > 899) {
+      console.log('you have been logged out');
+      return {download_now: true};
+    }
+  } else {return false;}
 }
