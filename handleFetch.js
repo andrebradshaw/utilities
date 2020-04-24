@@ -20,7 +20,7 @@ async function handleFetch(url,params_obj,type){ //all arguments are required
         }
         return d;
       }else{
-        return false; 
+        return {download_now: true, status: res.status};
       }
     }
     if(res.status > 499 && res.status < 900) {
@@ -34,12 +34,12 @@ async function handleFetch(url,params_obj,type){ //all arguments are required
         }
         return d;
       }else{
-        return false; 
+        return {download_now: true, status: res.status};
       }
     }
     if(res.status > 899) {
       console.log('you have been logged out');
-      return {download_now: true};
+      return {download_now: true, status: res.status};
     }
   } else {return false;}
 }
