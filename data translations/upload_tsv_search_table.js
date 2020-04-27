@@ -12,6 +12,13 @@ var lastName = (s) => reg(/\S+$/.exec(s.replace(/\s*\(.+?\)\s*/g,'').replace(/\W
 var a = (l, r) => r.forEach(a => attr(l, a[0], a[1]));
 
 var unqHsh = (a, o) => a.filter(i => o.hasOwnProperty(i) ? false : (o[i] = true));
+function styleFromJson(jcss,elm){
+  var styleArr = Object.entries(jcss);
+  styleArr.forEach(s=> {
+    var key = s[0].replace(/_\w/g, s=> s.charAt(1).toUpperCase());
+    elm.style[key] = s[1];
+  });
+}
 
 var svgs = {
     close: `<svg x="0px" y="0px" viewBox="0 0 100 100"><g style="transform: scale(0.85, 0.85)" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(2, 2)" stroke="#e21212" stroke-width="8"><path d="M47.806834,19.6743435 L47.806834,77.2743435" transform="translate(49, 50) rotate(225) translate(-49, -50) "/><path d="M76.6237986,48.48 L19.0237986,48.48" transform="translate(49, 50) rotate(225) translate(-49, -50) "/></g></g></svg>`,
@@ -73,13 +80,13 @@ function dragElement() {
   }
 }
 
-var cont_id = `pop_upload_container_${new Date().getTime()}`;
+var cont_id = `pop_upload_container`;
 function createUploadHTML(){
 
   if(gi(document,cont_id)) gi(document,cont_id).outerHTML = '';
   var rect = document.body.getBoundingClientRect();
   var cont = ele('div');
-  a(cont,[['id',cont_id],['style', `padding: 0; position: fixed; top: ${rect.top+50}px; left: ${rect.left+100}px; z-index: ${new Date().getTime()}; width: 330px; border: 1px solid #004471; border-radius: 0.4em; background: #052533;`]]);
+  a(cont,[['id',cont_id],['style', `padding: 0; position: fixed; top: ${rect.top+50}px; left: ${rect.left+1}px; z-index: ${new Date().getTime()}; width: 330px; border: 1px solid #004471; border-radius: 0.4em; background: #052533;`]]);
   document.body.appendChild(cont);
 
   var head = ele('div');
@@ -88,7 +95,7 @@ function createUploadHTML(){
   head.onmouseover = dragElement;
 
   var txt = ele('div');
-  a(txt, [['style', `color: #fff; font-size: 1.3em; border-radius: 0.5em; padding: 4px;`]]);
+  a(txt, [['id',cont_id+'_headertext'],['style', `color: #fff; font-size: 1.3em; border-radius: 0.5em; padding: 4px;`]]);
   head.appendChild(txt);
   txt.innerText = 'Upload Files';
 
@@ -101,7 +108,7 @@ function createUploadHTML(){
   cls.onclick = () => cont.outerHTML = '';
 
   var cbod = ele('div');
-  a(cbod,[['style',`max-height: 440px; overflow-y: auto; color: #f1f1f1; padding: 8px;`]]);
+  a(cbod,[['id',cont_id+'_cbod'],['style',`max-height: ${window.innerHeight*.9}px; overflow-y: auto; color: #f1f1f1; padding: 8px;`]]);
   cont.appendChild(cbod);
 
   var uploadElm = ele("input");
@@ -118,7 +125,7 @@ var textFile = '';
 var jsonArr = [];
 var tableArr = [];
 
-function tsv2JSON(tsvfile,iteration,total){
+function tsv2JSON(tsvfile,obj){
   var tsvTo2dArr = (tsv) => tsv.split(/[\r\n]+/).map(itm => itm.split(/\t/));
   var table = tsvTo2dArr(tsvfile);
   table.forEach(el=> {
@@ -131,8 +138,8 @@ function tsv2JSON(tsvfile,iteration,total){
   });
   jsonArr.shift();
   console.log(jsonArr);
-  if(iteration == (total-1)){
-    createTableView(jsonArr);
+  if(obj.iteration == (obj.total-1)){
+    createTableView(obj);
   }
 }
 
@@ -155,12 +162,44 @@ async function getAsText(f,iteration,total) {
     reader.onload = loadHandleJson;
   if(/\.tsv/i.test(f.name))
     reader.onload = (e) => {
-      tsv2JSON(e.target.result,iteration,total);
+      tsv2JSON(e.target.result,{iteration: iteration,total: total, filename: f.name});
     };
   return true;
 }
 
-function createTableView(jdatArr){
-  var header = unqHsh(jdatArr.map(r=> Object.entries(r).map(kv=> kv[0])).flat(),{});
+function createTableView(obj){
+  var header = unqHsh(jsonArr.map(r=> Object.entries(r).map(kv=> kv[0])).flat(),{});
   console.log(header);
+  var cont = gi(document,cont_id);
+  cont.style.width = `${window.innerWidth * .99}px`;
+  gi(document,cont_id+'_headertext').innerText = obj.filename;
+ 
+  var cbod = gi(document,cont_id+'_cbod');
+  cbod.innerHTML = '';
+  styleFromJson({display: 'grid', grid_template_columns: '1fr 1fr', grid_gap: '10px'},cbod);
+  
+  var searchPanel = ele('div');
+  a(searchPanel,[['search_panel'],['style',`display: grid; grid-template-rows: auto; grid-gap: 10px;`]]);
+  cbod.appendChild(searchPanel);
+  
+//   var left_p = ele('div')
+  header.forEach(h=> {
+    var itm = ele('div');
+    a(itm,[['class','search_item'],['style',`display: grid; grid-template-columns: 22px 22px 1fr; grid-gap: 4px;`]]);
+    searchPanel.appendChild(itm);
+    
+    var x1 = ele('div');
+    x1.innerText = '-';
+    itm.appendChild(x1);
+
+    var x2 = ele('div');
+    x2.innerText = '+';
+    itm.appendChild(x2);
+
+    var xinp = ele('input');
+    a(xinp,[['placeholder',h],['style',`padding: 6px; border: 1px solid transparent; border-radius: 0.4em; `]]);
+    itm.appendChild(xinp);
+
+    
+  })
 }
