@@ -1,7 +1,7 @@
 var reg = (o, n) => o ? o[n] : '';
-var cn = (o, s) => o ? o.getElementsByClassName(s) : console.log(o);
-var tn = (o, s) => o ? o.getElementsByTagName(s) : console.log(o);
-var gi = (o, s) => o ? o.getElementById(s) : console.log(o);
+var cn = (o, s) => o ? o.getElementsByClassName(s) : [];
+var tn = (o, s) => o ? o.getElementsByTagName(s) : [];
+var gi = (o, s) => o ? o.getElementById(s) : null;
 
 var ele = (t) => document.createElement(t);
 var attr = (o, k, v) => o.setAttribute(k, v);
