@@ -1,3 +1,14 @@
+var reg = (o, n) => o ? o[n] : '';
+var cn = (o, s) => o ? o.getElementsByClassName(s) : false;
+var tn = (o, s) => o ? o.getElementsByTagName(s) : false;
+var gi = (o, s) => o ? o.getElementById(s) : false;
+var rando = (n) => Math.round(Math.random() * n);
+
+var delay = (ms) => new Promise(res => setTimeout(res, ms));
+var ele = (t) => document.createElement(t); //shorthand to create a new element.
+var attr = (o, k, v) => o.setAttribute(k, v); //this is shorthand to assign an attribute key value pair to an element
+var a = (l, r) => r.forEach(a => attr(l, a[0], a[1])); //this is used to assign an array of attributes to an element
+
 
 var svgs = {
     close: `<svg x="0px" y="0px" viewBox="0 0 100 100"><g style="transform: scale(0.85, 0.85)" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(2, 2)" stroke="#e21212" stroke-width="8"><path d="M47.806834,19.6743435 L47.806834,77.2743435" transform="translate(49, 50) rotate(225) translate(-49, -50) "/><path d="M76.6237986,48.48 L19.0237986,48.48" transform="translate(49, 50) rotate(225) translate(-49, -50) "/></g></g></svg>`,
@@ -86,4 +97,4 @@ var svgs = {
     a(cbod,[['style',`background: #0a1114; display: grid; grid-template-rows: auto; grid-gap: 6px; padding: 2px; max-height: ${(screen.availHeight*0.75)}px; overflow-y: auto;`]]);
     cont.appendChild(cbod);
 }  
-// createUploadHTML();
+createUploadHTML();
