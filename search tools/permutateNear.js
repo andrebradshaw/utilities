@@ -23,4 +23,4 @@ function permutateNear(str,joiner){
   }
 }
 
-fuzzyWuzzy('word~next~other','.{0,5}')
+permutateNear('word~next~other','.{0,5}')
