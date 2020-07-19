@@ -9,11 +9,10 @@ var parseStringAsXset = (s) => s
             .replace(/\*/g,'\\w*')
             .replace(/\*\*\*/g,'.{0,60}'))
                 .reduce((a,b)=> a+'|'+b)).filter(el=> el);
-//.map(el=> new RegExp(el,'i'));
 
 function permutateNear(input,joiner){
   var nearx = /(?<=\|)\S+?(?=\||$)/g;
-  var fractal = input.replace(nearx, '').replace(/[\|]+/g, '|');
+  var base = input.replace(nearx, '').replace(/[\|]+/g, '|');
   var near_or = input.match(nearx) ? input.match(nearx).map(str=> {
     var arr = str.split(/~/);
     if(arr.length > 5){
@@ -38,14 +37,14 @@ function permutateNear(input,joiner){
       return containArr.reduce((a,b)=> a+'|'+b);
     }
   }).flat().reduce((a,b)=> a+'|'+b) : '';
-  return fractal + near_or;
+  return base + near_or;
 }
 
-function buildSearch(str){
-
+function buildSearchSer(str){
   var set = parseStringAsXset(str);
-  var xset = set.map(r=> permutateNear(r,'.{0,6}')).map(r=> new RegExp(r,'i'));
+  var xset = set.map(r=> permutateNear(r,'.{0,3}')).map(r=> new RegExp(r,'i'));
   console.log(xset);
+  return xset;
 }
 
-buildSearch(`("test this" or run that )  and run the jewels  (one OR "two person"~hat~frog four OR director~engineer)`)
+buildSearchSet(`("test * this" or run that )  and run the jewels  (one OR "two person"~hat~frog four OR director~*~engineer)`)
