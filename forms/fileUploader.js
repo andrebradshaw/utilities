@@ -69,11 +69,35 @@ var svgs = {
     close: `<svg x="0px" y="0px" viewBox="0 0 100 100"><g style="transform: scale(0.85, 0.85)" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(2, 2)" stroke="#e21212" stroke-width="8"><path d="M47.806834,19.6743435 L47.806834,77.2743435" transform="translate(49, 50) rotate(225) translate(-49, -50) "/><path d="M76.6237986,48.48 L19.0237986,48.48" transform="translate(49, 50) rotate(225) translate(-49, -50) "/></g></g></svg>`,
 }; 
 
+function createLoadingLines(len){
+  var html_ = `<svg version="1.1" x="0px" y="0px" width="500px" height="200px" style="enable-background:new 0 0 50 50;">`;
+  for(var i=0; i<len; i=i+0.14){
+    html_ = html_ + `<rect x="${(i*120)}" y="18" width="16" height="80" fill="rgb(0, ${Math.ceil(181-(i*80))}, 112)" opacity="0.0">
+      <animate attributeName="opacity" values="0.0; 0.3; 1; 0.3; 0.0" begin="${i}s" dur="0.96s" repeatCount="indefinite" />
+      <animate attributeName="height" values="80; 106; 80" begin="${i}s" dur="0.96s" repeatCount="indefinite" />
+      <animate attributeName="y" values="18; 5; 18" begin="${i}s" dur="0.96s" repeatCount="indefinite" />
+      <animate attributeName="fill" values="rgb(0, ${Math.ceil(181-(i*80))}, 112); rgb(0, 181, 112); rgb(0, ${Math.ceil(181-(i*80))}, 112);" begin="0s" dur="0.96s" repeatCount="indefinite" />
+    </rect>`
+  }
+  return html_ + '</svg>';
+}
+function loadingElm(ref) {
+  if(document.getElementById('loading_element')) document.getElementById('loading_element').outerHTML = '';
+  var rect = ref.getBoundingClientRect();
+  var loaD = document.createElement("div");
+  loaD.setAttribute("id", "loading_element");
+  document.body.appendChild(loaD);
+  loaD.style.top = `${rect.top+25}px`;
+  loaD.style.left = `${rect.left+5}px`;
+  loaD.style.position = "fixed";
+  loaD.style.zIndex = new Date().getTime();
+  loaD.innerHTML = createLoadingLines(1);
+}
+
 function createUploadHTML(){
   if(gi(document,'test_container')) gi(document,'test_container').outerHTML = '';
-
   var cont = ele('div');
-  a(cont,[['id','test_container'],['style', `position: fixed; top: 100px; left: 100px; z-index: ${new Date().getTime()}; width: 500px; border: 1px solid #0a1114; border-radius: 0.45em; background: #FFF;`]]);
+  a(cont,[['id','test_container'],['style', `position: fixed; top: 200px; left: 120px; z-index: ${new Date().getTime()}; width: 300px; border: 1px solid #0a1114; border-radius: 0.45em; background: #FFF;`]]);
   document.body.appendChild(cont);
 
   var head = ele('div');
@@ -90,45 +114,20 @@ function createUploadHTML(){
   a(cls, [['style', `width: 27px; height: 27px; cursor: pointer;`]]);
   head.appendChild(cls);
   cls.innerHTML = svgs.close;
+  cls.onmouseenter = aninCloseBtn;
+  cls.onmouseleave = anoutCloseBtn;
   cls.onclick = () => cont.outerHTML = '';
 
   var cbod = ele('div');
   a(cbod,[['style',`max-height: 440px; overflow-y: auto;`]]);
   cont.appendChild(cbod);
-     var uploadElm = ele('input');
-    a(uploadElm, [['id', 'customFileInput'],['type', 'file'],['name', 'file[]']]);
-    attr(uploadElm, "multiple", "true");
-    popCont.appendChild(uploadElm);
-//    uploadElm.style.transform = 'scale(1.1, 1.1) translate(5%, 80%)';
-    uploadElm.addEventListener("change", handleFiles);
+    
+  var upload = ele('input');
+  a(upload, [['id', 'customFileInput'],['type', 'file'],['name', 'file[]'],['multiple', 'true']]);
+  cbod.appendChild(upload);
+  upload.addEventListener("change", handleFiles);
 
 }
-
-
-//   function createUploadHTML() {
-//     if (gi(document, 'pop_FileUploader')) gi(document, 'pop_FileUploader').outerHTML = '';
-//     //var rect = this.getBoundingClientRect();
-//     var rect = {top: 100, bottom: 110, left: 100};
-//     var popCont = ele('div');
-//     document.body.appendChild(popCont);
-//     a(popCont, [['id', 'pop_FileUploader'],['style', `position: fixed; top: ${rect.bottom}px; left: ${rect.left}; width: 280px; height: 100px; background: #f1f1f1; border: 1px solid #616161; border-radius: 0.4em; padding: 6px; z-index: ${new Date().getTime()};`]]);
-
-//     var closeBtn = ele('div');
-//     a(closeBtn, [['id', 'note_btn_close'],['style', `background: transparent; width: 30px; height: 30px; border-radius: 1em; cursor: pointer; float: right;`]]);
-//     popCont.appendChild(closeBtn);
-//     closeBtn.innerHTML = '<svg x="0px" y="0px" viewBox="0 0 100 100"><g style="transform: scale(0.85, 0.85)" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(2, 2)" stroke="#e21212" stroke-width="8"><path d="M47.806834,19.6743435 L47.806834,77.2743435" transform="translate(49, 50) rotate(225) translate(-49, -50) "/><path d="M76.6237986,48.48 L19.0237986,48.48" transform="translate(49, 50) rotate(225) translate(-49, -50) "/></g></g></svg>';
-//     closeBtn.onclick = ()=> popCont.outerHTML = '';
-//     closeBtn.onmouseenter = aninCloseBtn;
-//     closeBtn.onmouseleave = anoutCloseBtn;
-
-//     var uploadElm = ele('input');
-//     a(uploadElm, [['id', 'customFileInput'],['type', 'file'],['name', 'file[]']]);
-//     attr(uploadElm, "multiple", "true");
-//     popCont.appendChild(uploadElm);
-// //    uploadElm.style.transform = 'scale(1.1, 1.1) translate(5%, 80%)';
-//     uploadElm.addEventListener("change", handleFiles);
-
-//   }
 
 async function parseURI(d){
   var reader = new FileReader();
@@ -144,9 +143,14 @@ async function handleFiles(){
     blob_arr.push(uri);
   }
   console.log(blob_arr)
+  processFilesInAppsScript(this.parentElement,blob_arr);
 }
-//     function createUploadResumeHTML(){
+
+function processFilesInAppsScript(ref,blobs){
+  loadingElm(ref)
+  google.script.run.withSuccessHandler(res=> {
     
-//     }
+  })
+}
 
 createUploadHTML()
