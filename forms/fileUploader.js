@@ -29,23 +29,17 @@
     }
     
 
-
-
 function dragElement() {
   var el = this.parentElement;
-
   var pos1 = 0,    pos2 = 0,    pos3 = 0,    pos4 = 0;
-
   if (document.getElementById(this.id)) document.getElementById(this.id).onmousedown = dragMouseDown;
   else this.onmousedown = dragMouseDown;
-
   function dragMouseDown(e) {
     pos3 = e.clientX;
     pos4 = e.clientY;
     document.onmouseup = closeDragElement;
     document.onmousemove = elementDrag;
   }
-
   function elementDrag(e) {
     pos1 = pos3 - e.clientX;
     pos2 = pos4 - e.clientY;
@@ -56,14 +50,12 @@ function dragElement() {
     el.style.opacity = "0.85";
     el.style.transition = "opacity 700ms";
   }
-
   function closeDragElement() {
     document.onmouseup = null;
     document.onmousemove = null;
     el.style.opacity = "1";
   }
 }
-
 
 var svgs = {
     close: `<svg x="0px" y="0px" viewBox="0 0 100 100"><g style="transform: scale(0.85, 0.85)" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(2, 2)" stroke="#e21212" stroke-width="8"><path d="M47.806834,19.6743435 L47.806834,77.2743435" transform="translate(49, 50) rotate(225) translate(-49, -50) "/><path d="M76.6237986,48.48 L19.0237986,48.48" transform="translate(49, 50) rotate(225) translate(-49, -50) "/></g></g></svg>`,
@@ -84,20 +76,18 @@ function createLoadingLines(len){
 function loadingElm(ref) {
   if(document.getElementById('loading_element')) document.getElementById('loading_element').outerHTML = '';
   var rect = ref.getBoundingClientRect();
-  var loaD = document.createElement("div");
-  loaD.setAttribute("id", "loading_element");
+  var loaD = ele('div');
+  a(loaD,[['id', 'loading_element'],['style',`position: fixed;  top: ${rect.top+25}px; left: ${rect.left+5}px; z-index: ${new Date().getTime()};`]]);
   document.body.appendChild(loaD);
-  loaD.style.top = `${rect.top+25}px`;
-  loaD.style.left = `${rect.left+5}px`;
-  loaD.style.position = "fixed";
-  loaD.style.zIndex = new Date().getTime();
   loaD.innerHTML = createLoadingLines(1);
 }
+function killLoader(){if(document.getElementById('loading_element')) document.getElementById('loading_element').outerHTML = '';}
 
 function createUploadHTML(){
-  if(gi(document,'test_container')) gi(document,'test_container').outerHTML = '';
+  var cont_id = 'upload_container';
+  if(gi(document,cont_id)) gi(document,cont_id).outerHTML = '';
   var cont = ele('div');
-  a(cont,[['id','test_container'],['style', `position: fixed; top: 200px; left: 120px; z-index: ${new Date().getTime()}; width: 300px; border: 1px solid #0a1114; border-radius: 0.45em; background: #FFF;`]]);
+  a(cont,[['id',cont_id],['style', `position: fixed; top: 200px; left: 120px; z-index: ${new Date().getTime()}; width: 300px; border: 1px solid #0a1114; border-radius: 0.45em; background: #FFF;`]]);
   document.body.appendChild(cont);
 
   var head = ele('div');
@@ -149,7 +139,8 @@ async function handleFiles(){
 function processFilesInAppsScript(ref,blobs){
   loadingElm(ref)
   google.script.run.withSuccessHandler(res=> {
-    
+    killLoader();
+    // TODO display results
   })
 }
 
