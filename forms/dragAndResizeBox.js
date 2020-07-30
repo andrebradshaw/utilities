@@ -43,7 +43,9 @@ function adjustHorizontal(){
   var el = this.parentElement.parentElement;
   var pos1 = 0,    pos2 = 0,    pos3 = 0,    pos4 = 0;
   var width = parseFloat(el.style.width.replace(/px/,''));
+  var height = parseFloat(el.getBoundingClientRect().height);
   console.log(width);
+  console.log(height);
   if (document.getElementById(this.id)) document.getElementById(this.id).onmousedown = dragMouseDown;
   else this.onmousedown = dragMouseDown;
 
@@ -56,13 +58,16 @@ function adjustHorizontal(){
   }
 
   function elementDrag(e) {
-
     var ref = gi(document,'main_body_');
     el.style.width = width - (pos3 - e.clientX) + 'px';
     ref.style.width = width - (pos3 - e.clientX) + 'px';
+
+    el.style.height = height - (pos4 - e.clientY) + 'px';
+    ref.style.height = height - (pos4 - e.clientY) + 'px';
+
     var rect = ref.getBoundingClientRect();
-    var edge = 1;
-    a(ref,[['style',`display: grid; grid-template-columns: ${edge}px ${(rect.width - (edge*2))}px ${edge}px;`]]);
+    var edge = 5;
+    a(ref,[['style',`display: grid; grid-template-columns: ${(rect.width - edge)}px ${edge}px;`]]);
     el.style.opacity = "0.85";
     el.style.transition = "opacity 700ms";
   }
@@ -73,10 +78,6 @@ function adjustHorizontal(){
     el.style.opacity = "1";
   }
 
-  function updateGrid(ref){
-
-
-  }
 }
 
 
@@ -109,28 +110,34 @@ function testHTML(){
   cls.onclick = () => cont.outerHTML = '';
 
   var cont_rect = cont.getBoundingClientRect();
-  var edge = 1;
+  var edge = 5;
 
   var mainbod = ele('div');
-  a(mainbod,[['id','main_body_'],['style',`display: grid; grid-template-columns: ${edge}px ${(cont_rect.width - (edge*2))}px ${edge}px;`]]);
+  a(mainbod,[['id','main_body_'],['style',`display: grid; grid-template-columns: ${(cont_rect.width - edge)}px ${edge}px;`]]);
   cont.appendChild(mainbod);
 
-  var leftedge = ele('div');
-  a(leftedge,[['style',`background: #43de6d; cursor: e-resize;`]]);
-  mainbod.appendChild(leftedge);
-  leftedge.onmouseover = adjustHorizontal;
-  
   var cbod = ele('div');
-  a(cbod,[['style',`background: #c1c1d1;`]]);
+  a(cbod,[['style',`height: 100%; background: #c1c1d1;`]]);
   mainbod.appendChild(cbod);
   cbod.innerHTML = `TESTING<br>one<br>two<br>three<br>four`;
 
   var rightedge = ele('div');
   a(rightedge,[['style',`background: #43de6d; cursor: e-resize;`]]);
   mainbod.appendChild(rightedge);
-  rightedge.onmouseover = adjustHorizontal;
+//   rightedge.onmouseover = adjustHorizontal;
   
+  var footer = ele('div');
+  a(footer, [['style', `display: grid; grid-template-columns: ${(cont_rect.width - edge)}px ${edge}px; background: #0a1114;`]]);
+  cont.appendChild(footer);
   
+  var footertext = ele('div');
+  footer.appendChild(footertext);
+  footertext.innerText = 'test';
+  
+  var resizer = ele('div');
+  a(resizer, [['style', `background: #43de6d; cursor: nw-resize;`]]);
+  footer.appendChild(resizer);
+  resizer.onmouseover = adjustHorizontal;
 }
 
 testHTML()
