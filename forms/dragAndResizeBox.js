@@ -75,7 +75,7 @@ function adjustElementSize(){
     cbod.style.height = `${(height - (pos4 - e.clientY))-(head_height+foot_height)}px`;
     cbod.style.width = `${(width - (pos3 - e.clientX))-(head_height+foot_height)}px;`;
 
-    a(foot, [['style', `display: grid; grid-template-columns: ${(rect.width - (edge+3))}px ${edge}px; background: #0a1114; border: 1.6px solid #0a1114; border-bottom-left-radius: 0.4em; border-bottom-right-radius: 0.4em;`]]);
+    a(foot, [['style', `display: grid; grid-template-columns: ${(rect.width - (edge+3))}px ${edge}px; background: #0a1114; border: 1.6px solid #0a1114; border-bottom-left-radius: 0.4em; border-bottom-right-radius: 0.4em; height: ${edge+4}px;`]]);
     cont.style.opacity = "0.85";
     cont.style.transition = "opacity 700ms";
   }
@@ -120,7 +120,7 @@ function testHTML(){
   txt.innerText = 'Test Header';
 
   var cls = ele('div');
-  a(cls, [['style', `width: 27px; height: 27px; cursor: pointer;`]]);
+  a(cls, [['style', `width: 29px; height: 29px; cursor: pointer;`]]);
   head.appendChild(cls);
   cls.innerHTML = svgs.close;
   cls.onclick = () => cont.outerHTML = '';
@@ -133,12 +133,12 @@ function testHTML(){
   cont.appendChild(mainbod);
 
   var cbod = ele('div');
-  a(cbod,[['id','content_body_'],['style',`background: #c1c1d1;`]]);
+  a(cbod,[['id','content_body_'],['style',`background: #c1c1d1; padding: 8px;`]]);
   mainbod.appendChild(cbod);
   cbod.innerHTML = `This element would be where you would house the entirety of your content. <br>Changing any other elements would cause the resizing to break.`;
   
   var footer = ele('div');
-  a(footer, [['style', `display: grid; grid-template-columns: ${(cont_rect.width - (edge+3))}px ${edge}px; background: #0a1114; border: 1.6px solid #0a1114; border-bottom-left-radius: 0.4em; border-bottom-right-radius: 0.4em;`]]);
+  a(footer, [['style', `display: grid; grid-template-columns: ${(cont_rect.width - (edge+3))}px ${edge}px; background: #0a1114; border: 1.6px solid #0a1114; border-bottom-left-radius: 0.4em; border-bottom-right-radius: 0.4em; height: ${edge+4}px;`]]);
   mainbod.appendChild(footer);
   
   var footertext = ele('div');
