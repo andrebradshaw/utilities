@@ -10,9 +10,9 @@ function aninCloseBtn() {
   var l1 = tn(this, 'path')[0];
   var l2 = tn(this, 'path')[1];
   l1.style.transform = "translate(49px, 50px) rotate(45deg) translate(-49px, -50px)";
-  l1.style.transition = "all 1033ms";
+  l1.style.transition = "all 833ms";
   l2.style.transform = "translate(49px, 50px) rotate(135deg) translate(-49px, -50px)";
-  l2.style.transition = "all 433ms";
+  l2.style.transition = "all 333ms";
 }
 
 function anoutCloseBtn() {
@@ -55,7 +55,7 @@ function dragElement() {
 function adjustElementSize(){
   var cont = this.parentElement.parentElement.parentElement;
   var main = this.parentElement.parentElement;
-  var cbod = gi(document,'content_body_');
+  var cbod = main.firstChild;
   var foot = this.parentElement;
   var head_height = cont.firstChild.getBoundingClientRect().height;
   var foot_height = foot.getBoundingClientRect().height;
@@ -105,6 +105,13 @@ var svgs = {
 <path d="M8088 1922 l-1478 -1477 0 -45 c0 -44 1 -45 178 -222 177 -178 178 -178 222 -178 l45 0 1472 1473 1473 1472 0 55 0 56 -173 172 c-172 171 -174 172 -218 172 l-44 0 -1477 -1478z"/>
 </g>
 </svg>`,
+    resize_hover: `<svg xmlns="http://www.w3.org/2000/svg" version="1.0" viewBox="0 0 1000.000000 1000.000000" preserveAspectRatio="xMidYMid meet">
+<g transform="translate(0.000000,1000.000000) scale(0.100000,-0.100000)" fill="#43de6d" stroke="none">
+<path d="M5318 4622 l-3798 -3797 0 -59 0 -60 312 -314 c172 -172 325 -320 340 -328 15 -8 49 -14 75 -14 l48 0 3797 3798 3798 3797 0 59 0 60 -312 314 c-172 172 -325 320 -340 328 -15 8 -49 14 -75 14 l-48 0 -3797 -3798z"/>
+<path d="M6763 3147 l-2483 -2482 0 -50 0 -49 268 -268 268 -268 49 0 50 0 2482 2483 2483 2482 0 50 0 49 -268 268 -268 268 -49 0 -50 0 -2482 -2483z"/>
+<path d="M8058 1902 l-1268 -1267 0 -50 0 -50 248 -247 247 -248 50 0 50 0 1267 1268 1268 1267 0 50 0 50 -248 247 -247 248 -50 0 -50 0 -1267 -1268z"/>
+</g>
+</svg>`,
 }; 
 
 function testHTML(){
@@ -137,11 +144,10 @@ function testHTML(){
   var edge = 15;
 
   var mainbod = ele('div');
-  a(mainbod,[['id','main_body_']]);
   cont.appendChild(mainbod);
 
   var cbod = ele('div');
-  a(cbod,[['id','content_body_'],['style',`background: ${cbod_bg_color}; padding: 8px;`]]);
+  a(cbod,[['style',`background: ${cbod_bg_color}; padding: 8px;`]]);
   mainbod.appendChild(cbod);
   cbod.innerHTML = `This element would be where you would house the entirety of your content. <br>Changing any other elements would cause the resizing to break.`;
   
@@ -155,7 +161,7 @@ function testHTML(){
   var resizer = ele('div');
   a(resizer, [['style', `background: transparent; cursor: nw-resize; text-align: left; border-radius: 0.4em;`]]);
   footer.appendChild(resizer);
-  resizer.innerHTML = svgs.resize;
+  resizer.innerHTML = svgs.resize_hover;
   resizer.onmouseover = adjustElementSize;
 }
 
