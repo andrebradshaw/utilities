@@ -1,79 +1,144 @@
-var reg = (o, n) => o ? o[n] : '';
-var cn = (o, s) => o ? o.getElementsByClassName(s) : null;
-var tn = (o, s) => o ? o.getElementsByTagName(s) : null;
-var gi = (o, s) => o ? o.getElementById(s) : null;
-var rando = (n) => Math.round(Math.random() * n);
-var unq = (arr) => arr.filter((e, p, a) => a.indexOf(e) == p);
-var delay = (ms) => new Promise(res => setTimeout(res, ms));
-var ele = (t) => document.createElement(t);
-var attr = (o, k, v) => o.setAttribute(k, v);
-var a = (l, r) => r.forEach(a => attr(l, a[0], a[1]));
-var reChar = (s) => s?.match(/&#.+?;/g) && s.match(/&#.+?;/g).length > 0 ? s.match(/&#.+?;/g).map(el=> [el,String.fromCharCode(/d+/.exec(el)[0])]).map(m=> s = s.replace(new RegExp(m[0], 'i'), m[1])).pop() : s;
-var unqHsh = (a,o) => a.filter(i=> o.hasOwnProperty(i) ? false : (o[i] = true));
+  var reg = (o, n) => o ? o[n] : '';
+    var cn = (o, s) => o ? o.getElementsByClassName(s) : null;
+    var tn = (o, s) => o ? o.getElementsByTagName(s) : null;
+    var gi = (o, s) => o ? o.getElementById(s) : null;
+    var rando = (n) => Math.round(Math.random() * n);
+    var unq = (arr) => arr.filter((e, p, a) => a.indexOf(e) == p);
+    var delay = (ms) => new Promise(res => setTimeout(res, ms));
+    var ele = (t) => document.createElement(t);
+    var attr = (o, k, v) => o.setAttribute(k, v);
+    var a = (l, r) => r.forEach(a => attr(l, a[0], a[1]));
 
-function dropDownHTML(obj){
-  var rgb = {r:219, g:213, b:245, change: 1};
-  
-  var { ref, items, id } = obj;
-  if(gi(document,id)) gi(document,id).outerHTML = '';
+    function aninCloseBtn() {
+      var l1 = tn(this, 'path')[0];
+      var l2 = tn(this, 'path')[1];
+      l1.style.transform = "translate(49px, 50px) rotate(45deg) translate(-49px, -50px)";
+      l1.style.transition = "all 233ms";
+      l2.style.transform = "translate(49px, 50px) rotate(135deg) translate(-49px, -50px)";
+      l2.style.transition = "all 233ms";
+    }
+
+function anoutCloseBtn() {
+      var l1 = tn(this, 'path')[0];
+      var l2 = tn(this, 'path')[1];
+      l1.style.transform = "translate(49px, 50px) rotate(225deg) translate(-49px, -50px)";
+      l1.style.transition = "all 233ms";
+      l2.style.transform = "translate(49px, 50px) rotate(225deg) translate(-49px, -50px)";
+      l2.style.transition = "all 233ms";
+    }
+
+function dragElement() {
+  var el = this.parentElement;
+  var pos1 = 0,    pos2 = 0,    pos3 = 0,    pos4 = 0;
+  if (document.getElementById(this.id)) document.getElementById(this.id).onmousedown = dragMouseDown;
+  else this.onmousedown = dragMouseDown;
+  function dragMouseDown(e) {
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    document.onmousemove = elementDrag;
+  }
+  function elementDrag(e) {
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    el.style.top = (el.offsetTop - pos2) + "px";
+    el.style.left = (el.offsetLeft - pos1) + "px";
+    el.style.opacity = "0.85";
+    el.style.transition = "opacity 700ms";
+  }
+  function closeDragElement() {
+    document.onmouseup = null;
+    document.onmousemove = null;
+    el.style.opacity = "1";
+  }
+}
+var svgs = {
+    close: `<svg x="0px" y="0px" viewBox="0 0 100 100"><g style="transform: scale(0.85, 0.85)" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(2, 2)" stroke="#e21212" stroke-width="8"><path d="M47.806834,19.6743435 L47.806834,77.2743435" transform="translate(49, 50) rotate(225) translate(-49, -50) "/><path d="M76.6237986,48.48 L19.0237986,48.48" transform="translate(49, 50) rotate(225) translate(-49, -50) "/></g></g></svg>`,
+}; 
+function createLoadingLines(len){
+  var html_ = `<svg version="1.1" x="0px" y="0px" width="500px" height="200px" style="enable-background:new 0 0 50 50;">`;
+  for(var i=0; i<len; i=i+0.14){
+    html_ = html_ + `<rect x="${(i*120)}" y="18" width="16" height="80" fill="rgb(0, ${Math.ceil(181-(i*80))}, 112)" opacity="0.0">
+      <animate attributeName="opacity" values="0.0; 0.3; 1; 0.3; 0.0" begin="${i}s" dur="0.96s" repeatCount="indefinite" />
+      <animate attributeName="height" values="80; 106; 80" begin="${i}s" dur="0.96s" repeatCount="indefinite" />
+      <animate attributeName="y" values="18; 5; 18" begin="${i}s" dur="0.96s" repeatCount="indefinite" />
+      <animate attributeName="fill" values="rgb(0, ${Math.ceil(181-(i*80))}, 112); rgb(0, 181, 112); rgb(0, ${Math.ceil(181-(i*80))}, 112);" begin="0s" dur="0.96s" repeatCount="indefinite" />
+    </rect>`
+  }
+  return html_ + '</svg>';
+}
+function loadingElm(ref) {
+  if(document.getElementById('loading_element')) document.getElementById('loading_element').outerHTML = '';
+  var rect = ref.getBoundingClientRect();
+  var loaD = ele('div');
+  a(loaD,[['id', 'loading_element'],['style',`position: fixed;  top: ${rect.top+25}px; left: ${rect.left+5}px; z-index: ${new Date().getTime()};`]]);
+  document.body.appendChild(loaD);
+  loaD.innerHTML = createLoadingLines(1);
+}
+function killLoader(){if(document.getElementById('loading_element')) document.getElementById('loading_element').outerHTML = '';}
+
+function createUploadHTML(){
+  var cont_id = 'upload_container';
+  if(gi(document,cont_id)) gi(document,cont_id).outerHTML = '';
   var cont = ele('div');
-  a(cont,[['id',id],['items',`${JSON.stringify(items)}`],['style',`display: grid; grid-template-columns: 1fr 20px; grid-gap: 4px; border: 1px solid #004471; border-radius: 0.2em; cursor: pointer;`]]);
-  ref.appendChild(cont);
-  cont.onclick = createOptions;
+  a(cont,[['id',cont_id],['style', `position: fixed; top: 200px; left: 120px; z-index: ${new Date().getTime()}; width: 300px; border: 1px solid #0a1114; border-radius: 0.45em; background: #FFF;`]]);
+  document.body.appendChild(cont);
 
-  var text = ele('div');
-  a(text,[['style',`color: #004471; text-align: center;`]]);
-  cont.appendChild(text);
-  text.innerText = '0';
-  
-  var sel = ele('div');
-  cont.appendChild(sel);
-  sel.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" transform="rotate(180)" version="1.1" viewBox="0 0 15 15">  <path d="M7.5385,2&#10;&#9;C7.2437,2,7.0502,2.1772,6.9231,2.3846l-5.8462,9.5385C1,12,1,12.1538,1,12.3077C1,12.8462,1.3846,13,1.6923,13h11.6154&#10;&#9;C13.6923,13,14,12.8462,14,12.3077c0-0.1538,0-0.2308-0.0769-0.3846L8.1538,2.3846C8.028,2.1765,7.7882,2,7.5385,2z"/></svg>`;
+  var head = ele('div');
+  a(head, [['style', `display: grid; grid-template-columns: 1fr 29px; background: #0a1114; border: 1.6px solid #0a1114; border-top-left-radius: 0.4em; border-top-right-radius: 0.4em; cursor: move;`]  ]);
+  cont.appendChild(head);
+  head.onmouseover = dragElement;
 
-  function hoverOut(){
-    this.style.background = `rgb(${rgb.r},${rgb.g},${rgb.b})`;
-  }
-  function hoverIn(){
-    this.style.background = '#ffffff';
-  }
-  function createOptions(){
-    var rect = this.getBoundingClientRect();
-    console.log(rect.bottom);
-    if(gi(document,'custom_dropdown_')) gi(document,'custom_dropdown_').outerHTML = '';
-    var itm_height = 21;
-    var top_pos = document.body.getBoundingClientRect().bottom > (rect.bottom - (items.length * itm_height))? (rect.top - (items.length * itm_height))+itm_height : rect.top;
-    var bod = ele('div');
-    a(bod,[['id','custom_dropdown_'],['style',`position: fixed; width: ${rect.width}px; top: ${top_pos}px; left: ${rect.left}px; display: grid; grid-template-rows: auto; grid-gap: 4px; border: 4px solid rgb(${rgb.r},${rgb.g},${rgb.b}); border-radius: 0.2em; background: rgb(${rgb.r},${rgb.g},${rgb.b}); z-index: ${new Date().getTime()}; transition: all 133ms;`]]);
-    document.body.appendChild(bod);
-    bod.onmouseleave = killOptions;
+  var txt = ele('div');
+  a(txt, [['style', `color: #fff; font-size: 1.3em; border-radius: 0.5em; color: #fff; text-align: center;`]]);
+  head.appendChild(txt);
+  txt.innerText = 'Upload Up to 20 Resumes';
 
-    for(var i=0; i<items.length; i++){
-      var itm = ele('div');
-      a(itm,[['dat',items[i]],['style',`height: ${itm_height}px; background: rgb(${rgb.r},${rgb.g},${rgb.b}); text-align: center; padding 0px; cursor: pointer; font-family: "Lucida Console", Monaco, monospace; transition: all 133ms;`]]);
-      itm.innerText = items[i];
-      bod.appendChild(itm);
-      itm.onmouseenter = hoverIn;
-      itm.onmouseleave = hoverOut;
-      itm.onclick = selection;
-    }
+  var cls = ele('div');
+  a(cls, [['style', `width: 27px; height: 27px; cursor: pointer;`]]);
+  head.appendChild(cls);
+  cls.innerHTML = svgs.close;
+  cls.onmouseenter = aninCloseBtn;
+  cls.onmouseleave = anoutCloseBtn;
+  cls.onclick = () => cont.outerHTML = '';
 
-    function selection(){
-      var d = this.getAttribute('dat');
-      tn(gi(document,id),'div')[0].innerText = d;
-      this.parentElement.style.height = (this.parentElement.getBoundingClientRect().height * 0.5) +'px';
-      Array.from(tn(this.parentElement,'div')).forEach(r=> {
-        r.style.height = (r.getBoundingClientRect().height * 0.5) +'px';
-        r.style.fontSize = '0.5em';
-      });
-      this.parentElement.style.top = (this.parentElement.getBoundingClientRect().top +      this.parentElement.getBoundingClientRect().height) + 'px';
-      this.parentElement.ontransitionend = killOptions;
-    }
-  }
-  function killOptions(){
-    if(gi(document,'custom_dropdown_')) gi(document,'custom_dropdown_').outerHTML = '';
-  }
+  var cbod = ele('div');
+  a(cbod,[['style',`max-height: 440px; overflow-y: auto;`]]);
+  cont.appendChild(cbod);
+
+  var upload = ele('input');
+  a(upload, [['id', 'customFileInput'],['type', 'file'],['name', 'file[]'],['multiple', 'true']]);
+  cbod.appendChild(upload);
+  upload.addEventListener("change", handleFiles);
 
 }
 
+async function parseURI(d){
+  var reader = new FileReader();
+  reader.readAsDataURL(d);
+  return new Promise(res=> reader.onload = (e) => res(e.target.result))
+} 
 
-dropDownHTML({id: 'number_select_', ref:document.body, items: [0,1,2,3,4,5]})
+async function handleFiles(){
+  var files = this.files;
+  var blob_arr = [];
+  for(var i=0; i<files.length; i++){
+    var uri = await parseURI(files[i]);
+    blob_arr.push(uri);
+  }
+  console.log(blob_arr)
+  processFilesInAppsScript(this.parentElement,blob_arr);
+}
+
+function processFilesInAppsScript(ref,blobs){
+  loadingElm(ref)
+  google.script.run.withSuccessHandler(res=> {
+    killLoader();
+    // TODO display results
+  })
+}
+
+createUploadHTML()
+
