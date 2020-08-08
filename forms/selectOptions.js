@@ -12,9 +12,12 @@ var reChar = (s) => s?.match(/&#.+?;/g) && s.match(/&#.+?;/g).length > 0 ? s.mat
 var unqHsh = (a,o) => a.filter(i=> o.hasOwnProperty(i) ? false : (o[i] = true));
 
 function dropDownHTML(obj){
-  var { ref, items } = obj;
+  var rgb = {r:219, g:213, b:245, change: 1};
+  
+  var { ref, items, id } = obj;
+  if(gi(document,id)) gi(document,id).outerHTML = '';
   var cont = ele('div');
-  a(cont,[['items',`${JSON.stringify(items)}`],['style',`display: grid; grid-template-columns: 1fr 20px; grid-gap: 4px; border: 1px solid #004471; border-radius: 0.2em; cursor: pointer;`]]);
+  a(cont,[['id',id],['items',`${JSON.stringify(items)}`],['style',`display: grid; grid-template-columns: 1fr 20px; grid-gap: 4px; border: 1px solid #004471; border-radius: 0.2em; cursor: pointer;`]]);
   ref.appendChild(cont);
   cont.onclick = createOptions;
 
@@ -27,26 +30,50 @@ function dropDownHTML(obj){
   cont.appendChild(sel);
   sel.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" transform="rotate(180)" version="1.1" viewBox="0 0 15 15">  <path d="M7.5385,2&#10;&#9;C7.2437,2,7.0502,2.1772,6.9231,2.3846l-5.8462,9.5385C1,12,1,12.1538,1,12.3077C1,12.8462,1.3846,13,1.6923,13h11.6154&#10;&#9;C13.6923,13,14,12.8462,14,12.3077c0-0.1538,0-0.2308-0.0769-0.3846L8.1538,2.3846C8.028,2.1765,7.7882,2,7.5385,2z"/></svg>`;
 
+  function hoverOut(){
+    this.style.background = `rgb(${rgb.r},${rgb.g},${rgb.b})`;
+  }
+  function hoverIn(){
+    this.style.background = '#ffffff';
+  }
   function createOptions(){
     var rect = this.getBoundingClientRect();
     console.log(rect.bottom);
     if(gi(document,'custom_dropdown_')) gi(document,'custom_dropdown_').outerHTML = '';
-
-    var top_pos = (document.body.getBoundingClientRect().bottom -(items.length * 16)) >rect.bottom ? rect.top -(items.length * 16) : rect.top;
+    var itm_height = 21;
+    var top_pos = document.body.getBoundingClientRect().bottom > (rect.bottom - (items.length * itm_height))? (rect.top - (items.length * itm_height))+itm_height : rect.top;
     var bod = ele('div');
-    a(bod,[['id','custom_dropdown_'],['style',`position: fixed; height: 16px; width: ${rect.width}px; bottom: ${rect.bottom}px; left: ${rect.left}px; display: grid; grid-template-rows: auto; grid-gap: 4px; border: 1px solid #004471; border-radius: 0.2em; background: #dae6ed; z-index: ${new Date().getTime()}`]]);
+    a(bod,[['id','custom_dropdown_'],['style',`position: fixed; width: ${rect.width}px; top: ${top_pos}px; left: ${rect.left}px; display: grid; grid-template-rows: auto; grid-gap: 4px; border: 4px solid rgb(${rgb.r},${rgb.g},${rgb.b}); border-radius: 0.2em; background: rgb(${rgb.r},${rgb.g},${rgb.b}); z-index: ${new Date().getTime()}; transition: all 133ms;`]]);
     document.body.appendChild(bod);
-    bod.onmouseleave = ()=> {bod.innerHTML = ''};
+    bod.onmouseleave = killOptions;
 
     for(var i=0; i<items.length; i++){
       var itm = ele('div');
-      a(itm,[['style',`background: #ffffff; text-align: center; padding 4px; cursor: pointer;`]]);
+      a(itm,[['dat',items[i]],['style',`height: ${itm_height}px; background: rgb(${rgb.r},${rgb.g},${rgb.b}); text-align: center; padding 0px; cursor: pointer; font-family: "Lucida Console", Monaco, monospace; transition: all 133ms;`]]);
       itm.innerText = items[i];
       bod.appendChild(itm);
+      itm.onmouseenter = hoverIn;
+      itm.onmouseleave = hoverOut;
+      itm.onclick = selection;
     }
+
+    function selection(){
+      var d = this.getAttribute('dat');
+      tn(gi(document,id),'div')[0].innerText = d;
+      this.parentElement.style.height = (this.parentElement.getBoundingClientRect().height * 0.5) +'px';
+      Array.from(tn(this.parentElement,'div')).forEach(r=> {
+        r.style.height = (r.getBoundingClientRect().height * 0.5) +'px';
+        r.style.fontSize = '0.5em';
+      });
+      this.parentElement.style.top = (this.parentElement.getBoundingClientRect().top +      this.parentElement.getBoundingClientRect().height) + 'px';
+      this.parentElement.ontransitionend = killOptions;
+    }
+  }
+  function killOptions(){
+    if(gi(document,'custom_dropdown_')) gi(document,'custom_dropdown_').outerHTML = '';
   }
 
 }
 
 
-dropDownHTML({ref:document.body, items: [0,1,2,3,4,5]})
+dropDownHTML({id: 'number_select_', ref:document.body, items: [0,1,2,3,4,5]})
