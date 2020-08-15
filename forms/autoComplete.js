@@ -7,36 +7,49 @@ const delay = (ms) => new Promise(res => setTimeout(res, ms));
 const ele = (t) => document.createElement(t);
 const attr = (o, k, v) => o.setAttribute(k, v);
 const d = () => ele('div');
-const parseDateAsReadable = (date)=> (new Date(date).getMonth()+1)+'/'+new Date(date).getDate()+'/'+new Date(date).getFullYear() +' '+ new Date().getHours()+':'+new Date().getMinutes(); 
+ 
 
 const a = (l, r) => r.forEach(a => attr(l, a[0], a[1]));
+
+
+const regXready = (str) => str && typeof str == 'string' ? str
+.replace(/\[/g,'\[')
+.replace(/\]/g,'\]')
+.replace(/\{/g,'\{')
+.replace(/\}/g,'\}')
+.replace(/\\/g,'\\')
+.replace(/\//g,'\/')
+.replace(/\?/g,'\?')
+.replace(/\+/g,'\+').replace(/\*/g, '.{0,4}').trim() : '';
+
 
 function searchAllowedList(){//allowed_list
   let allowed_list = [{username: 'sourcingsupport', can_speak: true},{username: '27dollars', can_speak: true,}];
   if(e.key == 'ArrowUp' || e.key == 'ArrowLeft' || e.key == 'ArrowRight' || e.key == 'ArrowDown' || e.key == 'Enter'){
     autoKeySelector(this,'form_data_auto_search_res_pill',e.key);
   }else{
-    if(this.value.length > 2){
-      var matches = allowed_list.filter()
+    if(this.value.trim().length > 2){
+      var matches = allowed_list.filter(r=> new RegExp(regXready(this.value.trim()),'i').test(r));
     }
   }
 }
 
 
 
-function createAutoDopDown(items,ref){
-  var rgb = {r:219, g:213, b:245, change: 1};
+function createAutoDopDown(items,text_key,ref){
+  let rgb = {r:219, g:213, b:245};
+  let hover_obj = {background: '#dbd5f5',color: '#05001c', border: '4px solid #dbd5f5', background_in: '#05001c', color_in: '#dbd5f5', border_in: '4px solid #dbd5f5'}
   let rect = ref.getBoundingClientRect();
   let itm_height = 21;
   let bod = ele('div');
-  a(bod,[['id','custom_dropdown_'],['style',`position: fixed; width: ${rect.width}px; top: ${rect.top}px; left: ${rect.left}px; display: grid; grid-template-rows: auto; grid-gap: 4px; border: 4px solid rgb(${rgb.r},${rgb.g},${rgb.b}); border-radius: 0.2em; background: rgb(${rgb.r},${rgb.g},${rgb.b}); z-index: ${new Date().getTime()}; transition: all 133ms;`]]);
+  a(bod,[['id','custom_dropdown_'],['style',`position: fixed; width: ${rect.width}px; top: ${rect.top}px; left: ${rect.left}px; display: grid; grid-template-rows: auto; grid-gap: 4px; border: ${hover_obj.border}; border-radius: 0.2em; background: ${hover_obj.background}; color: ${hover_obj.color} z-index: ${new Date().getTime()}; transition: all 63ms;`]]);
   ref.appendChild(bod);
   bod.onmouseleave = killOptions;
 
   for(var i=0; i<items.length; i++){
     let itm = ele('div');
-    a(itm,[['jdat',`${(items[i])}`,['style',`height: ${itm_height}px; background: rgb(${rgb.r},${rgb.g},${rgb.b}); text-align: center; padding 0px; cursor: pointer; font-family: "Lucida Console", Monaco, monospace; transition: all 133ms;`]]);
-    itm.innerText = items[i].username;
+    a(itm,[['class','form_data_auto_search_res_pill'],['hover_obj',`${JSON.stringify(hover_obj)}`],['jdat',`${(items[i])}`],['text_key',items[i][key]],['style',`height: ${itm_height}px; background: rgb(${rgb.r},${rgb.g},${rgb.b}); text-align: center; padding 0px; cursor: pointer; font-family: "Lucida Console", Monaco, monospace; transition: all 63ms;`]]);
+    itm.innerText = items[i][text_key];
     bod.appendChild(itm);
     itm.onmouseenter = hoverIn;
     itm.onmouseleave = hoverOut;
@@ -49,15 +62,18 @@ function killOptions(){
 }
 
 function hoverOut(){
-  this.style.background = `rgb(${rgb.r},${rgb.g},${rgb.b})`;
+  let style_obj = JSON.parse(this.getAttribute('hover_obj'));
+  this.style.background = style_obj.background;
 }
 function hoverIn(){
-  this.style.background = '#ffffff';
+  let style_obj = JSON.parse(this.getAttribute('hover_obj'));
+  this.style.background = style_obj.background_in;
 }
 
 function selection(){
-  let d = this.getAttribute('dat');
-  tn(gi(document,id),'div')[0].innerText = d;
+  let jdat = JSON.parse(this.getAttribute('jdat'));
+  let text_key = this.getAttribute('text_key');
+  tn(gi(document,id),'div')[0].innerText = jdat[text_key];
   this.parentElement.style.height = (this.parentElement.getBoundingClientRect().height * 0.5) +'px';
   Array.from(tn(this.parentElement,'div')).forEach(r=> {
     r.style.height = (r.getBoundingClientRect().height * 0.5) +'px';
