@@ -40,7 +40,7 @@ function permutateNear(input,joiner){
   return base + near_or;
 }
 
-function buildSearchSer(str){
+function buildSearchSet(str){
   var set = parseStringAsXset(str);
   var xset = set.map(r=> permutateNear(r,'.{0,3}')).map(r=> new RegExp(r,'i'));
   console.log(xset);
