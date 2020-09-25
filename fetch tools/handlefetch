@@ -4,7 +4,7 @@ async function handleFetch(url,params_obj,type){ //all arguments are required
     if(type == 'json') await res.json().catch(err=> { console.log([err,url,params_obj]); return false });
     if(type == 'text') await res.text().catch(err=> { console.log([err,url,params_obj]); return false });
     if(type == 'html') {
-      let text = await res.text().catch(err=> { console.log([err,url,params_obj]); return false });  
+      let text = await res.text().catch(err=> { console.log([err,url,params_obj]); return false }); 
       return new DOMParser().parseFromString(text,'text/html');
     }else{ return false }
   }
