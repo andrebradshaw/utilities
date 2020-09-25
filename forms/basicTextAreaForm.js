@@ -207,7 +207,7 @@ function createDraggableResizableContainer(edit) {
     ref.appendChild(cont);
     
     let text = ele('textarea');
-    a(text,[['placeholder','Paste your target facebook profile links here. line or comma seperated.'],['style',`width: 99%; height: ${window.innerHeight > 400 ? window.innerHeight * 0.5 : window.innerHeight *0.7}px`]]);
+    a(text,[['placeholder','Paste your target facebook profile links here. line or comma seperated.'],['style',`border-radius: 0.2em; width: 100%; height: ${window.innerHeight > 400 ? window.innerHeight * 0.5 : window.innerHeight *0.7}px`]]);
     cont.appendChild(text);
 
     let btn = ele('div');
