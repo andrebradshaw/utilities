@@ -6,6 +6,15 @@ var ele = (t) => document.createElement(t);
 var attr = (o, k, v) => o.setAttribute(k, v);
 var a = (l, r) => r.forEach(a => attr(l, a[0], a[1]));
 
+function inlineStyler(elm,css){
+  Object.entries(JSON.parse(
+  css.replace(/(?<=:)\s*(\b|\B)(?=.+?;)/g,'"')
+    .replace(/(?<=:\s*.+?);/g,'",')
+    .replace(/[a-zA-Z-]+(?=:)/g, k=> k.replace(/^\b/,'"').replace(/\b$/,'"'))
+    .replace(/\s*,\s*\}/g,'}')
+  )).forEach(kv=> { elm.style[kv[0]] = kv[1]});
+}
+
 function aninCloseBtn() {
   var l1 = tn(this, 'path')[0];
   var l2 = tn(this, 'path')[1];
@@ -139,28 +148,26 @@ function createDraggableResizableContainer(edit) {
     a(cont, [
       ['dragme', 'true'],
       ['id', main_cont_id],
-      ['style', `position: fixed; top: ${top}px; left: ${left}px; z-index: ${new Date().getTime()}; max-height: ${height}px; width: ${width}px; border: 0px solid #2b2b2b; border-radius: 0.45em; background: #2b2b2b; font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;`]
-    ]); //"Lucida Console", Monaco, monospace
+    ]); 
+    inlineStyler(cont,`{position: fixed; top: ${top}px; left: ${left}px; z-index: ${new Date().getTime()}; max-height: ${height}px; width: ${width}px; border: 0px solid #2b2b2b; border-radius: 0.45em; background: #2b2b2b; font-family: sans-serif;}`);
+//"Lucida Console", Monaco, monospace
     document.body.appendChild(cont);
   
     let head = ele('div');
     a(head, [
-      ['id',main_cont_id+'_head'],['style', `display: grid; grid-template-columns: 1fr 29px; background: ${head_bg_color}; border: 1.6px solid #0a1114; border-top-left-radius: 0.4em; border-top-right-radius: 0.4em; cursor: move;`]
+      ['id',main_cont_id+'_head']
     ]);
+    inlineStyler(head,`{display: grid; grid-template-columns: 1fr 29px; background: ${head_bg_color}; border: 1.6px solid #0a1114; border-top-left-radius: 0.4em; border-top-right-radius: 0.4em; cursor: move;}`)
     cont.appendChild(head);
     head.onmouseover = dragElement;
   
     let txt = ele('div');
-    a(txt, [
-      ['style', `font-size: 1.3em; border-radius: 0.5em; color: ${head_text_color}; text-align: center;`]
-    ]);
+    inlineStyler(txt, `{font-size: 1.3em; border-radius: 0.5em; color: ${head_text_color}; text-align: center;}`)
     head.appendChild(txt);
     txt.innerText = head_text;
   
     let cls = ele('div');
-    a(cls, [
-      ['style', `cursor: pointer;`]
-    ]);
+    inlineStyler(cls,`{cursor: pointer;}`);
     head.appendChild(cls);
     cls.innerHTML = svgs.close;
     cls.onclick = () => cont.outerHTML = '';
@@ -175,43 +182,42 @@ function createDraggableResizableContainer(edit) {
   
     let cbod = ele('div');
     a(cbod, [
-      ['id',main_cont_id+'_body'],['style', `background: ${cbod_bg_color}; padding: 8px; overflow-y: auto; border-left: 1px solid #2b2b2b; border-right: 1px solid #2b2b2b;`]
+      ['id',main_cont_id+'_body']
     ]);
+    inlineStyler(cbod,`{background: ${cbod_bg_color}; padding: 8px; overflow-y: auto; border-left: 1px solid #2b2b2b; border-right: 1px solid #2b2b2b;}`)
     mainbod.appendChild(cbod);
   
     let footer = ele('div');
     a(footer, [
       ['dragme', 'true'],
-      ['style', `display: grid; grid-template-columns: ${(cont_rect.width - (edge+4))}px ${edge}px; background: ${head_bg_color}; border: 1.6px solid #0a1114; border-bottom-left-radius: 0.4em; border-bottom-right-radius: 0.4em; height: ${edge+4}px;`]
     ]);
+    inlineStyler(footer,`{display: grid; grid-template-columns: ${(cont_rect.width - (edge+4))}px ${edge}px; background: ${head_bg_color}; border: 1.6px solid #0a1114; border-bottom-left-radius: 0.4em; border-bottom-right-radius: 0.4em; height: ${edge+4}px;}`);
     mainbod.appendChild(footer);
   
     let footertext = ele('div');
     footer.appendChild(footertext);
   
     let resizer = ele('div');
-    a(resizer, [
-      ['style', `background: transparent; cursor: nw-resize; text-align: left; border-radius: 0.4em;`]
-    ]);
+    inlineStyler(resizer,`{background: transparent; cursor: nw-resize; text-align: left; border-radius: 0.4em;}`);
     footer.appendChild(resizer);
     resizer.innerHTML = svgs.resize_hover;
     resizer.onmouseover = adjustElementSize;
     return cbod;
   }
   
- 
   function createTextInputForm(ref){
     const rect = ref.getBoundingClientRect();
     let cont = ele('div');
-    a(cont,[['style',`padding: 8px;`]]);
+    inlineStyler(cont,`{padding: 8px;}`);
     ref.appendChild(cont);
     
     let text = ele('textarea');
-    a(text,[['placeholder','Paste your target facebook profile links here. line or comma seperated.'],['style',`border-radius: 0.2em; width: 100%; height: ${window.innerHeight > 400 ? window.innerHeight * 0.5 : window.innerHeight *0.7}px`]]);
+    a(text,[['placeholder','Paste your target facebook profile links here. line or comma seperated.']])
+    inlineStyler(text,`{border-radius: 0.2em; width: 100%; height: ${window.innerHeight > 400 ? window.innerHeight * 0.5 : window.innerHeight *0.7}px;}`);
     cont.appendChild(text);
 
     let btn = ele('div');
-    a(btn,[['style',`border-radius: 0.2em; font-size: 2em; padding: 4px; cursor: pointer; text-align: center; background: #f5bb41; color: #2b2b2b;`]]);
+    inlineStyler(btn,`{border-radius: 0.2em; font-size: 2em; padding: 4px; cursor: pointer; text-align: center; background: #f5bb41; color: #2b2b2b;}`);
     cont.appendChild(btn);
     btn.innerText = 'run';
 
