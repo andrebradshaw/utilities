@@ -77,3 +77,32 @@ function dropDownHTML(obj){
 
 
 dropDownHTML({id: 'number_select_', ref:document.body, items: [0,1,2,3,4,5]})
+
+
+
+
+/*
+    **** ADDON ****
+    add a pill that can be deleted for multiple selections
+put addSelectionPillToReferenceElement(ref,val) within the selection function after the array.forEach
+*/
+function addSelectionPillToReferenceElement(ref,val){
+  let quickli_company_size_selections = cn(document,'quickli_company_size_selections')?.length ? Array.from(cn(document,'quickli_company_size_selections')).map(r=> r.getAttribute('data-value')) : [];
+  if(quickli_company_size_selections.every(v=> v != val)){
+    let val_int = parseInt(/^\d+/.exec(val)[0]);
+    let target_elm = Array.from(cn(document,'quickli_company_size_selections')).filter(v=> val_int < parseInt(/^\d+/.exec(v.getAttribute('data-value'))[0]));
+    addPillElm(val,target_elm)
+  }
+  function addPillElm(val,target_elm){
+      let pill = ele('div');
+      a(pill,[['class','quickli_company_size_selections'],['data-value',val]]);
+      inlineStyler(pill,`{padding: 8px; border-radius: 0.2em; background: #00cf45; color: #ffffff; cursor: pointer; text-align: center;}`);
+      pill.innerText = val;
+      pill.onclick = deleteThisElement;
+      if(target_elm?.length) ref.insertBefore(pill,target_elm[0]) 
+      else ref.appendChild(pill);
+  }
+}
+function deleteThisElement(){
+  this.outerHTML = ''; //TODO, could be an interesting opportunity here for a function that takes an integer and runs up that many parents to delete
+}
