@@ -8,4 +8,6 @@ for(var i=0; i<500; i++){
 would log: 0, 108, 216, 324, 432
 */
 
-var everyNth = (i,n) => /\./.test((i/n).toString()) === false;
+var everyNth = (i,n) => /\./.test((i/n).toString()) === false && i != 0;
+
+// everyNth(2,44) === false
