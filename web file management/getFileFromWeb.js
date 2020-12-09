@@ -12,7 +12,7 @@ async function getDataBlob(url){
   var res = await fetch(url);
   var blob = await res.blob();
   var uri = await parseURI(blob);
-  return url;
+  return uri;
 }
 
 getDataBlob(your_url);
