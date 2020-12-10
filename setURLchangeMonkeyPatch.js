@@ -20,19 +20,3 @@
         }
     }
 
-
-    function pageChangeCheck(main_cont_id){
-        const url = window.location.href;
-        const main_cont_elm = gi(document,main_cont_id);
-        const url_onlast_state = main_cont_elm?.getAttribute('current_url_displayed');
-        if(url_onlast_state != url) {
-            createSearchResultsForm();
-            if(/resumes\.indeed\.com\/resume\//.test(url)) getIndeedResumeView();
-            if(/linkedin.\w+\/talent\/hire\/\d+|linkedin.\w+\/talent\/search|recruiterSearch\?searchContextId/i.test(url)) getLIRCompanyPeekView();
-            if(/linkedin.\w+\/in\//.test(url)) {
-                getBasicProfileButtonsScript();
-            }else{
-                if(cn(document,'quickli_tool clipboard_btn').length) cn(document,'quickli_tool clipboard_btn').outerHTML = '';
-            }
-        }
-    }
