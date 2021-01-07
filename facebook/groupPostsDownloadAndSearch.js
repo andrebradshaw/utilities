@@ -191,7 +191,7 @@ async function initGroupPostsDownloadAndSearch(query_object){
 
 var search_query_object = {
     group_name: `SourceCon`,
-    search_string: `(contact~find OR email~find OR phone~find OR contact~tool OR extension~phone OR extension~email OR extension~contact)`
+    search_string: ``
 }
 
 initGroupPostsDownloadAndSearch(search_query_object)
