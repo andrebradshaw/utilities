@@ -149,7 +149,7 @@ async function initGroupPostsDownloadAndSearch(query_object){
             const posts = matches ? Array.from(matches).map(t=> {
                 let r = x.exec(t);
                 let timestamp = parseInt(reg(r,5)) * 1000;
-                return { text: tsvReady(descape(reg(r,1))), user_id: reg(r,2), user_url: descape(reg(r,3)), full_name: reg(r,4), timestamp: timestamp, date_posted: dateString(timestamp) post_url: descape(reg(r,6)),};
+                return { text: tsvReady(descape(reg(r,1))), user_id: reg(r,2), user_url: descape(reg(r,3)), full_name: reg(r,4), timestamp: timestamp, date_posted: dateString(timestamp), post_url: descape(reg(r,6)),};
             }) : [];
             const cursors = text.match(xcg);
             const cursor = cursors ? Array.from(cursors).map(r=> {
