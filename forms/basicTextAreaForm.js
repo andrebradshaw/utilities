@@ -19,19 +19,15 @@ function createUploadForm(){
     function aninCloseBtn() {
       var l1 = tn(this, 'path')[0];
       var l2 = tn(this, 'path')[1];
-      l1.style.transform = "translate(49px, 50px) rotate(45deg) translate(-49px, -50px)";
-      l1.style.transition = "all 533ms";
-      l2.style.transform = "translate(49px, 50px) rotate(135deg) translate(-49px, -50px)";
-      l2.style.transition = "all 233ms";
+      inlineStyler(tn(this, 'path')[1],`{transform: translate(49px, 50px) rotate(135deg) translate(-49px, -50px); transition: all 233ms;}`);
+      inlineStyler(tn(this, 'path')[0],`{transform: translate(49px, 50px) rotate(45deg) translate(-49px, -50px); transition: all 533ms;}`);
     }
 
     function anoutCloseBtn() {
       var l1 = tn(this, 'path')[0];
       var l2 = tn(this, 'path')[1];
-      l1.style.transform = "translate(49px, 50px) rotate(225deg) translate(-49px, -50px)";
-      l1.style.transition = "all 333ms";
-      l2.style.transform = "translate(49px, 50px) rotate(225deg) translate(-49px, -50px)";
-      l2.style.transition = "all 133ms";
+      inlineStyler(tn(this, 'path')[1],`{transform: translate(49px, 50px) rotate(225deg) translate(-49px, -50px); transition: all 133ms;}`);
+      inlineStyler(tn(this, 'path')[0],`{transform: translate(49px, 50px) rotate(225deg) translate(-49px, -50px); transition: all 333ms;}`);
     }
 
     function dragElement() {
@@ -50,10 +46,7 @@ function createUploadForm(){
         pos2 = pos4 - e.clientY;
         pos3 = e.clientX;
         pos4 = e.clientY;
-        el.style.top = (el.offsetTop - pos2) + "px";
-        el.style.left = (el.offsetLeft - pos1) + "px";
-        el.style.opacity = "0.85";
-        el.style.transition = "opacity 700ms";
+        inlineStyler(el,`{top: ${(el.offsetTop - pos2)}px; left: ${(el.offsetLeft - pos1)}px; opacity: 0.85; transform: opacity 700ms;}`);
       }
       function closeDragElement() {
         document.onmouseup = null;
