@@ -1,4 +1,3 @@
-const fs = require('fs');
 function unqKey(array,key){  var q = [];  var map = new Map();  for (const item of array) {    if(!map.has(item[key])){        map.set(item[key], true);        q.push(item);    }  }  return q;}
 const parseStringAsXset = (s) => s
 .split(/\s+\band\b\s+|(?<!\s+and\b)\s+\(|\)\s+(?!\band\b)/i)
@@ -53,3 +52,4 @@ function tryRegExp(s,f){
     try{return new RegExp(s,f)}
     catch(err){return err}
 }
+buildSearchSet('(keywords OR other keywords) AND (more~stuff~"to" find)')
