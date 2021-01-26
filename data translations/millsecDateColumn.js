@@ -3,4 +3,4 @@ function dateString(d){
   var date = new Date(d);
   return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
 }
-`millsec_column`.split(/\n/).map(d=> dateString(parseInt(d)))
+`millsec_column`.split(/\n/).map(d=> dateString(parseInt(d))).reduce((a,b)=> a+'\n'+b)
