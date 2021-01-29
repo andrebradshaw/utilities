@@ -6,7 +6,11 @@ function createUploadForm(){
     var ele = (t) => document.createElement(t);
     var attr = (o, k, v) => o.setAttribute(k, v);
     var a = (l, r) => r.forEach(a => attr(l, a[0], a[1]));
-
+    function topZIndexer(){
+        let n = new Date().getTime() /100000
+        let r = (n - Math.floor(n)) * 1000
+        return Math.round(n+r);
+    }
     function inlineStyler(elm,css){
       Object.entries(JSON.parse(
       css.replace(/(?<=:)\s*(\b|\B)(?=.+?;)/g,'"')
@@ -46,7 +50,7 @@ function createUploadForm(){
         pos2 = pos4 - e.clientY;
         pos3 = e.clientX;
         pos4 = e.clientY;
-        inlineStyler(el,`{top: ${(el.offsetTop - pos2)}px; left: ${(el.offsetLeft - pos1)}px; opacity: 0.85; transform: opacity 700ms;}`);
+        inlineStyler(el,`{top: ${(el.offsetTop - pos2)}px; left: ${(el.offsetLeft - pos1)}px; z-index: ${topZIndexer()}; opacity: 0.85; transform: opacity 700ms;}`);
       }
       function closeDragElement() {
         document.onmouseup = null;
@@ -55,51 +59,40 @@ function createUploadForm(){
       }
     }
 
-    function adjustElementSize(){
-      var cont = this.parentElement.parentElement.parentElement;
-      var main = this.parentElement.parentElement;
-      var cbod = main.firstChild;
-      var foot = this.parentElement;
-      var head_height = cont.firstChild.getBoundingClientRect().height;
-      var foot_height = foot.getBoundingClientRect().height;
-      var pos1 = 0,    pos2 = 0,    pos3 = 0,    pos4 = 0;
-      var width = parseFloat(cont.style.width.replace(/px/,''));
-      var height = parseFloat(cont.getBoundingClientRect().height);
-      if (document.getElementById(this.id)) document.getElementById(this.id).onmousedown = dragMouseDown;
-      else this.onmousedown = dragMouseDown;
-      function dragMouseDown(e) {
-        pos3 = e.clientX;
-        pos4 = e.clientY;
-        document.onmouseup = closeDragElement;
-        document.onmousemove = elementDrag;
-      }
-      function elementDrag(e) {
-        cont.style.width = width - (pos3 - e.clientX) + 'px';
-        main.style.width = width - (pos3 - e.clientX) + 'px';
-        cbod.style.height = width - (pos3 - e.clientX) + 'px';
-        cont.style.height = height - (pos4 - e.clientY) + 'px';
-        main.style.height = height - (pos4 - e.clientY) + 'px';
-        cbod.style.height = (height - (pos4 - e.clientY)) - (head_height+foot_height) + 'px';
-        var rect = main.getBoundingClientRect();
-        var edge = 15;
-        cbod.style.height = `${(height - (pos4 - e.clientY))-(head_height+foot_height)}px`;
-        cbod.style.width = `${(width - (pos3 - e.clientX))-(head_height+foot_height)}px;`;
-        [
-            [`display`,`grid`],
-            ['grid-template-columns',`${(rect.width - (edge+4))}px ${edge}px`],
-            [`height`,`${edge+4}px`],
-
-        ].forEach(kv=> foot.style[kv[0]] = kv[1]);
-        cont.style.opacity = '0.75';
-        cont.style.transition = 'opacity 200ms';
-      }
-      function closeDragElement() {
-        document.onmouseup = null;
-        document.onmousemove = null;
-        cont.style.opacity = '1';
-      }
-
-    }
+        function adjustElementSize(){
+            var cont = this.parentElement.parentElement.parentElement;
+            var main = this.parentElement.parentElement;
+            var cbod = main.firstChild;
+            var foot = this.parentElement;
+            var head_height = cont.firstChild.getBoundingClientRect().height;
+            var foot_height = foot.getBoundingClientRect().height;
+            var pos1 = 0,    pos2 = 0,    pos3 = 0,    pos4 = 0;
+            var width = parseFloat(cont.style.width.replace(/px/,''));
+            var height = parseFloat(cont.getBoundingClientRect().height);
+            if (document.getElementById(this.id)) document.getElementById(this.id).onmousedown = dragMouseDown;
+            else this.onmousedown = dragMouseDown;
+            function dragMouseDown(e) {
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+            function elementDrag(e) {
+                cont.style.width = width - (pos3 - e.clientX) + 'px';
+                cont.style.height = ((height - (pos4 - e.clientY)) )+ 'px';
+                cbod.style.height = ((height - (pos4 - e.clientY)) - (head_height+foot_height)) + 'px';
+                var rect = main.getBoundingClientRect();
+                var edge = 15;
+                inlineStyler(foot,`{display: grid; grid-template-columns: ${(rect.width - (edge+4))}px ${edge}px; background: #0a1114; border: 1.6px solid #0a1114; border-bottom-left-radius: 0.4em; border-bottom-right-radius: 0.4em; height: ${edge+4}px;}`)
+                cont.style.opacity = '0.95';
+                cont.style.transition = 'opacity 200ms';
+            }
+            function closeDragElement() {
+                document.onmouseup = null;
+                document.onmousemove = null;
+                cont.style.opacity = '1';
+            }    
+        }
 
 
     //#fa3e3e //f5bb41
