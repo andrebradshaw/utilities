@@ -1,3 +1,4 @@
+  
     function initUserInterfaceForJSON2TSVconversion(client_json_data){
 
         function topZIndexer(){
@@ -67,14 +68,15 @@
         var output_ = table.map(el => el.map(itm => str(itm)));
         downloadr(output_, named_file);
     }
-
+const test_cont = [];
     function processObjectOptions(arr,user_selected_object_state, object_level){
         const fixNameCase = (s) => s.split(/(?=[^Å„ÅƒÅŒÅŒÅšÅ Å›Å¡ÅªÅ«Ã¿Å‚Å¾ÅºÅ¼ÅÅ½Å¹Å»Ã§Ä‡ÄÃ‡Ä†ÄŒÃ¡ÄÃ Ã¢Ã¤Ã£Ã¥ÃÃ€Ã‚Ã„ÃƒÄ€Ä€Ã…Ä€Ã†Ã¦Ã©Ã¨ÃªÃ«Ä™Ä“Ä—Ã‰ÃˆÃŠÃ‹Ã­Ã¬Ã®Ã¯Ä«Ä¯Ã±Ã‘Ã³Ã²Ã´Ã¶ÃµÃ¸Å“Ã“Ã’Ã”Ã–Ã•Ã˜Å’ÃŸÃšÃ™Ã›ÃœÃºÃ¹Ã»Ã¼Å™a-zA-Z])\b/).map(el=> el.replace(/\w\S*/g, txt=> txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())).join('').replace(/(?<=\bMc)\w/ig, t=> t.charAt(0).toUpperCase());
         const snakeCaseToTitleCase = (s)=> fixNameCase(s.replace(/_/g, ' ').trim());
         const object_definitions = {};
+
         let make_false = ["id","cert_company_name","cert_end_timestamp","cert_start_timestamp","millseconds_in_cert","cert_company_id","languages","company_connections","shared_connections","edu_start_year","edu_school_id","job_company_linkedin_url","job_company_id","job_company_description","job_company_hq_region","job description","job_is_current","job_industries","job_country","region_code","country_code","public_id","lir_niid","industry","network_distance","profile_img","number_of_connections","ts_hire_identity","patents","vols","pro_projects","publications","network_distance","desired_company_max_size","desired_company_min_size","certs","companies_following","courses","honors","test_scores"];
         arr.forEach(obj=> {
-            Object.entries(obj).forEach(kv=>{
+            Object.entries(cleanObject(obj)).forEach(kv=>{
                 if(kv[0] && kv[1]){
                     let current_user_sel = user_selected_object_state && user_selected_object_state[kv[0]] && user_selected_object_state[kv[0]].is_user_selected ? user_selected_object_state[kv[0]].is_user_selected : true;
                     let is_object = !Array.isArray(kv[1]) && typeof kv[1] == 'object';
@@ -82,7 +84,7 @@
                     let is_array_of_objects = is_array ? kv[1].every(v=> typeof v == 'object' && Array.isArray(v) === false) : false;
                     if(object_definitions[kv[0]]){
                             //TODO: before this condition, we were clearing out objects by overwritign with empty data.
-
+                        test_cont.push(object_definitions[kv[0]])
                     }else{
                         object_definitions[kv[0]] = {
                             key: kv[0],
@@ -101,6 +103,7 @@
                 }
             })
         })
+console.log(test_cont)
         return object_definitions;
     }  
 
@@ -557,4 +560,68 @@
     initTableOptionsUIfromObjectDefinitions(client_options_object);
     }
 
-initUserInterfaceForJSON2TSVconversion(fileArray)
+
+
+// 
+
+    function createUploadHTML(){
+        var gi = (o, s) => o ? o.getElementById(s) : null;
+        var ele = (t) => document.createElement(t);
+        var attr = (o, k, v) => o.setAttribute(k, v);
+        if(gi(document,'pop_FileUploader')) gi(document,'pop_FileUploader').outerHTML = '';
+
+        var popCont = ele("div");
+        document.body.appendChild(popCont);
+        attr(popCont, "id", "pop_FileUploader");
+        attr(popCont, 'style','position: fixed; top: 20%; left: 50%; width: 280px; height: 100px; background: lightgrey; border: 1px solid #616161; border-radius: .5em; padding: 6px; z-index: 12000;');
+
+        var closeBtn = ele("div");
+        attr(closeBtn, "id", "note_btn_close");
+        attr(closeBtn, 'style','background: transparent; width: 15px; height: 15px; transform: scale(1.8, 1.2); border-radius: 1em; padding: 0px; color: Crimson; cursor: pointer');
+        popCont.appendChild(closeBtn);
+        closeBtn.innerText = "X";
+        closeBtn.addEventListener("click", close);
+
+        var uploadElm = ele("input");
+        attr(uploadElm, "id", "customFileInput");
+        attr(uploadElm, "type", "file");
+        attr(uploadElm, "name", "file[]");
+        attr(uploadElm, "multiple", "true");
+        popCont.appendChild(uploadElm);
+        uploadElm.style.transform = "scale(1.1, 1.1) translate(5%, 80%)";
+        uploadElm.addEventListener("change", handleFiles);
+
+        function close() {
+          document.body.removeChild(popCont);
+        }
+    }
+
+    var contain_arr = [];
+
+    async function handleFiles() {
+        var files = this.files;
+        
+        for(var i=0; i<files.length; i++){
+            let uri = await getDataBlob(files[i]);
+            if(Array.isArray(JSON.parse(uri))) {JSON.parse(uri).forEach(i=> contain_arr.push(i))} else {contain_arr.push(JSON.parse(uri));}
+        }
+        
+        initUserInterfaceForJSON2TSVconversion(contain_arr)
+        document.getElementById('pop_FileUploader').outerHTML = '';
+    }
+
+    async function getAsText(d){
+      var reader = new FileReader();    /* https://developer.mozilla.org/en-US/docs/Web/API/FileReader */
+      reader.readAsText(d);          /* https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL */
+      return new Promise((res,rej)=> {  /* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise */
+        reader.onload = (e) => {        /* https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onload */
+          res(e.target.result)
+        }
+      })
+    } 
+
+    async function getDataBlob(url){
+      var uri = await getAsText(url);
+      return uri;
+    }
+ createUploadHTML();
