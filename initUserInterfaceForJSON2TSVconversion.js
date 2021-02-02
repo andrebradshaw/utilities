@@ -1,5 +1,72 @@
-  
     function initUserInterfaceForJSON2TSVconversion(client_json_data){
+
+        function initMoveHandler(){
+            var target_el = this.parentElement;
+            let draggingEle;
+            let placeholder;
+            let isDraggingStarted = false;
+            let y = 0;
+            const swap = function(nodeA, nodeB) {
+                const parentA = nodeA.parentNode;
+                const siblingA = nodeA.nextSibling === nodeB ? nodeA : nodeA.nextSibling;
+                nodeB.parentNode.insertBefore(nodeA, nodeB);
+                parentA.insertBefore(nodeB, siblingA);
+            };
+            const isAbove = function(nodeA, nodeB) {
+                const rectA = nodeA.getBoundingClientRect();
+                const rectB = nodeB.getBoundingClientRect();
+                return (rectA.top + rectA.height / 2 < rectB.top + rectB.height / 2);
+            };
+            const mouseDownHandler = function(e) {
+                draggingEle = target_el;
+                const rect = draggingEle ? draggingEle.getBoundingClientRect() : placeholder.getBoundingClientRect();
+                y = e.pageY - rect.top;
+                document.addEventListener('mousemove', mouseMoveHandler);
+                document.addEventListener('mouseup', mouseUpHandler);
+                document.removeEventListener('mouseenter', initMoveHandler);
+            };
+
+            const mouseMoveHandler = function(e) {
+                const draggingRect = draggingEle.getBoundingClientRect();
+                if (!isDraggingStarted) {
+                    isDraggingStarted = true;
+                    placeholder = document.createElement('div');
+                    placeholder.classList.add('placeholder');
+                    draggingEle.parentNode.insertBefore(placeholder, draggingEle.nextSibling);
+                    placeholder.style.height = `${draggingRect.height}px`;
+                }
+                const rect = draggingEle ? draggingEle.getBoundingClientRect() : placeholder.getBoundingClientRect();
+                draggingEle.style.position = 'fixed';
+                draggingEle.style.top = `${e.pageY - y}px`; 
+                const prevEle = draggingEle.previousElementSibling;
+                const nextEle = placeholder.nextElementSibling;
+                if (prevEle && isAbove(draggingEle, prevEle)) {
+                    swap(placeholder, draggingEle);
+                    swap(placeholder, prevEle);
+                    return;
+                }
+                if (nextEle && isAbove(nextEle, draggingEle)) {
+                    swap(nextEle, placeholder);
+                    swap(nextEle, draggingEle);
+                }
+            };
+            const mouseUpHandler = function() {
+                if(placeholder && placeholder.parentNode) {
+                    placeholder.parentNode.removeChild(placeholder);
+                } else {
+                    if(placeholder) placeholder.outerHTML = '';
+                }
+                draggingEle.style.removeProperty('top');
+                draggingEle.style.removeProperty('left');
+                draggingEle.style.removeProperty('position');
+                y = null;
+                draggingEle = null;
+                isDraggingStarted = false;
+                document.removeEventListener('mousemove', mouseMoveHandler);
+                document.removeEventListener('mouseup', mouseUpHandler);
+            };
+            this.onmousedown = mouseDownHandler;
+        }
 
         function topZIndexer(){
             let n = new Date().getTime() /100000
@@ -68,12 +135,11 @@
         var output_ = table.map(el => el.map(itm => str(itm)));
         downloadr(output_, named_file);
     }
-const test_cont = [];
     function processObjectOptions(arr,user_selected_object_state, object_level){
-        const fixNameCase = (s) => s.split(/(?=[^Å„ÅƒÅŒÅŒÅšÅ Å›Å¡ÅªÅ«Ã¿Å‚Å¾ÅºÅ¼ÅÅ½Å¹Å»Ã§Ä‡ÄÃ‡Ä†ÄŒÃ¡ÄÃ Ã¢Ã¤Ã£Ã¥ÃÃ€Ã‚Ã„ÃƒÄ€Ä€Ã…Ä€Ã†Ã¦Ã©Ã¨ÃªÃ«Ä™Ä“Ä—Ã‰ÃˆÃŠÃ‹Ã­Ã¬Ã®Ã¯Ä«Ä¯Ã±Ã‘Ã³Ã²Ã´Ã¶ÃµÃ¸Å“Ã“Ã’Ã”Ã–Ã•Ã˜Å’ÃŸÃšÃ™Ã›ÃœÃºÃ¹Ã»Ã¼Å™a-zA-Z])\b/).map(el=> el.replace(/\w\S*/g, txt=> txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())).join('').replace(/(?<=\bMc)\w/ig, t=> t.charAt(0).toUpperCase());
+        const fixNameCase = (s) => s.split(/(?=[^Å„ÅƒÅŒÅŒÅšÅ Å›Å¡ÅªÅ«Ã¿Å‚Å¾ÅºÅ¼Å Å½Å¹Å»Ã§Ä‡Ä Ã‡Ä†ÄŒÃ¡Ä Ã Ã¢Ã¤Ã£Ã¥Ã Ã€Ã‚Ã„ÃƒÄ€Ä€Ã…Ä€Ã†Ã¦Ã©Ã¨ÃªÃ«Ä™Ä“Ä—Ã‰ÃˆÃŠÃ‹Ã­Ã¬Ã®Ã¯Ä«Ä¯Ã±Ã‘Ã³Ã²Ã´Ã¶ÃµÃ¸Å“Ã“Ã’Ã”Ã–Ã•Ã˜Å’ÃŸÃšÃ™Ã›ÃœÃºÃ¹Ã»Ã¼Å™a-zA-Z])\b/).map(el=> el.replace(/\w\S*/g, txt=> txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())).join('').replace(/(?<=\bMc)\w/ig, t=> t.charAt(0).toUpperCase());
         const snakeCaseToTitleCase = (s)=> fixNameCase(s.replace(/_/g, ' ').trim());
         const object_definitions = {};
-
+//TODO: This should reference a user preference document in the future. 
         let make_false = ["id","cert_company_name","cert_end_timestamp","cert_start_timestamp","millseconds_in_cert","cert_company_id","languages","company_connections","shared_connections","edu_start_year","edu_school_id","job_company_linkedin_url","job_company_id","job_company_description","job_company_hq_region","job description","job_is_current","job_industries","job_country","region_code","country_code","public_id","lir_niid","industry","network_distance","profile_img","number_of_connections","ts_hire_identity","patents","vols","pro_projects","publications","network_distance","desired_company_max_size","desired_company_min_size","certs","companies_following","courses","honors","test_scores"];
         arr.forEach(obj=> {
             Object.entries(cleanObject(obj)).forEach(kv=>{
@@ -83,8 +149,15 @@ const test_cont = [];
                     let is_array = Array.isArray(kv[1]);
                     let is_array_of_objects = is_array ? kv[1].every(v=> typeof v == 'object' && Array.isArray(v) === false) : false;
                     if(object_definitions[kv[0]]){
-                            //TODO: before this condition, we were clearing out objects by overwritign with empty data.
-                        test_cont.push(object_definitions[kv[0]])
+                        if( is_array_of_objects ){
+                            let new_keys = Object.keys(object_definitions[kv[0]].in_array).filter(itm=> !Object.keys(kv[1]).includes(itm))
+                            if(new_keys.length > 0 ){
+                                new_keys.forEach(nk=> {
+                                    let add_these_keys = processObjectOptions(kv[1],user_selected_object_state, {parent_key: kv[0]});
+                                    object_definitions[kv[0]]['in_array'] = {...object_definitions[kv[0]].in_array,...add_these_keys}
+                                })
+                            }
+                        }
                     }else{
                         object_definitions[kv[0]] = {
                             key: kv[0],
@@ -103,64 +176,14 @@ const test_cont = [];
                 }
             })
         })
-console.log(test_cont)
         return object_definitions;
-    }  
-
-    function convert2TsvAndDownload(records, named_file){
-        var fileArray = records;
-        //https://medium.com/enigma-engineering/the-secret-world-of-newline-characters-bfdad0a4ddd9
-        var tsvReady = (s) => s ? s.replace(/\t|\u0009|&#9;/g, ' ').replace(/[\r\n]+/g, 'â†µ').replace(/\u2029|\u2028|\x85|\x1e|\x1d|\x1c|\x0c|\x0b/g,'â†µ').replace(/"/g, "'") : s;
-        var unqHsh = (a, o) => a.filter(i => o.hasOwnProperty(i) ? false : (o[i] = true));
-        var unq = (arr) => arr.filter((e, p, a) => a.indexOf(e) == p);
-        var str = (o) => typeof o == 'object' ? tsvReady(JSON.stringify(o).replace(/\n|\r/g, ' ')) : o;
-        var firstLevel = fileArray.map(el => Object.entries(el));
-        var header = unqHsh(firstLevel.map(el => el.map(itm => itm[0])).flat(),{});
-        var table = [header];
-        for (var i = 0; i < firstLevel.length; i++) {
-            var arr = [];
-            var row = [];
-            var record = firstLevel[i];
-            for (var s = 0; s < record.length; s++) {
-            var record_kv = record[s];
-            var col_key = record_kv[0];      
-            var place = header.indexOf(col_key);
-            arr[place] = record_kv[1];
-            }
-            for (var a = 0; a < arr.length; a++) {
-            if (arr[a]) {
-                row.push(arr[a]);
-            } else {
-                row.push('');
-            }
-            }
-            table.push(row);
-        }
-        function downloadr(arr2D, filename) {
-            var data = /\.json$|.js$/.test(filename) ? JSON.stringify(arr2D) : arr2D.map(el => el.reduce((a, b) => a + '\t' + b)).reduce((a, b) => a + '\r' + b);
-            var type = /\.json$|.js$/.test(filename) ? 'data:application/json;charset=utf-8,' : 'data:text/plain;charset=utf-8,';
-            var file = new Blob([data], {
-            type: type
-            });
-            if (window.navigator.msSaveOrOpenBlob) {
-            window.navigator.msSaveOrOpenBlob(file, filename);
-            } else {
-            var a = document.createElement('a'),
-                url = URL.createObjectURL(file);
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(() => {
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
-            }, 10);
-            }
-        }
-        var output_ = table.map(el => el.map(itm => str(itm)));
-        downloadr(output_, named_file);
     }
-
+// function processObjectStatePositionOptions(object_definitions,saved_preferences){
+//     const remap = {};
+//     Object.entries(object_definitions).forEach(kv=> {
+        
+//     });
+// }
     function initTableOptionsUIfromObjectDefinitions(object_definition){
         const reg = (o, n) => o ? o[n] : '';
         const cn = (o, s) => o ? o.getElementsByClassName(s) : null;
@@ -272,6 +295,11 @@ console.log(test_cont)
         </g>
         </svg>`,
             check: `<svg width="14px" height="14px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 80.588 61.158" style="enable-background:new 0 0 80.588 61.158;" xml:space="preserve"><path style="fill:#43de6d;" d="M29.658,61.157c-1.238,0-2.427-0.491-3.305-1.369L1.37,34.808c-1.826-1.825-1.826-4.785,0-6.611  c1.825-1.826,4.786-1.827,6.611,0l21.485,21.481L72.426,1.561c1.719-1.924,4.674-2.094,6.601-0.374  c1.926,1.72,2.094,4.675,0.374,6.601L33.145,59.595c-0.856,0.959-2.07,1.523-3.355,1.56C29.746,61.156,29.702,61.157,29.658,61.157z  "/></svg>`,
+            mover: `<svg style="height: 24px; width: 24px;" version="1.1" x="0px" y="0px" viewBox="0 0 50 50" enable-background="new 0 0 50 50" xml:space="preserve">
+            <path fill="#231F20" d="M8.667,15h30c0.552,0,1-0.447,1-1s-0.448-1-1-1h-30c-0.552,0-1,0.447-1,1S8.114,15,8.667,15z"/>
+            <path fill="#231F20" d="M8.667,37h30c0.552,0,1-0.447,1-1s-0.448-1-1-1h-30c-0.552,0-1,0.447-1,1S8.114,37,8.667,37z"/>
+            <path fill="#231F20" d="M8.667,26h30c0.552,0,1-0.447,1-1s-0.448-1-1-1h-30c-0.552,0-1,0.447-1,1S8.114,26,8.667,26z"/>
+            </svg>`,
             menu: `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 18 12" version="1.1"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g id="Rounded" transform="translate(-885.000000, -3438.000000)"><g transform="translate(100.000000, 3378.000000)"><g transform="translate(782.000000, 54.000000)"><g transform="translate(0.000000, 0.000000)"><polygon points="0 0 24 0 24 24 0 24"/><path d="M4,18 L20,18 C20.55,18 21,17.55 21,17 C21,16.45 20.55,16 20,16 L4,16 C3.45,16 3,16.45 3,17 C3,17.55 3.45,18 4,18 Z M4,13 L20,13 C20.55,13 21,12.55 21,12 C21,11.45 20.55,11 20,11 L4,11 C3.45,11 3,11.45 3,12 C3,12.55 3.45,13 4,13 Z M3,7 C3,7.55 3.45,8 4,8 L20,8 C20.55,8 21,7.55 21,7 C21,6.45 20.55,6 20,6 L4,6 C3.45,6 3,6.45 3,7 Z" fill="#1D1D1D"/></g></g></g></g></g></svg>`,
             edit: `<svg viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M11.013 1.427a1.75 1.75 0 012.474 0l1.086 1.086a1.75 1.75 0 010 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 01-.927-.928l.929-3.25a1.75 1.75 0 01.445-.758l8.61-8.61zm1.414 1.06a.25.25 0 00-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 000-.354l-1.086-1.086zM11.189 6.25L9.75 4.81l-6.286 6.287a.25.25 0 00-.064.108l-.558 1.953 1.953-.558a.249.249 0 00.108-.064l6.286-6.286z"></path></svg>`,
         }; 
@@ -344,6 +372,7 @@ console.log(test_cont)
                 ref.appendChild(run_btn);
                 run_btn.onclick = initSearchConversion; //initSearchResultsDownload;
                 run_btn.innerText = 'Download Convesion';
+
             }
     
             function createOptionTypeCard(d,ref){
@@ -352,13 +381,19 @@ console.log(test_cont)
                     ob[d[0]] = d[1];
                     const current_obj_save_value = d[1].is_user_selected;
                     const cont = ele('div');
-                    a(cont,[['style',`position: relative; display: grid; grid-template-columns: 21px 21px 1fr 30px 1fr; grid-gap: 12px; transition: all 111ms; border-radius: 0.4em;  padding 12px;`]]);
+                    a(cont,[['style',`display: grid; grid-template-columns: 30px 21px 21px 1fr 1fr; grid-gap: 12px; transition: all 111ms; border-radius: 0.4em;  padding 12px; user-select: none;`]]);
                     ref.appendChild(cont);
-                    cont.onmouseenter = rowin;
-                    cont.onmouseleave = rowout;
-
+                    // ['class','draggable_option_item'],
+                    // cont.onmouseenter = rowin;
+                    // cont.onmouseleave = rowout;
+                    let move = ele('div');
+                    a(move,[['class','draggable_option_item'],['style','cursor: pointer; user-select: none;']]);
+                    cont.appendChild(move);
+                    move.innerHTML = svgs.mover;
+                    move.onmouseenter = initMoveHandler;
+                    // move.onmouseleave = ()=
                     var check = ele('div');
-                    a(check,[['jdat',`${JSON.stringify(d[1])}`],['selection',(current_obj_save_value === true ? 'on' : 'off')],['style',`text-align: center; width: 21px; height: 21px; border: 1px solid #2e2e2e; border-radius: 0.2em; background: transparent; color: #fff; cursor: pointer; transition: all 76ms;`]]);
+                    a(check,[['jdat',`${JSON.stringify(d[1])}`],['selection',(current_obj_save_value === true ? 'on' : 'off')],['style',`user-select: none; text-align: center; width: 21px; height: 21px; border: 1px solid #2e2e2e; border-radius: 0.2em; background: transparent; color: #fff; cursor: pointer; transition: all 76ms;`]]);
                     cont.appendChild(check);
                     check.innerHTML = current_obj_save_value === true ? svgs.check : '';
                     check.onclick = typeOptionSelector;
@@ -366,25 +401,27 @@ console.log(test_cont)
                     var edit = ele('div');
                     cont.appendChild(edit);
                     if(d[1].in_array){
-                        a(edit,[['jdat',`${JSON.stringify(d[1])}`],['style',`transform: translate(0, 1px); cursor: pointer; transition: all 111ms;`]]);
+                        a(edit,[['jdat',`${JSON.stringify(d[1])}`],['style',`user-select: none; transform: translate(0, 1px); cursor: pointer; transition: all 111ms;`]]);
                         edit.innerHTML = svgs.edit;
                         edit.onclick = createSubOptions;
-                    }                
+                    }
                     var text = ele('div');
-                    a(text,[['style',`background: transparent; font-size: 1em; color: #2e2e2e; tranistion: all 1s;`]]);
+                    a(text,[['style',`user-select: none; background: transparent; font-size: 1em; color: #2e2e2e; tranistion: all 1s;`]]);
                     cont.appendChild(text);
                     text.innerText = d[1].view_key;
                     if(d[1].number_to_display) {
-                        let to_string = ele('div');
-                        cont.appendChild(to_string);
-                        to_string.innerText = '';//[{}]
-
                         dropDownHTML({mainobj: d[1], label: d[1].view_key, id: 'number_select_'+d[1].key, ref:cont, items: [1,2,3,4,5,6,7,8,9,Infinity], def: `Pull ${d[1].number_to_display} ${d[1].view_key}`});
                     }
                 }
             }//createOptionTypeCard
             function rowin(){ this.style.background = '#fafaf7'; }
             function rowout(){ this.style.background = 'transparent'; }
+
+/*
+******************************
+    ADD ORDER DRAG  MOVER
+******************************
+*/
             function createSubOptions(){
                 var jdat = JSON.parse(this.getAttribute('jdat'));
                 var options = Object.entries(jdat.in_array);
@@ -398,20 +435,20 @@ console.log(test_cont)
                 ref.style.gridTemplateRows = 'auto';
                 ref.style.gridGap = '12px';
                 let bod_height_ = (window.innerHeight && document.documentElement.clientHeight && document.getElementsByTagName('body')[0].clientHeight) ? Math.min(window.innerHeight, document.documentElement.clientHeight,document.getElementsByTagName('body')[0].clientHeight) : window.innerHeight && document.documentElement.clientHeight ? Math.min(window.innerHeight, document.documentElement.clientHeight) : 500;
-                // console.log(getComputedStyle(ref).height)
                 
                 if((bod_height_ * 0.57) < ref.getBoundingClientRect().height){
                     ref.style.height = `${bod_height_ * 0.57}px`;
                 }
 
                 for(var i=0; i<options.length; i++){
-                var d = options[i];
-                createOptionTypeCard(d,ref);
+                    var d = options[i];
+                    createOptionTypeCard(d,ref);
                 }
                 var sub_cont = gi(document,edit.main_cont_id);
                 var sub_rect = this.getBoundingClientRect();
                 sub_cont.style.top = (window.innerHeight * 0.5) - (sub_cont.getBoundingClientRect().height * 0.5) > 0 ? `${(window.innerHeight * 0.5) - (sub_cont.getBoundingClientRect().height * 0.5)}px` : '40px';
                 sub_cont.style.left = `${sub_rect.left}px`;
+
             }
             function typeOptionSelector(){
                 var elm = this;
@@ -455,7 +492,7 @@ console.log(test_cont)
                 var itm_height = 21;
                 var top_pos = document.body.getBoundingClientRect().bottom > (rect.bottom - (items.length * itm_height))? (rect.top - (items.length * itm_height))+itm_height : rect.top;
                 var bod = ele('div');
-                a(bod,[['id','custom_dropdown_'],['style',`position: fixed; width: ${rect.width}px; top: ${top_pos}px; left: ${rect.left}px; display: grid; grid-template-rows: auto; grid-gap: 4px; border: 4px solid rgb(${rgb.r},${rgb.g},${rgb.b}); border-radius: 0.2em; background: rgb(${rgb.r},${rgb.g},${rgb.b}); z-index: ${topZIndexer()}; transition: all 133ms;`]]);
+                a(bod,[['id','custom_dropdown_'],['style',`position: fixed; width: ${rect.width}px; top: ${top_pos}px; left: ${rect.left}px; display: grid; grid-template-rows: auto; grid-gap: 4px; border: 4px solid rgb(${rgb.r},${rgb.g},${rgb.b}); border-radius: 0.2em; background: rgb(${rgb.r},${rgb.g},${rgb.b}); z-index: ${topZIndexer() + 5000}; transition: all 133ms;`]]);
                 document.body.appendChild(bod);
                 bod.onmouseleave = killOptions;          
                 for(var i=0; i<items.length; i++){
@@ -557,55 +594,42 @@ console.log(test_cont)
             }else{ return {} }
         }
     var client_options_object = processObjectOptions(client_json_data.map(p=> cleanObject(p)), {}, {is_top_level: true});
+console.log(client_options_object);    
     initTableOptionsUIfromObjectDefinitions(client_options_object);
     }
 
 
-
-// 
-
     function createUploadHTML(){
-        var gi = (o, s) => o ? o.getElementById(s) : null;
-        var ele = (t) => document.createElement(t);
-        var attr = (o, k, v) => o.setAttribute(k, v);
+        const gi = (o, s) => o ? o.getElementById(s) : null;
+        const ele = (t) => document.createElement(t);
+        const attr = (o, k, v) => o.setAttribute(k, v);
+        const a = (l, r) => r.forEach(a => attr(l, a[0], a[1]));
         if(gi(document,'pop_FileUploader')) gi(document,'pop_FileUploader').outerHTML = '';
-
         var popCont = ele("div");
         document.body.appendChild(popCont);
-        attr(popCont, "id", "pop_FileUploader");
-        attr(popCont, 'style','position: fixed; top: 20%; left: 50%; width: 280px; height: 100px; background: lightgrey; border: 1px solid #616161; border-radius: .5em; padding: 6px; z-index: 12000;');
-
+        a(popCont, [["id", "pop_FileUploader"],['style','position: fixed; top: 20%; left: 20%; width: 420px; height: 100px; background: #2c2c2c; border: 1px solid #1a1a1a; border-radius: .5em; padding: 6px; z-index: 12000;']]);
         var closeBtn = ele("div");
-        attr(closeBtn, "id", "note_btn_close");
-        attr(closeBtn, 'style','background: transparent; width: 15px; height: 15px; transform: scale(1.8, 1.2); border-radius: 1em; padding: 0px; color: Crimson; cursor: pointer');
+        a(closeBtn,[["id", "note_btn_close"],['style','background: transparent; width: 15px; height: 15px; transform: scale(1.8, 1.2) translate(3px,-2px); border-radius: 1em; padding: 0px; color: Crimson; cursor: pointer;']]);
         popCont.appendChild(closeBtn);
         closeBtn.innerText = "X";
         closeBtn.addEventListener("click", close);
-
         var uploadElm = ele("input");
-        attr(uploadElm, "id", "customFileInput");
-        attr(uploadElm, "type", "file");
-        attr(uploadElm, "name", "file[]");
-        attr(uploadElm, "multiple", "true");
+        a(uploadElm,[["id", "customFileInput"],["type", "file"],["name", "file[]"],["multiple", "true"],['style','background: #2c2c2c;']]);
         popCont.appendChild(uploadElm);
         uploadElm.style.transform = "scale(1.1, 1.1) translate(5%, 80%)";
         uploadElm.addEventListener("change", handleFiles);
-
         function close() {
           document.body.removeChild(popCont);
         }
     }
 
-    var contain_arr = [];
-
     async function handleFiles() {
+        var contain_arr = [];
         var files = this.files;
-        
         for(var i=0; i<files.length; i++){
             let uri = await getDataBlob(files[i]);
             if(Array.isArray(JSON.parse(uri))) {JSON.parse(uri).forEach(i=> contain_arr.push(i))} else {contain_arr.push(JSON.parse(uri));}
         }
-        
         initUserInterfaceForJSON2TSVconversion(contain_arr)
         document.getElementById('pop_FileUploader').outerHTML = '';
     }
@@ -625,3 +649,18 @@ console.log(test_cont)
       return uri;
     }
  createUploadHTML();
+
+
+function processObjectStatePositionOptions(object_definitions,saved_preferences){
+    const remap = {};
+    const saved_keys = Object.entries(saved_preferences);
+    const saved_array Array(saved_keys)
+    Object.entries(object_definitions).forEach((kv,x,r)=> {
+        if(saved_preferences[kv[0]]){
+//             object_definitions[kv[0]] = saved_preferences[kv[0]]['sort_order'] != null ? saved_preferences[kv[0]]['sort_order'] :
+        }
+//         let saved_i = key ? key['i'] : ;
+        
+    });
+}
+// processObjectStatePositionOptions(temp1,{})
