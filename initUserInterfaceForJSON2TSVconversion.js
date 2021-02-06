@@ -624,13 +624,15 @@ console.log(client_options_object);
     }
 
     async function handleFiles() {
+        function unqKey(array,key){  var q = [];  var map = new Map();  for (const item of array) {    if(!map.has(item[key])){        map.set(item[key], true);        q.push(item);    }  }  return q;}
         var contain_arr = [];
         var files = this.files;
         for(var i=0; i<files.length; i++){
             let uri = await getDataBlob(files[i]);
             if(Array.isArray(JSON.parse(uri))) {JSON.parse(uri).forEach(i=> contain_arr.push(i))} else {contain_arr.push(JSON.parse(uri));}
         }
-        initUserInterfaceForJSON2TSVconversion(contain_arr)
+        const deduped = contain_arr[0] && contain_arr[0].public_id ? unqKey(contain_arr,'public_id') : contain_arr[0] && contain_arr[0].lir_niid ? unqKey(contain_arr,'lir_niid') : contain_arr[0] && contain_arr[0].basic_niid ? unqKey(contain_arr,'basic_niid') : contain_arr[0] && contain_arr[0].niid ? unqKey(contain_arr,'niid') : contain_arr;
+        initUserInterfaceForJSON2TSVconversion(deduped);
         document.getElementById('pop_FileUploader').outerHTML = '';
     }
 
@@ -651,16 +653,16 @@ console.log(client_options_object);
  createUploadHTML();
 
 
-function processObjectStatePositionOptions(object_definitions,saved_preferences){
-    const remap = {};
-    const saved_keys = Object.entries(saved_preferences);
-    const saved_array Array(saved_keys)
-    Object.entries(object_definitions).forEach((kv,x,r)=> {
-        if(saved_preferences[kv[0]]){
-//             object_definitions[kv[0]] = saved_preferences[kv[0]]['sort_order'] != null ? saved_preferences[kv[0]]['sort_order'] :
-        }
-//         let saved_i = key ? key['i'] : ;
+// function processObjectStatePositionOptions(object_definitions,saved_preferences){
+//     const remap = {};
+//     const saved_keys = Object.entries(saved_preferences);
+//     const saved_array Array(saved_keys)
+//     Object.entries(object_definitions).forEach((kv,x,r)=> {
+//         if(saved_preferences[kv[0]]){
+// //             object_definitions[kv[0]] = saved_preferences[kv[0]]['sort_order'] != null ? saved_preferences[kv[0]]['sort_order'] :
+//         }
+// //         let saved_i = key ? key['i'] : ;
         
-    });
-}
+//     });
+// }
 // processObjectStatePositionOptions(temp1,{})
