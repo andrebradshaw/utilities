@@ -108,6 +108,8 @@ function createUploadForm(){
 
     }
 
+
+    //#fa3e3e //f5bb41
     var svgs = {
         close: `<svg x="0px" y="0px" viewBox="0 0 100 100"><g style="transform: scale(1, 1)" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(2, 2)" stroke="#fa3e3e" stroke-width="8"><path d="M47.806834,19.6743435 L47.806834,77.2743435" transform="translate(49, 50) rotate(225) translate(-49, -50) "/><path d="M76.6237986,48.48 L19.0237986,48.48" transform="translate(49, 50) rotate(225) translate(-49, -50) "/></g></g></svg>`,
         resize: `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1000.000000 1000.000000" version="1.0">
@@ -245,7 +247,7 @@ function convertMillsec2yrs(){
    
     let typeConversion = (cell,head) => /^\d+$/.test(cell) && /m[il]+seconds/i.test(head) ? milsec2years(cell) : /^\d+$/.test(cell) && /timestamp/i.test(head) ? dateString(cell) : cell.replace(/m[il]+seconds/i,'yrs').replace(/time.{0,2}stamp/i,'date');
 
-    let converted = trans.map(col=> col.map((d,i,r)=> typeConversion(d,r[0])));
+    let converted = trans.map(col=> col.map((d,i,r)=> d ? typeConversion(d,r[0]) : d));
     let output = transposeTable(converted).map(col=> col.reduce((a,b)=> a+'\t'+b)).reduce((a,b)=> a+'\n'+b);
       let el_ = document.createElement('textarea');
       document.body.appendChild(el_);
@@ -255,3 +257,4 @@ function convertMillsec2yrs(){
       el_.outerHTML = '';
     this.parentElement.getElementsByTagName('textarea')[0].value = '';
 }
+// convertMillsec2yrs()
