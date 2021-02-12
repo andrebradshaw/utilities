@@ -85,7 +85,7 @@
         }, {});
     function convert2TsvAndDownload(records, named_file){
         var fileArray = records;
-        var tsvReady = (s) => s ? s.replace(/\t|\u0009/g, ' ').replace(/\r|\n/g, 'Ã¢â€ Âµ').replace(/"/g, "'") : s;
+        var tsvReady = (s) => s ? s.replace(/\t|\u0009/g, ' ').replace(/\r|\n/g, ' ').replace(/"/g, "'") : s;
         var unqHsh = (a, o) => a.filter(i => o.hasOwnProperty(i) ? false : (o[i] = true));
         var unq = (arr) => arr.filter((e, p, a) => a.indexOf(e) == p);
         var str = (o) => typeof o == 'object' ? tsvReady(JSON.stringify(o).replace(/\n|\r/g, ' ')) : o;
@@ -100,7 +100,7 @@
             var record_kv = record[s];
             var col_key = record_kv[0];      
             var place = header.indexOf(col_key);
-            arr[place] = record_kv[1];
+            arr[place] = typeof record_kv[1] == 'string' ? tsvReady(record_kv[1]) : record_kv[1];
         }
         for (var a = 0; a < arr.length; a++) {
             if (arr[a]) {
