@@ -239,13 +239,13 @@ function convertMillsec2yrs(){
         const date = new Date(parseInt(d));
         return `${date.getDate()} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][date.getMonth()]} ${date.getFullYear()}`;
     }
-    const milsec2years = (n) => Math.round((n/3.154e+10)*100)/100;
+    const milsec2years = (n) => Math.round((Math.abs(n)/3.154e+10)*100)/100;
     const tsvfile = this.parentElement.getElementsByTagName('textarea')[0].value.trim();
     const table = tsvfile.split(/\n/).map(r=> r.split(/\t/).map(cc=> cc.trim()));
     const trans = transposeTable(table);
     const headers = trans.map(h=> h[0]);
    
-    let typeConversion = (cell,head) => /^\d+$/.test(cell) && /m[il]+seconds/i.test(head) ? milsec2years(cell) : /^\d+$/.test(cell) && /timestamp/i.test(head) ? dateString(cell) : cell.replace(/m[il]+seconds/i,'yrs').replace(/time.{0,2}stamp/i,'date');
+    let typeConversion = (cell,head) => /^[-\d]+$/.test(cell) && /m[il]+seconds/i.test(head) ? milsec2years(cell) : /^\d+$/.test(cell) && /timestamp/i.test(head) ? dateString(cell) : cell.replace(/m[il]+seconds/i,'yrs').replace(/time.{0,2}stamp/i,'date');
 
     let converted = trans.map(col=> col.map((d,i,r)=> d ? typeConversion(d,r[0]) : d));
     let output = transposeTable(converted).map(col=> col.reduce((a,b)=> a+'\t'+b)).reduce((a,b)=> a+'\n'+b);
@@ -257,4 +257,3 @@ function convertMillsec2yrs(){
       el_.outerHTML = '';
     this.parentElement.getElementsByTagName('textarea')[0].value = '';
 }
-// convertMillsec2yrs()
