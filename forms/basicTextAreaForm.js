@@ -8,8 +8,8 @@ function createUploadForm(){
     var attr = (o, k, v) => o.setAttribute(k, v);
     var a = (l, r) => r.forEach(a => attr(l, a[0], a[1]));
     function topZIndexer(){
-        let n = new Date().getTime() /100000
-        let r = (n - Math.floor(n)) * 1000
+        let n = new Date().getTime() /100000;
+        let r = (n - Math.floor(n)) * 1000;
         return Math.round(n+r);
     }
     function inlineStyler(elm,css){
@@ -68,7 +68,7 @@ function createUploadForm(){
             var head_height = cont.firstChild.getBoundingClientRect().height;
             var foot_height = foot.getBoundingClientRect().height;
             var pos1 = 0,    pos2 = 0,    pos3 = 0,    pos4 = 0;
-            var width = parseFloat(cont.style.width.replace(/px/,''));
+            var width = parseFloat(window.getComputedStyle(cont).width.replace(/px/,''));
             var height = parseFloat(cont.getBoundingClientRect().height);
             if (document.getElementById(this.id)) document.getElementById(this.id).onmousedown = dragMouseDown;
             else this.onmousedown = dragMouseDown;
@@ -137,7 +137,7 @@ function createUploadForm(){
 
         let cbod = ele('div');
         a(cbod, [['id',main_cont_id+'_body']]);
-        inlineStyler(cbod,`{background: ${cbod_bg_color}; padding: 8px; overflow-y: auto; border-left: 1px solid #2b2b2b; border-right: 1px solid #2b2b2b;}`)
+        inlineStyler(cbod,`{background: ${cbod_bg_color}; padding: 8px; overflow-y: auto; border-left: 1px solid #2b2b2b; border-right: 1px solid #2b2b2b;}`);
         mainbod.appendChild(cbod);
 
         let footer = ele('div');
