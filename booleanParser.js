@@ -1,5 +1,5 @@
-function unqKey(array,key){  var q = [];  var map = new Map();  for (const item of array) {    if(!map.has(item[key])){        map.set(item[key], true);        q.push(item);    }  }  return q;}
-const parseStringAsXset = (s) => s
+
+var parseStringAsXset = (s) => s
 .split(/\s+\band\b\s+|(?<!\s+and\b)\s+\(|\)\s+(?!\band\b)/i)
     .map(el=> 
         el.split(/\s+\bor\b\s+/i).map(ii=> 
@@ -7,9 +7,9 @@ const parseStringAsXset = (s) => s
             .replace(/\s*\(\s*/g,'')
             .replace(/\s+/g,'.{0,3}')
             .replace(/"/g,'\\b')
-            .replace(/\*/g,'\\w*')
-            .replace(/\*\*\*/g,'.{0,60}'))
-                .reduce((a,b)=> a+'|'+b)).filter(el=> el);
+            .replace(/\*\*\*/g,'.{0,60}')
+            .replace(/\*/g,'.{0,1}'))
+                .reduce((a,b)=> a+'|'+b)).filter(el=> el).map(r=> r.replace(/\+/g,'\\+'));
 
 function permutateNear(input,joiner){
   var nearx = /(?<=\||^)\S+?(?=\||$)/g;
@@ -41,15 +41,24 @@ function permutateNear(input,joiner){
   return base + near_or;
 }
 
-function buildSearchSet(str){
-  if(str){
-      var set = parseStringAsXset(str);
-      var xset = set.map(r=> permutateNear(r,'.{0,39}')).map(r=> tryRegExp(r.replace(/^\||\|$/g,''),'i'));
-      return xset;
-  }else{return null}
+function buildSearchSet(str,flags){
+    if(str){
+        var set = parseStringAsXset(str);
+        var xset = set.map(r=> permutateNear(r,'.{0,49}')).map(r=> tryRegExp(r.replace(/^\||\|$/g,''),flags));
+        return xset;
+    }else{return null}
 }
+
 function tryRegExp(s,f){
     try{return new RegExp(s,f)}
     catch(err){return err}
 }
+function hasNestedParenth(s){
+    const reg = (o, n) => o ? o[n] : '';
+    let check_p = reg(/\(.+\(/.exec(s),0);
+    let opens = check_p.match(/\(/g);
+    let closes =check_p.match(/\)/g);
+    return !opens?.length ? false : closes?.length != ( opens?.length - 1);
+}
+
 buildSearchSet('(keywords OR other keywords) AND (more~stuff~"to" find)')
