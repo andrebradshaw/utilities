@@ -83,12 +83,10 @@ async function buildContainer(){
                 background: transparent;
                 box-shadow: rgb(204, 219, 232) 2px 2px 4px 1px inset, rgba(255, 255, 255, 0.5) -1px -2px 4px 2px inset;
                 color: #788fa5;
+                transition: all 333ms;
             }
-            .load_shiner {
-                background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
-                border-radius: 1em;
-                background-size: 200% 100%;
-                animation: 1.5s shine linear infinite;
+            .textarea:focus {
+                box-shadow: rgb(204, 219, 232) 2px 4px 4px 1px inset, rgba(255, 255, 255, 0.5) -2px -2px 4px 2px inset;
             }
             
             @keyframes shine {
@@ -135,7 +133,7 @@ async function buildContainer(){
                 transform: translate3d(-75%, 0, 0);
                 transition: transform 0.4s cubic-bezier(0.85, 0.05, 0.18, 1.35);
                 box-shadow:
-                -8px -4px 8px 0px #ffffff,
+                -1px -2px 8px 0px #ffffff,
                 8px 4px 12px 0px #d1d9e6;
             }
             
@@ -158,7 +156,11 @@ async function buildContainer(){
                 color: #788fa5;
             }
             .${style_id}:active {
-                box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
+                box-shadow:
+                -8px -4px 8px 0px #ffffff,
+                6px 2px 6px 0px rgb(204, 219, 232),
+                4px 4px 4px 0px rgb(204, 219, 232) inset,
+                -4px -4px 4px 0px #ffffff inset;
                 color: #788fa5;
             }
             `;
@@ -184,7 +186,7 @@ async function buildContainer(){
 
     let shadow = 'box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;';
 
-    inlineStyler(cont,`{position: fixed; z-index: ${topZIndexer()}; top: 500px; left: 0px; display: grid; grid-template-columns: 32px 1fr 92px; grid-gap: 12px; ${shadow} text-align: left; max-height: ${height}px; max-width: ${width}px; background: #ffffff; color: #374552; border-radius: 1em; padding: 12px; transition: all 111ms;}`);
+    inlineStyler(cont,`{display: grid; grid-template-columns: 32px 1fr 92px; grid-gap: 12px; ${shadow} text-align: left; max-height: ${height}px; max-width: ${width}px; background: #ffffff; color: #374552; border-radius: 1em; padding: 12px; transition: all 111ms; position: fixed; z-index: ${topZIndexer()}; top: 500px; left: 0px;}`);
     document.body.appendChild(cont);
     
     const panel = ele('div');
@@ -219,20 +221,49 @@ async function buildContainer(){
     btn.onclick = convertTableToBoolean;
 
     const right = ele('div');
-    inlineStyler(right,`{display: grid; grid-template-rows: 20px minmax(30px,60px) 300px 30px; grid-gap: 8px;}`);
+    inlineStyler(right,`{display: grid; grid-template-rows: 20px minmax(30px,60px) 50px 40px minmax(30px,60px) 200px 30px; grid-gap: 8px;}`);
     cont.appendChild(right);
-    right.innerHTML = `<div title="Select if you want quotes around your terms" style="user-select: none; font-size: 0.9em; text-align: center;">Add Quotes?</div>    <div style="border: 0px;">        <label  style="border: 0px;" title="Select if you want quotes around your terms" class="label">            <div class="label-text"></div>            <div class="toggle">                <input id="add_quotes_btn" class="toggle-state" type="checkbox" name="check" value="check" />                <div class="indicator"></div>            </div>        </label>    </div>  <div></div><div style="font-size: 0.6em; text-align: center;"><a rel="nofollow" href="https://www.patreon.com/andrebradshaw">made by Andre B.</a></div>`;
+    right.innerHTML = `<div title="Select if you want quotes around your terms" style="user-select: none; font-size: 0.9em; text-align: center;">Add Quotes?</div>
+<div style="border: 0px;">
+  <label style="border: 0px;" title="Select if you want quotes around your terms" class="label">
+    <div class="label-text"></div>
+    <div class="toggle"> <input id="add_quotes_btn" class="toggle-state" type="checkbox" name="check" value="check" />
+      <div class="indicator"></div>
+    </div>
+  </label>
+</div>
+<div></div>
+<div title="Select for LinkedIn OR search Hack. Credit to Irina Shamaeva" style="user-select: none; font-size: 0.9em; text-align: center;">LinkedIn OR Hack</div>
+<div style="border: 0px;">
+  <label style="border: 0px;" title="Select for LinkedIn OR search Hack. Credit to Irina Shamaeva" class="label">
+    <div class="label-text"></div>
+    <div class="toggle"> <input id="linkedin_experiemental_or_btn" class="toggle-state" type="checkbox" name="check" value="check" />
+      <div class="indicator"></div>
+    </div>
+  </label>
+</div>
+<div></div>
+<div style="font-size: 0.6em; text-align: center;"><a rel="nofollow" href="https://www.patreon.com/andrebradshaw">made by Andre B.</a></div>`;
+
     keepElmInBoundary(cont);
     inlineStyler(cont,`{left: ${((window.innerWidth - cont.getBoundingClientRect().width) * 0.5)}px;}`);
     keepElmInBoundary(cont);    
 }
 function convertTableToBoolean(){
-    const unqHsh = (a, o) => a.filter(i => o.hasOwnProperty(i) ? false : (o[i] = true));
-    const transpose = (a)=>  a[0].map((_, c)=> a.map(r=> r[c]));
-    var table = this.parentElement.getElementsByTagName('textarea')[0].value.split(/\n/).map(r=> r.split(/\t/));
-    var transposed_table = transpose(table).map(r=> unqHsh(r.filter(ii=> ii).map(i=> i.toLowerCase()),{}));
-    const qf = document.getElementById('add_quotes_btn')?.checked;
-    var boolean_string = transposed_table.map(r=> (qf ? '("' : '(') + r.reduce((a,b)=> qf ? a+'" OR "'+b : a+' OR '+b) + (qf ? '")' : ')') ).reduce((a,b)=> a+' AND '+b);
-    this.parentElement.getElementsByTagName('textarea')[0].value = boolean_string;
+    const textdata = this.parentElement.getElementsByTagName('textarea')[0].value;
+    if(textdata){
+        const unqHsh = (a, o) => a.filter(i => o.hasOwnProperty(i) ? false : (o[i] = true));
+        const transpose = (a)=>  a[0].map((_, c)=> a.map(r=> r[c]));
+        var table = textdata.split(/\n/).map(r=> r.split(/\t/));
+        var transposed_table = transpose(table).map(r=> unqHsh(r.filter(ii=> ii).map(i=> i.toLowerCase().trim()),{}));
+        const qf = document.getElementById('add_quotes_btn')?.checked;
+        const exp = document.getElementById('linkedin_experiemental_or_btn')?.checked;
+        if(exp){
+            var linkedin_bool_string = transposed_table.map(or=> '('+ or.map((v,i,r)=> i == 0 ? `${(qf ? '"' : '')}${v}${(qf ? '"' : '')}` : ` OR(${(qf ? '"' : '')}${v}${(qf ? '")' : ')')}`)
+    .reduce((a,b)=> a+b)+ ')').reduce((a,b)=> a+' AND '+b);
+        }
+        var boolean_string = transposed_table.map(r=> (qf ? '("' : '(') + r.reduce((a,b)=> qf ? a+'" OR "'+b : a+' OR '+b) + (qf ? '")' : ')') ).reduce((a,b)=> a+' AND '+b);
+        this.parentElement.getElementsByTagName('textarea')[0].value = !exp ? boolean_string : linkedin_bool_string;
+    }
 }
 buildContainer()
