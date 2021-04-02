@@ -173,7 +173,7 @@ async function buildContainer(){
     const width = window.innerWidth <= 800 ? window.innerWidth * 0.9 : window.innerWidth > 800 && window.innerWidth < 1161 ? window.innerWidth * 0.7 : window.innerWidth * 0.6;
     const left_p_h = width < 500 ? width * 0.6 : 500;
     const height_p_h = height < 600 ? height * 0.7 : 520;
-console.log([left_p_h,width],[height_p_h,height])
+
     if(cn(document,'quickli_flash_info_card')) Array.from(cn(document,'quickli_flash_info_card')).forEach(r=> { r.outerHTML = ''; });
     const cont = ele('div');
     a(cont,[['class','quickli_flash_info_card']]);
