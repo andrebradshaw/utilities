@@ -88,13 +88,7 @@ async function buildContainer(){
             .textarea:focus {
                 box-shadow: rgb(204, 219, 232) 2px 4px 4px 1px inset, rgba(255, 255, 255, 0.5) -2px -2px 4px 2px inset;
             }
-            
-            @keyframes shine {
-                to {
-                  background-position-x: -200%;
-                }
-            }
-   
+
             .label {
                 display: inline-flex;
                 align-items: center;
@@ -129,7 +123,6 @@ async function buildContainer(){
                 width: 200%;
                 background: #ecf0f3;
                 border-radius: 2em;
-                
                 transform: translate3d(-75%, 0, 0);
                 transition: transform 0.4s cubic-bezier(0.85, 0.05, 0.18, 1.35);
                 box-shadow:
@@ -178,8 +171,9 @@ async function buildContainer(){
 
     const height = window.innerHeight <=600 ? window.innerHeight * 0.9 : window.innerHeight > 600 && window.innerHeight < 1100 ? window.innerHeight * 0.7 : window.innerHeight * 0.6;
     const width = window.innerWidth <= 800 ? window.innerWidth * 0.9 : window.innerWidth > 800 && window.innerWidth < 1161 ? window.innerWidth * 0.7 : window.innerWidth * 0.6;
-    const left_p_h = 500;
-
+    const left_p_h = width < 500 ? width * 0.6 : 500;
+    const height_p_h = height < 600 ? height * 0.7 : 520;
+console.log([left_p_h,width],[height_p_h,height])
     if(cn(document,'quickli_flash_info_card')) Array.from(cn(document,'quickli_flash_info_card')).forEach(r=> { r.outerHTML = ''; });
     const cont = ele('div');
     a(cont,[['class','quickli_flash_info_card']]);
@@ -191,7 +185,7 @@ async function buildContainer(){
     
     const panel = ele('div');
     a(panel,[['class','mover-left-gradient']]);
-    inlineStyler(panel,`{display: grid; grid-template-rows: 32px 1fr; grid-gap: 12px; user-select: none;}`);
+    inlineStyler(panel,`{display: grid; grid-template-rows: 32px ${height-60}px; grid-gap: 12px; user-select: none;}`);
     cont.appendChild(panel);
 
     const cls = ele('div');
@@ -210,8 +204,8 @@ async function buildContainer(){
     cont.appendChild(left);
 
     const textarea = ele('textarea');
-    a(textarea,[['class','query_item textarea pad8'],['placeholder','copy/paste your table here without headers.\nEach column is an AND statement and every row is an OR statement.']]);
-    inlineStyler(textarea,`{width: ${left_p_h-16}px; height: ${left_p_h}px;}`);
+    a(textarea,[['class','query_item textarea pad8'],['placeholder','Copy/paste your table here without headers.\n\nEach column is an AND statement and every row is an OR statement.']]);
+    inlineStyler(textarea,`{width: ${left_p_h-16}px; height: ${height_p_h}px;}`);
     left.appendChild(textarea);
 
     const btn = ele('div');
@@ -221,7 +215,7 @@ async function buildContainer(){
     btn.onclick = convertTableToBoolean;
 
     const right = ele('div');
-    inlineStyler(right,`{display: grid; grid-template-rows: 20px minmax(30px,60px) 50px 40px minmax(30px,60px) 200px 30px; grid-gap: 8px;}`);
+    inlineStyler(right,`{display: grid; grid-template-rows: 20px 60px 50px 40px 60px ${(height_p_h-(260+(8*6)))}px 30px; grid-gap: 8px;}`);
     cont.appendChild(right);
     right.innerHTML = `<div title="Select if you want quotes around your terms" style="user-select: none; font-size: 0.9em; text-align: center;">Add Quotes?</div>
 <div style="border: 0px;">
