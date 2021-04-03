@@ -1,0 +1,44 @@
+function domplate() {
+  var output = `const rando = (n) => Math.round(Math.random() * n);\nconst delay = (ms) => new Promise(res => setTimeout(res, ms));`;
+  var el = document.createElement('textarea');
+  document.body.appendChild(el);
+  el.value = output;
+  el.select();
+  document.execCommand('copy');
+  el.outerHTML = '';
+}
+domplate()
+
+
+function domplate() {
+  var output = `const unqHsh = (a,o) => a.filter(i=> o.hasOwnProperty(i) ? false : (o[i] = true));`;
+  var el = document.createElement('textarea');
+  document.body.appendChild(el);
+  el.value = output;
+  el.select();
+  document.execCommand('copy');
+  el.outerHTML = '';
+}
+domplate()
+
+function domplate() {
+  var output = `const reg = (o, n) => o ? o[n] : '';`;
+  var el = document.createElement('textarea');
+  document.body.appendChild(el);
+  el.value = output;
+  el.select();
+  document.execCommand('copy');
+  el.outerHTML = '';
+}
+domplate()
+
+function domplate() {
+  var output = `async function handleMultiFetch(arr,type){\n    let res = await Promise.all(arr.map(e => fetch(e.url,e.obj)));\n    if(type == 'json') return await Promise.all(res.filter(r=> (r.status > 199 && r.status < 305)).map(e => e.json()));\n    if(type == 'text') return await Promise.all(res.filter(r=> (r.status > 199 && r.status < 305)).map(e => e.text()));\n    if(type == 'html') {\n        let text = await Promise.all(res.filter(r=> (r.status > 199 && r.status < 305)).map(e => e.text()));\n        return new DOMParser().parseFromString(text,'text/html');\n    } else { return false; }\n}`;
+  var el = document.createElement('textarea');
+  document.body.appendChild(el);
+  el.value = output;
+  el.select();
+  document.execCommand('copy');
+  el.outerHTML = '';
+}
+domplate()
