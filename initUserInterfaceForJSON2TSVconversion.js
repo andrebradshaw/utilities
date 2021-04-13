@@ -141,6 +141,13 @@ async function convertJsonUserInterface(client_json_data){
                 transform: translate3d(25%, 0, 0);
                 background: #d0f2e5;
             }
+            .dragged_item:hover {
+                box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+            }
+            .dragged_item:active {
+                box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 6px 0px, rgba(255, 255, 255, 0.8) -6px -2px 6px -3px;
+                background: #ffffff;
+            }
             .${style_id} {
                 box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
                 font-size: 1.2em;
@@ -334,9 +341,7 @@ async function convertJsonUserInterface(client_json_data){
             if(gi(document,id)) gi(document,id).outerHTML = '';
             const cont = ele('div');
             a(cont,[['id',id]]);
-        
             let shadow = 'box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;';
-        
             inlineStyler(cont,`{display: grid; grid-template-columns: 32px 1fr; grid-gap: 12px; ${shadow} text-align: left; max-height: ${height}px; max-width: ${width}px; background: #ffffff; color: #374552; border-radius: 1em; padding: 12px; transition: all 111ms; position: fixed; z-index: ${topZIndexer()}; top: 500px; left: 0px;}`);
             document.body.appendChild(cont);
             
@@ -381,11 +386,11 @@ async function convertJsonUserInterface(client_json_data){
                 ob[d[0]] = d[1];
                 const current_obj_save_value = d[1].is_user_selected;
                 const cont = ele('div');
-                a(cont,[['style',`user-select: none; display: grid; grid-template-columns: 30px 21px 21px 1fr 1fr; grid-gap: 12px; transition: all 111ms; border-radius: 0.4em;  padding 12px; user-select: none;`]]);
+                a(cont,[['class','dragged_item'],['style',`user-select: none; display: grid; grid-template-columns: 30px 21px 21px 1fr 1fr; grid-gap: 12px; transition: all 111ms; border-radius: 0.4em; padding 12px; user-select: none;`]]);
                 ref.appendChild(cont);
 
                 let move = ele('div');
-                a(move,[['class','draggable_option_item'],['style','user-select: none; cursor: pointer;']]);
+                a(move,[['class','draggable_option_item'],['style','user-select: none; cursor: move;']]);
                 cont.appendChild(move);
                 move.innerHTML = svgs.mover;
                 move.onmouseenter = initMoveHandler;
@@ -432,7 +437,7 @@ async function convertJsonUserInterface(client_json_data){
             const midpad = ele('div');
             inlineStyler(midpad,`{height: 8px;}`);
             ref.appendChild(midpad);
-            run_btn.innerText = 'Download Convesion';
+            run_btn.innerText = 'Download Conversion';
             const bottompad = ele('div');
             inlineStyler(bottompad,`{height: 8px;}`);
             ref.appendChild(bottompad);
@@ -484,7 +489,7 @@ async function convertJsonUserInterface(client_json_data){
             text.innerText = def;            
             var sel = ele('div');
             cont.appendChild(sel);
-            sel.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" transform="rotate(180)" version="1.1" viewBox="0 0 15 15">  <path d="M7.5385,2&#10;&#9;C7.2437,2,7.0502,2.1772,6.9231,2.3846l-5.8462,9.5385C1,12,1,12.1538,1,12.3077C1,12.8462,1.3846,13,1.6923,13h11.6154&#10;&#9;C13.6923,13,14,12.8462,14,12.3077c0-0.1538,0-0.2308-0.0769-0.3846L8.1538,2.3846C8.028,2.1765,7.7882,2,7.5385,2z"/></svg>`;          
+            sel.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" transform="rotate(180)" version="1.1" viewBox="0 0 15 15">  <path d="M7.5385,2&#10;&#9;C7.2437,2,7.0502,2.1772,6.9231,2.3846l-5.8462,9.5385C1,12,1,12.1538,1,12.3077C1,12.8462,1.3846,13,1.6923,13h11.6154&#10;&#9;C13.6923,13,14,12.8462,14,12.3077c0-0.1538,0-0.2308-0.0769-0.3846L8.1538,2.3846C8.028,2.1765,7.7882,2,7.5385,2z"/></svg>`;
             function hoverOut(){ this.style.background = `rgb(${rgb.r},${rgb.g},${rgb.b})`; }
             function hoverIn(){ this.style.background = '#ffffff'; }          
             function createOptions(){
