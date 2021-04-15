@@ -63,18 +63,19 @@ function getEveryDateInRage(o){
 }
 
 const date_rages = getEveryDateInRage({
-  start_date:'10 Mar 2021',
+  start_date:'10 Feb 2020',
   end_date:new Date(),
 });
 const slide_container = ele('div');
 a(slide_container,[['class','slide_container']]);
 document.body.appendChild(slide_container);
 
-inlineStyler(slide_container,`{user-select: none; display: grid; grid-template-columns: ${Array(date_rages.length).fill().map((_,i)=> '6px').reduce((a,b)=> a+' '+b)}; grid-gap:2px; background:#dc88fc; width:${(date_rages.length*8)}px; border-radius: 2em;}`);
+inlineStyler(slide_container,`{user-select: none; display: grid; grid-template-columns: ${Array(date_rages.length).fill().map((_,i)=> '6px').reduce((a,b)=> a+' '+b)}; grid-gap:2px; background:#dc88fc; width:${(date_rages.length*8)}px; border-radius: 2em; max-width:90%; overflow-y: auto;}`);
+
 date_rages.forEach((d,i,r)=> {
 	let opt = ele('div');
-	let slider_style = i == 0 || i == (r.length - 1) ? `{transform: scale(1.2,1.2); width: 20px; height: 20px; background: #4287f5; border-radius: 2em; z-index: ${topZIndexer()};}` : `{width: 9px; height:5}px; background:transparent;}`;
-	
+	let slider_style = i == 0 || i == (r.length - 1) ? `{font-size: 0.5em; transform: scale(1.75,1.75); width: 20px; height: 20px; background: #4287f5; border-radius: 2em; z-index: ${topZIndexer()};}` : `{width: 9px; height:5}px; background:transparent;}`;
+	a(opt,[['class',`slide_item_ ${(i == 0 || i == (r.length - 1) ? 'slider_ball_' : '')}`],['val',d]]);
 	inlineStyler(opt,slider_style);
   
 	slide_container.appendChild(opt);
@@ -82,7 +83,25 @@ date_rages.forEach((d,i,r)=> {
   	opt.onmouseenter = initMoveHandler;
   }
 })
-				
+
+function reLabelSliders(){
+	Array.from(cn(document,'slide_item_')).forEach((a,i,r)=> {
+		let is_ball = /slider_ball_/.test(a.getAttribute('class'));
+		let ball_timestamps = Array.from(cn(document,'slider_ball_')).map(v=> new Date(v.getAttribute('val')).getTime());
+  	if(is_ball) {
+    	a.innerText = date_rages[i];
+      inlineStyler(a,`{background:#4287f5;}`);
+    }
+    /* else{
+      r.forEach(v=> {
+    let tm = new Date(v.getAttribute('val')).getTime();
+    let is_white = (ball_timestamps[0] > tm && tm < ball_timestamps[1]) || (ball_timestamps[1] > tm && tm < ball_timestamps[2]);
+    inlineStyler(v,(is_white ? `{background:#ffffff;}` : `{background:#dc88fc;}`))
+      })
+    } */
+		a.setAttribute('val',date_rages[i]);
+  })
+}
         
         
 /*
@@ -119,7 +138,8 @@ function initMoveHandler(){
 
   const mouseMoveHandler = function(e) {
     const draggingRect = draggingEle.getBoundingClientRect();
-console.log(draggingRect);
+reLabelSliders()
+draggingEle.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
     if (!isDraggingStarted) {
       isDraggingStarted = true;
       placeholder = document.createElement('div');
