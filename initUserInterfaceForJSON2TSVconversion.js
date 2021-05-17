@@ -7,6 +7,8 @@ async function convertJsonUserInterface(client_json_data){
     const attr = (o, k, v) => o.setAttribute(k, v);
     const a = (l, r) => r.forEach(a => attr(l, a[0], a[1]));
     const delay = (ms) => new Promise(res => setTimeout(res, ms));
+    const snakeCaseToTitleCase = (s)=> fixNameCase(s.replace(/_/g, ' ').trim());
+
     const cleanObject = (ob) => 
         Object.entries(ob).reduce((r, [k, v]) => {
             if(v != null && v != undefined && v != "" && ( typeof v == 'boolean' || typeof v == 'string' || typeof v == 'symbol' || typeof v == 'number' || typeof v == 'function' || (typeof v == 'object'  && ((Array.isArray(v) && v.length) || (Array.isArray(v) != true)) ) ) ) { 
@@ -281,7 +283,6 @@ async function convertJsonUserInterface(client_json_data){
             const y = new RegExp('(?=[^'+specialchar+'a-zA-Z])\\b','i');
             return s && typeof s == 'string' ? s.replace(x,'').replace(w,'').split(y).map(el=> el.replace(/\w\S*/g, txt=> txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())).join('').replace(/(?<=\bMc)\w/ig, t=> t.charAt(0).toUpperCase()) : s;
         }
-        const snakeCaseToTitleCase = (s)=> fixNameCase(s.replace(/_/g, ' ').trim());
         const object_definitions = {};
     //TODO: This should reference a user preference document in the future. 
         let make_false = ["id","cert_company_name","cert_end_timestamp","cert_start_timestamp","millseconds_in_cert","cert_company_id","languages","company_connections","shared_connections","edu_start_year","edu_school_id","job_company_linkedin_url","job_company_id","job_company_description","job_company_hq_region","job description","job_is_current","job_industries","job_country","region_code","country_code","public_id","lir_niid","industry","network_distance","profile_img","number_of_connections","ts_hire_identity","patents","vols","pro_projects","publications","network_distance","desired_company_max_size","desired_company_min_size","certs","companies_following","courses","honors","test_scores"];
@@ -310,7 +311,7 @@ async function convertJsonUserInterface(client_json_data){
                             in_array: is_array && is_array_of_objects ? processObjectOptions(kv[1],user_selected_object_state, {parent_key: kv[0]}) : false,
                             type: typeof kv[1],
                             is_user_selected: make_false.some(omit=> omit == kv[0]) ? false : current_user_sel,
-                            view_key: snakeCaseToTitleCase(kv[0]),
+                            view_key: (kv[0]),
                             is_top_level: object_level?.is_top_level ? true : false,
                             parent_key: object_level?.parent_key ? object_level?.parent_key : null,
                             number_to_display: is_array_of_objects ? 1 : null,
@@ -411,9 +412,9 @@ async function convertJsonUserInterface(client_json_data){
                 var text = ele('div');
                 a(text,[['style',`user-select: none; background: transparent; font-size: 1em; color: #2e2e2e; tranistion: all 1s;`]]);
                 cont.appendChild(text);
-                text.innerText = d[1].view_key;
+                text.innerText = snakeCaseToTitleCase(d[1].view_key);
                 if(d[1].number_to_display) {
-                    dropDownHTML({mainobj: d[1], label: d[1].view_key, id: 'number_select_'+d[1].key, ref:cont, items: [1,2,3,4,5,6,7,8,9,Infinity], def: `Pull ${d[1].number_to_display} ${d[1].view_key}`},container_id);
+                    dropDownHTML({mainobj: d[1], label: snakeCaseToTitleCase(d[1].view_key), id: 'number_select_'+d[1].key, ref:cont, items: [1,2,3,4,5,6,7,8,9,Infinity], def: `Pull ${d[1].number_to_display} ${snakeCaseToTitleCase(d[1].view_key)}`},container_id);
                 }
             }
         }//createOptionTypeCard
@@ -446,7 +447,7 @@ async function convertJsonUserInterface(client_json_data){
         function createSubOptions(){
             var jdat = JSON.parse(this.getAttribute('jdat'));
             var options = Object.entries(jdat.in_array);
-            const sub_params = {id: 'json_conversion_sub',head_text:`Select ${jdat.view_key} Data Columns`};
+            const sub_params = {id: 'json_conversion_sub',head_text:`Select ${snakeCaseToTitleCase(jdat.view_key)} Data Columns`};
             var ref = createDraggableFormContainer(sub_params);
             for(var i=0; i<options.length; i++){
                 var d = options[i];
