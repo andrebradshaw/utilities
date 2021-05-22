@@ -37,6 +37,15 @@ function processObjectOptions(arr,user_selected_object_state, object_level){
     })
     return object_definitions;
 }
+var cleanObject = (ob) => 
+  Object.entries(ob).reduce((r, [k, v]) => {
+    if(v != null && v != undefined && v != "" && ( typeof v == 'boolean' || typeof v == 'string' || typeof v == 'symbol' || typeof v == 'number' || typeof v == 'function' || (typeof v == 'object'  && ((Array.isArray(v) && v.length) || (Array.isArray(v) != true)) ) ) ) { 
+      r[k] = v; 
+      return r;
+    } else { 
+     return r; 
+    }
+  }, {});
 var obj_2 = processObjectOptions(fileArray)
 console.log(obj_2)
 function downloadr(arr2D, filename) {
