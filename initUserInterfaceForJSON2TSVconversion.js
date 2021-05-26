@@ -598,7 +598,7 @@ async function convertJsonUserInterface(client_json_data){
     // function convert2TsvAndDownload(records, named_file){
 
     function updateColumnOrderAndDownload(client_options_object,processed_flat_records,filename){
-        const tsvReady = (s) => typeof s == 'string' ? s?.replace(/\t|\u0009|&#9;/g, ' ').replace(/[\r\n]+/g, '\n').replace(/\u2029|\u2028|\x85|\x1e|\x1d|\x1c|\x0c|\x0b/g,'\n').replace(/"/g, "'") : s;
+        const tsvReady = (s) => typeof s == 'string' ? s?.replace(/\t|\u0009|&#9;/g, ' ').replace(/[\r\n]+/g, '<br>').replace(/\u2029|\u2028|\x85|\x1e|\x1d|\x1c|\x0c|\x0b/g,'<br>').replace(/"/g, "'") : s;
         const unqHsh = (a, o) => a.filter(i => o.hasOwnProperty(i) ? false : (o[i] = true));
         var first_level = processed_flat_records.map(r=> Object.entries(r));
         var sorted_header = unqHsh(first_level.map(r=> r.map(kv=> kv[0])).flat(),{}).map(h=> {
