@@ -1,0 +1,13 @@
+function sylSplit(s){
+    var unqHsh = (a,o) => a.filter(i=> o.hasOwnProperty(i) ? false : (o[i] = true));
+    var word = s.toLowerCase().replace(/(?:[^laeiouy]|ed|[^laeiouy]e)$/, '').replace(/^y/, '');
+    var syl = word.match(/[aeiouy]{1,2}/g);
+    var wordarr = word.split('');
+    var non_split_i = unqHsh(syl.map(y=> wordarr.map((w,i,r)=> y == w ? i : false)).flat().filter(i=> typeof i == 'number'),{});
+    var split_indexes = wordarr.map((w,i,r)=> i).filter(i=> non_split_i.every(n=> n != i));
+    var syl_arr = split_indexes.map((i)=> word.substring((i-1),i+1))
+    var rx = new RegExp('^.*?'+syl_arr.reduce((a,b)=> a+b),'i');
+    var end = s.replace(rx,'');
+    return syl_arr[syl_arr.length] == end ? syl_arr : [...syl_arr,...[end]];
+}
+sylSplit('executive')
