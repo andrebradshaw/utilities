@@ -1,19 +1,3 @@
-//   function tsv2JSON(){
-//       const tsvfile = this.parentElement.getElementsByTagName('textarea')[0].value.trim();
-//       const tsvTo2dArr = (tsv) => tsv.split(/[\r\n]+/).map(itm => itm.split(/\t/));
-//       const table = tsvTo2dArr(tsvfile);
-//       table.forEach(el=> {
-//           let ob = {};
-//           for(var i=0; i<table[0].length; i++){
-//               let key = table[0][i]; //.toLowerCase().replace(/\W+/g,'_');
-//               ob[key] = el[i];
-//               header_keys.push(key);
-//           }
-//           json_arr.push(ob);
-//       });
-//       json_arr.shift();
-//       identifyTargetKeysForEnrichment(header_keys,this.parentElement);
-//   }//tsv2JSON
 
   var reg = (o, n) => o ? o[n] : '';
     var cn = (o, s) => o ? o.getElementsByClassName(s) : null;
