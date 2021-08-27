@@ -783,7 +783,7 @@ async function convertJsonUserInterface(client_json_data){
             if(Array.isArray(JSON.parse(uri))) {JSON.parse(uri).forEach(i=> contain_arr.push(i))} else {contain_arr.push(JSON.parse(uri));}
         }
         const deduped = contain_arr[0] && contain_arr[0].public_id ? unqKey(contain_arr,'public_id') : contain_arr[0] && contain_arr[0].lir_niid ? unqKey(contain_arr,'lir_niid') : contain_arr[0] && contain_arr[0].basic_niid ? unqKey(contain_arr,'basic_niid') : contain_arr[0] && contain_arr[0].niid ? unqKey(contain_arr,'niid') : contain_arr;
-        convertJsonUserInterface(deduped);
+        convertJsonUserInterface(deduped?.filter(i=> i));
         document.getElementById('pop_FileUploader').outerHTML = '';
     }
 
