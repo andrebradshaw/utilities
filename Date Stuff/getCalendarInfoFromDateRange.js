@@ -43,8 +43,7 @@ function getCalendarInfoFromDateRange(o){
             year: year,
             month: month+1,
             year_month: `${year}-${month+1}`,
-            date: date,
-            timestamp: this_date.getTime(),
+            last_date_in_month: date,
             date_string: `${year}-${month+1}-${date}`,
         }
     }),'year_month').map(r=> {
@@ -56,7 +55,9 @@ function getCalendarInfoFromDateRange(o){
         }}
     });
 }
-getCalendarInfoFromDateRange({
+var month_year_ranges = getCalendarInfoFromDateRange({
   start_date:'1 Jan 2016',
   end_date:new Date(),
-});
+}).reverse();
+month_year_ranges.shift()
+console.log(month_year_ranges)
