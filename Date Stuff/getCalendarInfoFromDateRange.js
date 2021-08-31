@@ -56,7 +56,7 @@ function getCalendarInfoFromDateRange(o){
         }}
     });
 }
-getEveryDateInRage({
+getCalendarInfoFromDateRange({
   start_date:'1 Jan 2016',
   end_date:new Date(),
 });
