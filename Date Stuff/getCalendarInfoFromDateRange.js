@@ -51,7 +51,7 @@ function getCalendarInfoFromDateRange(o){
         let end_of_the_month =  new Date(`${r.date_string} 23:59:59`).getTime();
         return {...r,...{
             first_of_the_month_timestamp:first_of_the_month_timestamp,
-            end_of_the_month:end_of_the_month,
+            end_of_the_month_timestamp:end_of_the_month,
         }}
     });
 }
