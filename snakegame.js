@@ -3,7 +3,7 @@ function createSnakeGame() {
   const attr = (o, k, v) => o.setAttribute(k, v);
   const reChar = (s) => typeof s == 'string' && s.match(/&#.+?;/g) && s.match(/&#.+?;/g).length > 0 ? s.match(/&#.+?;/g).map(el => [el, String.fromCharCode(/d+/.exec(el)[0])]).map(m => s = s.replace(new RegExp(m[0], 'i'), m[1])).pop() : s;
   const a = (l, r) => r.forEach(a => attr(l, a[0], a[1]));
-
+  if(document.getElementById('snake_game_canvas')) document.getElementById('snake_game_canvas').outerHTML = '';
   function topZIndexer() {
     let n = new Date().getTime() / 1000000;
     let r = (n - Math.floor(n)) * 100000;
@@ -20,21 +20,22 @@ function createSnakeGame() {
       elm.style[kv[0]] = kv[1]
     });
   }
-
+  var canvax = Math.floor(window.innerHeight * 0.8);
   var canvas = ele('canvas');
   a(canvas, [
     ['id', 'snake_game_canvas'],
-    ['height', '400px'],
-    ['width', '400px']
+    ['height', `${canvax}px`],
+    ['width', `${canvax}px`]
   ]);
-  //inlineStyler(canvas, `{position: fixed; top: 10px; left: 10px; z-index: ${topZIndexer()};}`);
+  inlineStyler(canvas, `{position: fixed; top: 10px; left: 10px; z-index: ${topZIndexer()};}`);
   document.body.appendChild(canvas);
   var ctx = canvas.getContext('2d');
   var interval_unit = 200;
   var refreshIntervalId = setInterval(()=> {startGame();}, interval_unit);
   document.onkeydown = steering;
-  var grid = 20,
-    tile = 20,
+console.log(Math.floor(canvax/30))
+  var grid = Math.floor(canvax/30),
+    tile = Math.floor(canvax/30),
     posy = 10,
     posx = 10,
     ysv = 0,
@@ -55,24 +56,17 @@ function createSnakeGame() {
     if (posx < 0) {      posx = tile - 1    }
     if (posx > tile - 1) {      posx = 0    }
     if (posy < 0) {      posy = tile - 1    }
-    if (posy < 0) {      posy = 0    }
+    if (posy > tile - 1) {      posy = 0    }
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'yellow';
     for (let i = 0; i < trailing.length; i++) {
       ctx.fillRect((trailing[i].x * grid), (trailing[i].y * grid), (grid - 2), (grid - 2));
-      if (trailing[i].x == posx && posy == trailing[i].y) tail = 5;
+      if (trailing[i].x == posx && posy == trailing[i].y) { tail = 5; interval_unit = 200; }
     }
-      trailing.push({
-        x: posx,
-        y: posy
-      });
-      while (trailing.length > tail) {
-        trailing.shift()
-      }
-
-    delayedFruitMove()
-    
+    trailing.push({        x: posx,        y: posy      });
+    while (trailing.length > tail) {        trailing.shift();      }
+    delayedFruitMove();
   }
   var delay = (ms) => new Promise(res => setTimeout(res, ms));
 
@@ -81,7 +75,7 @@ function createSnakeGame() {
         await delay(interval_unit)
         tail++;
         clearInterval(refreshIntervalId);
-        interval_unit = interval_unit - (tail)
+        interval_unit = interval_unit > 40 && tail > 5 ? interval_unit - tail : tail == 5 ? 200 : interval_unit;
         /* fruit = placeNewApple() */
         console.log(interval_unit)
         refreshIntervalId = setInterval(()=> {startGame();}, interval_unit);
