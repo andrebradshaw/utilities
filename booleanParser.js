@@ -17,7 +17,7 @@ function permutateNear(input,joiner){
   var near_or = input.match(nearx) ? input.match(nearx).map(str=> {
     var arr = str.split(/~/);
     if(arr.length > 5){
-      return str.replace(/[~]+/,'.');
+      return str.replace(/[~]+/g,'.+?');
     }else{
       var cont = [];
       var containArr = [];
@@ -61,4 +61,5 @@ function hasNestedParenth(s){
     return !opens?.length ? false : closes?.length != ( opens?.length - 1);
 }
 
-buildSearchSet('(keywords OR other keywords) AND (more~stuff~"to" find)')
+buildSearchSet('one~two~three~four~five~six')
+//fixed issue with max permutation
