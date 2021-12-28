@@ -274,7 +274,7 @@ function convertTableToBoolean(){
             var linkedin_bool_string = transposed_table.map(or=> '('+ or.map((v,i,r)=> i == 0 ? `${(qf ? '"' : '')}${v}${(qf ? '"' : '')}` : ` OR(${(qf ? '"' : '')}${v}${(qf ? '")' : ')')}`)
     .reduce((a,b)=> a+b)+ ')').reduce((a,b)=> a+' AND '+b);
         }
-        var boolean_string = piper(transposed_table.map(r=> (qf ? '("' : '(') + r.reduce((a,b)=> qf ? a+'" OR "'+b : a+' OR '+b) + (qf ? '")' : ')') ).reduce((a,b)=> a+' AND '+b),pipe_or_btn;
+        var boolean_string = piper(transposed_table.map(r=> (qf ? '("' : '(') + r.reduce((a,b)=> qf ? a+'" OR "'+b : a+' OR '+b) + (qf ? '")' : ')') ).reduce((a,b)=> a+' AND '+b),pipe_or_btn);
 
         this.parentElement.getElementsByTagName('textarea')[0].value = !exp ? boolean_string : linkedin_bool_string;
     }
