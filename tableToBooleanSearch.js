@@ -88,7 +88,6 @@ async function buildContainer(){
             .textarea:focus {
                 box-shadow: rgb(204, 219, 232) 2px 4px 4px 1px inset, rgba(255, 255, 255, 0.5) -2px -2px 4px 2px inset;
             }
-
             .label {
                 display: inline-flex;
                 align-items: center;
@@ -215,28 +214,45 @@ async function buildContainer(){
     btn.onclick = convertTableToBoolean;
 
     const right = ele('div');
-    inlineStyler(right,`{display: grid; grid-template-rows: 20px 60px 50px 40px 60px ${(height_p_h-(260+(8*6)))}px 30px; grid-gap: 8px;}`);
+    inlineStyler(right,`{display: grid; grid-template-rows: 80px 80px 100px 80px ${(height_p_h-(260+(8*6)))}px 30px; grid-gap: 8px;}`);
     cont.appendChild(right);
-    right.innerHTML = `<div title="Select if you want quotes around your terms" style="user-select: none; font-size: 0.9em; text-align: center;">Add Quotes?</div>
-<div style="border: 0px;">
-  <label style="border: 0px;" title="Select if you want quotes around your terms" class="label">
-    <div class="label-text"></div>
-    <div class="toggle"> <input id="add_quotes_btn" class="toggle-state" type="checkbox" name="check" value="check" />
-      <div class="indicator"></div>
+    right.innerHTML = `
+<div>
+    <div title="Select if you want quotes around your terms" style="user-select: none; font-size: 0.9em; text-align: center;">Add Quotes?</div>
+    <div style="border: 0px;">
+      <label style="border: 0px;" title="Select if you want quotes around your terms" class="label">
+        <div class="label-text"></div>
+        <div class="toggle"> <input id="add_quotes_btn" class="toggle-state" type="checkbox" name="check" value="check" />
+          <div class="indicator"></div>
+        </div>
+      </label>
     </div>
-  </label>
 </div>
-<div></div>
-<div title="Select for LinkedIn OR search Hack. Credit to Irina Shamaeva" style="user-select: none; font-size: 0.9em; text-align: center;">LinkedIn OR Hack</div>
-<div style="border: 0px;">
-  <label style="border: 0px;" title="Select for LinkedIn OR search Hack. Credit to Irina Shamaeva" class="label">
-    <div class="label-text"></div>
-    <div class="toggle"> <input id="linkedin_experiemental_or_btn" class="toggle-state" type="checkbox" name="check" value="check" />
-      <div class="indicator"></div>
+
+<div>
+    <div title="Select for | instead of OR" style="user-select: none; font-size: 0.9em; text-align: center;">Switch OR to |</div>
+    <div style="border: 0px;">
+      <label style="border: 0px;" title="Select for | instead of OR" class="label">
+        <div class="label-text"></div>
+        <div class="toggle"> <input id="pipe_or_btn" class="toggle-state" type="checkbox" name="check" value="check" />
+          <div class="indicator"></div>
+        </div>
+      </label>
     </div>
-  </label>
 </div>
-<div></div>
+
+<div>
+    <div title="Select for LinkedIn OR search Hack. Credit to Irina Shamaeva" style="user-select: none; font-size: 0.9em; text-align: center;">LinkedIn OR Hack</div>
+    <div style="border: 0px;">
+      <label style="border: 0px;" title="Select for LinkedIn OR search Hack. Credit to Irina Shamaeva" class="label">
+        <div class="label-text"></div>
+        <div class="toggle"> <input id="linkedin_experiemental_or_btn" class="toggle-state" type="checkbox" name="check" value="check" />
+          <div class="indicator"></div>
+        </div>
+      </label>
+    </div>
+</div>
+
 <div style="font-size: 0.6em; text-align: center;"><a rel="nofollow" href="https://www.patreon.com/andrebradshaw">made by Andre B.</a></div>`;
 
     keepElmInBoundary(cont);
@@ -245,6 +261,7 @@ async function buildContainer(){
 }
 function convertTableToBoolean(){
     const textdata = this.parentElement.getElementsByTagName('textarea')[0].value;
+    const piper = (s,is_pipe)=> is_pipe ? s.replace(/ OR /g,'|') : s; 
     if(textdata){
         const unqHsh = (a, o) => a.filter(i => o.hasOwnProperty(i) ? false : (o[i] = true));
         const transpose = (a)=>  a[0].map((_, c)=> a.map(r=> r[c]));
@@ -252,11 +269,13 @@ function convertTableToBoolean(){
         var transposed_table = transpose(table).map(r=> unqHsh(r.filter(ii=> ii).map(i=> i.toLowerCase().trim()),{}));
         const qf = document.getElementById('add_quotes_btn')?.checked;
         const exp = document.getElementById('linkedin_experiemental_or_btn')?.checked;
+        const pipe_or_btn = document.getElementById('pipe_or_btn')?.checked;
         if(exp){
             var linkedin_bool_string = transposed_table.map(or=> '('+ or.map((v,i,r)=> i == 0 ? `${(qf ? '"' : '')}${v}${(qf ? '"' : '')}` : ` OR(${(qf ? '"' : '')}${v}${(qf ? '")' : ')')}`)
     .reduce((a,b)=> a+b)+ ')').reduce((a,b)=> a+' AND '+b);
         }
-        var boolean_string = transposed_table.map(r=> (qf ? '("' : '(') + r.reduce((a,b)=> qf ? a+'" OR "'+b : a+' OR '+b) + (qf ? '")' : ')') ).reduce((a,b)=> a+' AND '+b);
+        var boolean_string = piper(transposed_table.map(r=> (qf ? '("' : '(') + r.reduce((a,b)=> qf ? a+'" OR "'+b : a+' OR '+b) + (qf ? '")' : ')') ).reduce((a,b)=> a+' AND '+b),pipe_or_btn;
+
         this.parentElement.getElementsByTagName('textarea')[0].value = !exp ? boolean_string : linkedin_bool_string;
     }
 }
