@@ -198,7 +198,7 @@ function initReorderApp(){
         const cont = ele('div');
         a(cont,[['id','tsv_merger_container']]);
         let shadow = 'box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;';
-        inlineStyler(cont,`{display: grid; grid-template-columns: 32px 1fr 4px; grid-gap: 12px; ${shadow} text-align: left; background: #ffffff; color: #374552; border-radius: 1em; padding: 12px; transition: all 111ms; position: fixed; z-index: ${topZIndexer()}; top: 100px; left: 0px;}`); // max-height: ${height}px; max-width: ${width}px; 
+        inlineStyler(cont,`{display: grid; grid-template-columns: 32px 1fr 4px; grid-gap: 12px; ${shadow} text-align: left; background: #ffffff; color: #374552; border-radius: 1em; padding: 12px; transition: all 31ms; position: fixed; z-index: ${topZIndexer()}; top: 100px; left: 0px;}`); // max-height: ${height}px; max-width: ${width}px; 
         document.body.appendChild(cont);
 
             const left_panel = ele('div');
@@ -313,20 +313,20 @@ function initReorderApp(){
     }
 
     async function getAsText(d){
-    var reader = new FileReader();    /* https://developer.mozilla.org/en-US/docs/Web/API/FileReader */
-    reader.readAsText(d);          /* https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL */
-    return new Promise((res,rej)=> {  /* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise */
-        reader.onload = (e) => {        /* https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onload */
-        res(e.target.result)
-        }
-    })
+        var reader = new FileReader();    /* https://developer.mozilla.org/en-US/docs/Web/API/FileReader */
+        reader.readAsText(d);          /* https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL */
+        return new Promise((res,rej)=> {  /* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise */
+            reader.onload = (e) => {        /* https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onload */
+            res(e.target.result)
+            }
+        })
     } 
 
     async function getDataBlob(url){
-    var uri = await getAsText(url);
-    return uri;
+        var uri = await getAsText(url);
+        return uri;
     }
-    createUploadHTML();
+    //createUploadHTML();
 
     function processInputTables(raw_tables){
         var tables = raw_tables.map(table=> table.split(/\n/).map(row=> row.split(/\t/)));
