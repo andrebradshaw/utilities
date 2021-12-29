@@ -244,8 +244,8 @@ function initReorderApp(){
                     right_body_cont.appendChild(header_input_cont);
                     
                     let header_textarea = ele('textarea');
-                    a(header_textarea,[['id','header_textarea'],['class','textarea'],['placeholder','Paste your target header here']]);
-                    // inlineStyler(header_textarea,`{}`)
+                    a(header_textarea,[['id','header_textarea'],['class','textarea'],['placeholder','Paste your target header here or upload your template spreadsheet below']]);
+                    inlineStyler(header_textarea,`{width: 100%;}`);
                     header_textarea.onkeyup = processInputHeader;
                     right_body_cont.appendChild(header_textarea);
 
@@ -253,8 +253,13 @@ function initReorderApp(){
                     a(headers_review_header,[['id','headers_review_header']]);
                     right_body_cont.appendChild(headers_review_header);
                     inlineStyler(headers_review_header,`{display: grid; grid-template-columns: 1fr 1fr; grid-gap:8px;}`);
-                    headers_review_header.innerHTML = `<div>Template Header</div><div>Reorder Header</div>`;
-
+                    headers_review_header.innerHTML = `
+                    <div id="template_header_label_cont">
+                        <input id="upload_template_tsv_btn" type="file" name="file[]" multiple="true" style="color: #ffffff; cursor: pointer; width: 100px"></input><span>Upload Template TSV</span>
+                    </div>
+                    <div id="reorder_header_label_cont">
+                        <input id="upload_reorder_tsv_btn" type="file" name="file[]" multiple="true" style="color: #ffffff; cursor: pointer; width: 100px"></input><span>Upload TSV to Reorder</span>
+                    </div>`;
                     let headers_review_cont = ele('div');
                     a(headers_review_cont,[['id','headers_review_cont']]);
                     right_body_cont.appendChild(headers_review_cont);
