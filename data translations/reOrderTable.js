@@ -292,6 +292,22 @@ function initReorderApp(){
                         headers_review_cont.appendChild(sort_header_pill_cont);
                         inlineStyler(sort_header_pill_cont,`{display:grid; grid-template-rows: auto; grid-gap:6px; overflow-y: auto; max-height: ${Math.floor(window.innerHeight *0.7)}px;}`);
     }
+    function getHeadersFromPills(){
+        // var target = cn(gi(document,'target_header_pill_cont'),'cell_text')?.[0] ? Array.from(cn(gi(document,'target_header_pill_cont'),'cell_text')?.[0]).map(i=> i.innerText) : [];
+        // var reorder = cn(gi(document,'sort_header_pill_cont'),'cell_text')?.[0] ? Array.from(cn(gi(document,'sort_header_pill_cont'),'cell_text')?.[0]).map(i=> i.innerText) : [];
+        // reorder_header = reorder;
+        // template_header = target;
+        return {
+            target: {
+                header:template_header,
+                id:'target_header_pill_cont',
+            },
+            reorder: {
+                header:reorder_header,
+                id:'sort_header_pill_cont'
+            },
+        }
+    }
     function insertHeaderPills(header,parent_id){ //target_header_pill_cont , sort_header_pill_cont
         var parent_elm = gi(document,parent_id);
         parent_elm.innerHTML = '';
@@ -302,6 +318,7 @@ function initReorderApp(){
             inlineStyler(pill_cont,`{display: grid; grid-template-columns: 1fr 18px; grid-gap: 2px;}`);
 
             let cell_text = ele('div');
+            a(cell_text,[['clean','cell_text']]);
             inlineStyler(cell_text,`{padding: 4px;}`);
             pill_cont.appendChild(cell_text);
             cell_text.innerText = cell;
@@ -311,7 +328,17 @@ function initReorderApp(){
             a(cls,[['class','hover_btn']]);
             inlineStyler(cls,`{width: 18px; height: 18px; transform: translate(-2px,10px); background: #e21212;}`);
             // cls.innerHTML = '-'// svgs.small_cls;
-            cls.onclick = () => pill_cont.outerHTML = '';
+            cls.onclick = () => {
+                pill_cont.outerHTML = '';
+                if(parent_id == 'target_header_pill_cont'){
+                    template_header.splice(template_header.findIndex(i=> i == cell),1)
+                }else{
+                    reorder_header.splice(reorder_header.findIndex(i=> i == cell),1)
+                }
+                let headers = getHeadersFromPills();
+                insertHeaderPills(headers.target.header,headers.target.id);
+                insertHeaderPills(headers.reorder.header,headers.reorder.id);
+            };
         })
 
     }
