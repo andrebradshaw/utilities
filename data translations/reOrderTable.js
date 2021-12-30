@@ -70,16 +70,14 @@ function initReorderApp(){
 
 
 /*
-
     ********************************************************************************
                                     REORDER TABLE
     ********************************************************************************
-
 */
     var transpose = (a)=>  a[0].map((_, c)=> a.map(r=> r[c])); 
 
-    function reOrderTable(tsv,target_header,keep_extra_cols){
-        var table = tsv.split(/\n/).map(row=> row.split(/\t/));
+    function reOrderTable(table,target_header,keep_extra_cols){
+        // var table = tsv.split(/\n/).map(row=> row.split(/\t/));
         let header = table[0];
         var trans_table = transpose(table);
         var deepest = Math.max(...trans_table.map(t=> t.length));
@@ -91,6 +89,9 @@ function initReorderApp(){
         ).map(row=> row.map(cell=> `${cell}\t`).reduce((a,b)=> a+b)).map(row=> `${row}\n`).reduce((a,b)=> a+b);
     }
 
+    function getRemainderHeaders(reorder_header,target_header){
+        return reorder_header.filter(h=> target_header.every(t=> t != h));
+    }
     // var remapped_table = reOrderTable(input_table,target_header);
 
 
@@ -150,13 +151,22 @@ function initReorderApp(){
                 cursor: pointer;
                 color: #394a56;
             }
-
             .dragged_item:hover {
                 box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
             }
             .dragged_item:active {
                 box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 6px 0px, rgba(255, 255, 255, 0.8) -6px -2px 6px -3px;
                 background: #ffffff;
+            }
+            .cell_pill {
+                box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+                font-size: 1.2em;
+                cursor: pointer;
+                background: #ffffff;
+                color: #788fa5;
+                border-radius: 0.4em;
+                transition: all 111ms;
+                user-select: none;
             }
             .${style_id} {
                 box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
@@ -191,6 +201,10 @@ function initReorderApp(){
     ************************************************************
     * 
     */
+   var svgs = {
+       close:`<svg style="border-radius: 2em; height: 30px; width: 30px;" x="0px" y="0px" viewBox="0 0 100 100"><g style="transform: scale(1, 1)" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(2, 2)" stroke="#e21212" stroke-width="8"><path d="M47.806834,19.6743435 L47.806834,77.2743435" transform="translate(49, 50) rotate(225) translate(-49, -50) "/><path d="M76.6237986,48.48 L19.0237986,48.48" transform="translate(49, 50) rotate(225) translate(-49, -50) "/></g></g></svg>`,
+       small_cls:`<svg style="border-radius: 2em; height: 18px; width: 18px;" x="0px" y="0px" viewBox="0 0 100 100"><g style="transform: scale(1, 1)" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(2, 2)" stroke="#e21212" stroke-width="8"><path d="M47.806834,19.6743435 L47.806834,77.2743435" transform="translate(49, 50) rotate(225) translate(-49, -50) "/><path d="M76.6237986,48.48 L19.0237986,48.48" transform="translate(49, 50) rotate(225) translate(-49, -50) "/></g></g></svg>`,
+    };
     async function buildContainer(){
         // const height = window.innerHeight * 0.8; 
         // const width = window.innerWidth <= 800 ? window.innerWidth * 0.9 : window.innerWidth > 800 && window.innerWidth < 1161 ? window.innerWidth * 0.7 : window.innerWidth * 0.6;
@@ -210,7 +224,7 @@ function initReorderApp(){
                 const cls = ele('div');
                 left_panel.appendChild(cls);
                 a(cls,[['class','hover_btn h32']]);
-                cls.innerHTML = `<svg style="border-radius: 2em; height: 30px; width: 30px;" x="0px" y="0px" viewBox="0 0 100 100"><g style="transform: scale(1, 1)" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(2, 2)" stroke="#e21212" stroke-width="8"><path d="M47.806834,19.6743435 L47.806834,77.2743435" transform="translate(49, 50) rotate(225) translate(-49, -50) "/><path d="M76.6237986,48.48 L19.0237986,48.48" transform="translate(49, 50) rotate(225) translate(-49, -50) "/></g></g></svg>`;
+                cls.innerHTML = svgs.close;
                 cls.onclick = () => cont.outerHTML = '';
 
                 const mover = ele('div');
@@ -220,7 +234,7 @@ function initReorderApp(){
 
             const right = ele('div');
             a(right,[['id','right_panel']])
-            inlineStyler(right,`{padding: 0px; display: grid; grid-template-rows: 40px 40px 20px 40px 40px 40px 40px; grid-gap: 8px;}`);
+            inlineStyler(right,`{padding: 0px; display: grid; grid-gap: 8px;}`);
             cont.appendChild(right);
 
                 let top_label = ele('div');
@@ -260,6 +274,9 @@ function initReorderApp(){
                     <div id="reorder_header_label_cont">
                         <input id="upload_reorder_tsv_btn" type="file" name="file[]" multiple="true" style="color: #ffffff; cursor: pointer; width: 100px"></input><span>Upload TSV to Reorder</span>
                     </div>`;
+                    gi(document,'upload_template_tsv_btn').onchange = handleFiles
+                    gi(document,'upload_reorder_tsv_btn').onchange = handleFiles
+
                     let headers_review_cont = ele('div');
                     a(headers_review_cont,[['id','headers_review_cont']]);
                     right_body_cont.appendChild(headers_review_cont);
@@ -268,53 +285,70 @@ function initReorderApp(){
                         let target_header_pill_cont = ele('div');
                         a(target_header_pill_cont,[['id','target_header_pill_cont']]);
                         headers_review_cont.appendChild(target_header_pill_cont);
-
+                        inlineStyler(target_header_pill_cont,`{display:grid; grid-template-rows: auto; grid-gap:6px; overflow-y: auto; max-height: ${Math.floor(window.innerHeight *0.7)}px;}`);
+                        
                         let sort_header_pill_cont = ele('div');
                         a(sort_header_pill_cont,[['id','sort_header_pill_cont']]);
                         headers_review_cont.appendChild(sort_header_pill_cont);
+                        inlineStyler(sort_header_pill_cont,`{display:grid; grid-template-rows: auto; grid-gap:6px; overflow-y: auto; max-height: ${Math.floor(window.innerHeight *0.7)}px;}`);
+    }
+    function insertHeaderPills(header,parent_id){ //target_header_pill_cont , sort_header_pill_cont
+        var parent_elm = gi(document,parent_id);
+        parent_elm.innerHTML = '';
+        header.forEach(cell=>{
+            let pill_cont = ele('div');
+            parent_elm.appendChild(pill_cont);
+            a(pill_cont,[['class','cell_pill']])
+            inlineStyler(pill_cont,`{display: grid; grid-template-columns: 1fr 18px; grid-gap: 2px;}`);
+
+            let cell_text = ele('div');
+            inlineStyler(cell_text,`{padding: 4px;}`);
+            pill_cont.appendChild(cell_text);
+            cell_text.innerText = cell;
+
+            let cls = ele('div');
+            pill_cont.appendChild(cls);
+            a(cls,[['class','hover_btn']]);
+            inlineStyler(cls,`{width: 18px; height: 18px; transform: translate(-2px,10px); background: #e21212;}`);
+            // cls.innerHTML = '-'// svgs.small_cls;
+            cls.onclick = () => pill_cont.outerHTML = '';
+        })
 
     }
     function processInputHeader(e){
-        if(/enter/i.test(e.key)){
-            
+        // if(/enter/i.test(e.key)){
+        if(/\t/i.test(this.value)){
+            let header_cells = this.value.split(/\t/).map(i=> i.trim());
+            console.log(header_cells)
+            insertHeaderPills(header_cells,'target_header_pill_cont');
         }
     }
     buildContainer()
 
-
-    function createUploadHTML(){
-        const gi = (o, s) => o ? o.getElementById(s) : null;
-        const ele = (t) => document.createElement(t);
-        const attr = (o, k, v) => o.setAttribute(k, v);
-        const a = (l, r) => r.forEach(a => attr(l, a[0], a[1]));
-        if(gi(document,'pop_FileUploader')) gi(document,'pop_FileUploader').outerHTML = '';
-        var popCont = ele("div");
-        document.body.appendChild(popCont);
-        a(popCont, [["id", "pop_FileUploader"],['style','position: fixed; top: 20%; left: 20%; width: 420px; height: 100px; background: #2c2c2c; border: 1px solid #1a1a1a; border-radius: .5em; padding: 6px; z-index: 12000;']]);
-        var closeBtn = ele("div");
-        a(closeBtn,[["id", "note_btn_close"],['style','background: transparent; width: 15px; height: 15px; transform: scale(1.8, 1.2) translate(3px,-2px); border-radius: 1em; padding: 0px; color: Crimson; cursor: pointer;']]);
-        popCont.appendChild(closeBtn);
-        closeBtn.innerText = "X";
-        closeBtn.addEventListener("click", close);
-        var uploadElm = ele("input");
-        a(uploadElm,[["id", "customFileInput"],["type", "file"],["name", "file[]"],["multiple", "true"],['style','background: #2c2c2c;']]);
-        popCont.appendChild(uploadElm);
-        uploadElm.style.transform = "scale(1.1, 1.1) translate(5%, 80%)";
-        uploadElm.addEventListener("change", handleFiles);
-        function close() {
-        document.body.removeChild(popCont);
-        }
-    }
-
+    var template_header = [];
+    var template_table = [];
+    var reorder_table = [];
+    var reorder_header = [];
     async function handleFiles() {
         function unqKey(array,key){  var q = [];  var map = new Map();  for (const item of array) {    if(!map.has(item[key])){        map.set(item[key], true);        q.push(item);    }  }  return q;}
         var contain_arr = [];
         var files = this.files;
         for(var i=0; i<files.length; i++){
             let uri = await getDataBlob(files[i]);
-            if(Array.isArray(JSON.parse(uri))) {JSON.parse(uri).forEach(i=> contain_arr.push(i))} else {contain_arr.push(JSON.parse(uri));}
+            if(Array.isArray(uri)) {uri.forEach(i=> contain_arr.push(i))} else {contain_arr.push(uri);}
         }
-        document.getElementById('pop_FileUploader').outerHTML = '';
+        if(this.id == 'upload_reorder_tsv_btn'){
+            reorder_table = contain_arr[0]?.split(/\n/).map(row=> row.split(/\t/));
+            reorder_header = reorder_table[0];
+            insertHeaderPills(getRemainderHeaders(reorder_header,template_header),'sort_header_pill_cont');
+        }
+        if(this.id == 'upload_template_tsv_btn'){
+            template_table = contain_arr[0]?.split(/\n/).map(row=> row.split(/\t/));
+            template_header = template_table[0];
+            insertHeaderPills(template_header,'target_header_pill_cont') 
+
+        }
+        // document.getElementById('pop_FileUploader').outerHTML = '';
     }
 
     async function getAsText(d){
@@ -322,7 +356,7 @@ function initReorderApp(){
         reader.readAsText(d);          /* https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL */
         return new Promise((res,rej)=> {  /* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise */
             reader.onload = (e) => {        /* https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onload */
-            res(e.target.result)
+                res(e.target.result)
             }
         })
     } 
