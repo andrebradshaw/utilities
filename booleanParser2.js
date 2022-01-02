@@ -41,5 +41,27 @@ function parseSearchStringAsRegexSet(search_string){
     buildPermutationOrStatementRegExString(test_array.sort((a,b)=> a.length > b.length ? -1 : 0),'.{0,23}');
 }
 
+// ("bcba" OR "lba" OR "babc")~14(therap OR consult OR analyst)~work OR bunny
 
+// ("bcba" OR "lba" OR "babc")~(therap OR consult OR analyst)~work OR bunny
+
+// "bcba"~14(therap OR consult OR analyst)~work OR bunny
+
+// "bcba"~therap~work OR bunny
+
+// ("bcba" OR "lba" OR "babc")~therap OR consult OR analyst~work OR bunny
+
+// ("bcba" OR "lba" OR "babc")~therap analyst~work OR bunny
+
+// ("bcba" OR "lba" OR "babc")
+
+// ("bcba" OR "lba" OR "babc") OR bunny
+
+// (frog OR bunny OR tomato)
+
+// reg~stst
+
+
+
+// (?<=(OR.+?|^)).+?(?=OR)
 // var xarr = parseSearchStringAsRegexSet(`("bcba" OR "lba" OR "babc")~14(therap OR consult OR analyst)~work`)
