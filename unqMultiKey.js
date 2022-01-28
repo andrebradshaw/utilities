@@ -8,5 +8,5 @@ var unqMultiKey = (a,o,keys) => {
 
 
 var unqDiveKey = (a,o,keys) => a.filter(i=> o.hasOwnProperty(dive(i,keys)) ? false : (o[dive(i,keys)] = true) );
-var dive = (ob,keys)=> keys.map(itm=> ob = ob[itm] ).at(-1);
+var dive = (ob,keys)=> keys.map(itm=> ob = ob?.[itm] ).at(-1);
 // unqDiveKey(profiles,{},['profile','contacts','emails'])
