@@ -9,7 +9,7 @@ function unqCount(records,key){
         k['count'] = kv[1];
         keyvals.push(k);
       });
-      return keyvals;
+      return keyvals.sort((a,b)=> a.count > b.count ? -1 : 0)
 }
 
 unqCount(
@@ -18,4 +18,4 @@ new Date().getTime(),new Date().getTime(),new Date().getTime()
     ],
     'timestamp'
 )
-// .sort((a,b)=> a.count > b.count ? -1 : 0)
+//
