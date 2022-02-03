@@ -1,3 +1,0 @@
-var snakeCaser = (s) => s.split(/(?<=[a-z])\B(?=[A-Z])/).map(i=> i.toLowerCase()).reduce((a,b)=> a+'_'+b)
-snakeCaser('ratingCompensationAndBenefits')
-//rating_compensation_and_benefits

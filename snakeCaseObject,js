@@ -1,0 +1,35 @@
+var cleanObject = (ob) => 
+  Object.entries(ob).reduce((r, [k, v]) => {
+    if( v != null && v != undefined && v !== "" && ( ['string','number','boolean','function','symbol'].some(opt=> typeof v == opt) || (typeof v == 'object' && ((Array.isArray(v) && v.length) || (Array.isArray(v) != true) ) ) ) ) { 
+      r[k] = v; 
+      return r;
+    } else { 
+     return r; 
+    }
+  }, {});
+var snakeCaser = (s) => s.split(/(?<=[a-z])\B(?=[A-Z])/).map(i=> i.toLowerCase()).reduce((a,b)=> a+'_'+b)
+function snakeCaseObject(obj){
+    return cleanObject(Object.entries(obj).map(kv=> {
+        return {
+            [snakeCaser(kv[0].replace(/^js/,''))]:kv[1]
+        }
+    }).reduce((a,b)=> {return {...a,...b}}))
+}
+snakeCaseObject({
+  allowContact: true,
+  allowContactByPhone: false,
+  allowContactBySms: true,
+  allowRepeatedContact: false,
+  contactClockOverride: null,
+  contactedByCoworkerContactType: "EMAIL",
+  contactedByCoworkerDate: null,
+  contactedByCoworkerEmail: null,
+  contactedByUserContactType: "EMAIL",
+  contactedByUserDate: null,
+  disallowBulkContactReason: null,
+  disallowContactInterviewReason: "DISABLED_FEATURE",
+  disallowContactReason: null,
+  jsEmailAddress: null,
+  jsPhone: null,
+  responseStatus: "INTERESTED",
+})
