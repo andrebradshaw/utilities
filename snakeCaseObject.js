@@ -9,11 +9,14 @@ var cleanObject = (ob) =>
   }, {});
 var snakeCaser = (s) => s.split(/(?<=[a-z])\B(?=[A-Z])/).map(i=> i.toLowerCase()).reduce((a,b)=> a+'_'+b)
 function snakeCaseObject(obj){
-    return cleanObject(Object.entries(obj).map(kv=> {
+    return obj ? cleanObject(Object.entries(obj).map(kv=> {
+        let val = typeof kv[1] == 'object' && Array.isArray(kv[1]) ? kv[1].map(v=> snakeCaseObject(v))
+            : kv[1] && typeof kv[1] == 'object' ? snakeCaseObject(kv[1])
+            : kv[1];
         return {
-            [snakeCaser(kv[0].replace(/^js/,''))]:kv[1]
+            ...(/^\$/.test(kv[0]) ? {} : {[snakeCaser(kv[0].replace(/^js/,''))]:val})
         }
-    }).reduce((a,b)=> {return {...a,...b}}))
+    }).reduce((a,b)=> {return {...a,...b}})) : {}
 }
 snakeCaseObject({
   allowContact: true,
