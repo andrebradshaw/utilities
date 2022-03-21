@@ -1,4 +1,4 @@
-async function buildBasicFormTemplate(){
+async function genericFormsPopup(){
 
     var svgs = {
         close:`<svg style="border-radius: 2em; height: 30px; width: 30px;" x="0px" y="0px" viewBox="0 0 100 100"><g style="transform: scale(1, 1)" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"><g transform="translate(2, 2)" stroke="#e21212" stroke-width="8"><path d="M47.806834,19.6743435 L47.806834,77.2743435" transform="translate(49, 50) rotate(225) translate(-49, -50) "/><path d="M76.6237986,48.48 L19.0237986,48.48" transform="translate(49, 50) rotate(225) translate(-49, -50) "/></g></g></svg>`,
@@ -73,6 +73,9 @@ async function buildBasicFormTemplate(){
             }
             .h32 {
                 height: 32px;
+            }
+            .overflow-clip {
+                overflow: clip;
             }
             .mover-top-gradient {
                 background:transparent;
@@ -173,16 +176,24 @@ async function buildBasicFormTemplate(){
 
 
     
-    async function buildContainer(params){
-        var {sub_application_id,range_label_text,btn_text} = params;
+    function buildContainer(params){
+        var {
+            top,
+            left,
+            sub_application_id,
+            application_label,
+            btn_text,
+            textareas,
+            date_options,
+            ranges,
+            select_options,
+        } = params;
         setQuickliCSS(sub_application_id);
-        // const height = window.innerHeight * 0.8; 
-        // const width = window.innerWidth <= 800 ? window.innerWidth * 0.9 : window.innerWidth > 800 && window.innerWidth < 1161 ? window.innerWidth * 0.7 : window.innerWidth * 0.6;
         if(gi(document,sub_application_id)) gi(document,sub_application_id).outerHTML = '';
         const cont = ele('div');
         a(cont,[['id',sub_application_id]]);
         let shadow = 'box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;';
-        inlineStyler(cont,`{display: grid; grid-template-columns: 32px 1fr 4px; ${shadow} text-align: left; background-image: linear-gradient(to bottom right, #dae3e8, #ffffff, #ffffff, #ffffff); color: #374552; border-radius: 1em; position: fixed; z-index: ${topZIndexer()}; top: 100px; left: 0px;}`); // max-height: ${height}px; max-width: ${width}px; 
+        inlineStyler(cont,`{display: grid; grid-template-columns: 32px 1fr 4px; ${shadow} text-align: left; background-image: linear-gradient(to bottom right, #dae3e8, #ffffff, #ffffff); color: #1c1d1f; border-radius: 1em; position: fixed; z-index: ${topZIndexer()}; top: ${top ? top : 50}px; left: ${left ? left : 50}px;}`);
         document.body.appendChild(cont);
 
             const left_panel = ele('div');
@@ -192,7 +203,7 @@ async function buildBasicFormTemplate(){
 
                 const cls = ele('div');
                 left_panel.appendChild(cls);
-                a(cls,[['class','hover_btn h32']]);
+                a(cls,[['class','hover_btn h32 overflow-clip']]);
                 cls.innerHTML = svgs.close;
                 cls.onclick = () => cont.outerHTML = '';
 
@@ -214,40 +225,160 @@ async function buildBasicFormTemplate(){
 
                 let right_body_cont = ele('div');
                 a(right_body_cont,[['id','right_body_cont'],['class','pad8']]);
-                inlineStyler(right_body_cont,`{background: #ffffff; border-top-left-radius: 1em; border-bottom-right-radius: 1em;}`);
+                inlineStyler(right_body_cont,`{background: #ffffff; border-top-left-radius: 1em; border-bottom-right-radius: 1em;display: grid; grid-gap:22px; max-height: ${((window.innerHeight - (cont.getBoundingClientRect().top + 40)))}px; overflow-y: auto;}`);
                 right_panel.appendChild(right_body_cont);
+                
+                    let top_label = ele('div');
+                    a(top_label,[['id',`${sub_application_id}_top_label`]]);
+                    inlineStyler(top_label,`{text-align: center;}`);
+                    right_body_cont.appendChild(top_label);
+                    top_label.innerText = application_label ? application_label : '';
+                    
+                    if(date_options) addDateSelector(sub_application_id,right_body_cont,date_options);
+                    if(select_options) addSelectOptions(sub_application_id,right_body_cont,select_options);
 
-                let range_label = ele('div');
-                right_body_cont.appendChild(range_label);
-                range_label.innerText = range_label_text;
+                    
+                    ranges?.forEach((itm,i)=> {
+                        let range_cont = ele('div');
+                        a(range_cont,[['class','range_container']]);
+                        inlineStyler(range_cont,`{width:100%;}`);
+                        right_body_cont.appendChild(range_cont);
 
-                let range_slider = ele('input');
-                a(range_slider,[['id',`${sub_application_id}_range_slider`],['type','range'],['max','30'],['min','1']]);
-                right_body_cont.appendChild(range_slider);
-                range_slider.value = 7;
-                range_slider.onmousemove = ()=> {    range_label.innerText = `${range_slider.value} ${range_label_text}`;  };
+                        let range_label = ele('div');
+                        range_cont.appendChild(range_label);
+                        range_label.innerText = `${itm.default_value} ${itm.label}`;
+        
+                        let range_slider = ele('input');
+                        a(range_slider,[['id',`${i}_${sub_application_id}_range_slider`],['type','range'],['max',itm.max],['min',itm.min]]);
+                        inlineStyler(range_slider,`{width:100%;}`);
+                        range_cont.appendChild(range_slider);
+                        range_slider.value = itm.default_value;
+                        range_slider.onmousemove = ()=> {    range_label.innerText = `${range_slider.value} ${itm.label}`;  };
+                    });
+                    
+                    textareas.forEach((itm,i)=> {
+                        let textarea = ele('textarea');
+                        a(textarea,[['id',`${i}_${sub_application_id}_textarea`],['class','textareas textarea pad8'],['placeholder',itm.placeholder]]);
+                        inlineStyler(textarea,`{height:${itm.height}px; width:${itm.width}px;}`);
+                        right_body_cont.appendChild(textarea);
+                    });
 
-                let top_label = ele('div');
-                a(top_label,[['id','top_label']]);
-                inlineStyler(top_label,`{text-align: center;}`);
-                right_body_cont.appendChild(top_label);
-                // top_label.innerText = '';
+                    let run_btn = ele('div');
+                    a(run_btn,[['id',`${sub_application_id}_run_btn`],['class','hover_btn centertext pad8']]);
+                    right_body_cont.appendChild(run_btn);
+                    run_btn.innerText = btn_text;
 
+                    if(textareas) Array.from(cn(cont,'textareas')).forEach(elm=> inlineStyler(elm,`{width:${elm.getBoundingClientRect().width < right_body_cont.getBoundingClientRect().width ? right_body_cont.getBoundingClientRect().width : elm.getBoundingClientRect().width}px;}`));
+                    Array.from(cont.querySelectorAll('*')).forEach(elm=> inlineStyler(elm,`{font-family: 'Open Sans', sans-serif; font-size:14px;}`) );
+        return run_btn;
+    }
 
-                let textarea = ele('textarea');
-                a(textarea,[['id',`${sub_application_id}_textarea`],['class','textarea pad8'],['placeholder','your\ncontent\nhere']]);
-                inlineStyler(textarea,`{height:400px; width:380px;}`);
-                right_body_cont.appendChild(textarea);
+    function yearMonthDate(d){
+        var months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+        var date = new Date(d);
+        return `${date.getUTCFullYear()}-${months[date.getUTCMonth()]}-${(date.getUTCDate() < 10 ? '0'+date.getUTCDate() : date.getUTCDate() )}`;
+    }
+    var dayMonthYearQueryString = (d)=> `day:${new Date(d).getUTCDate()},month:${new Date(d).getUTCMonth()},year:${new Date(d).getUTCFullYear()}`;
+    var getDayMonthYearQueryString = (id)=> {return {start:dayMonthYearQueryString(document.getElementById(`${id}_start_date`)?.value),end:dayMonthYearQueryString(document.getElementById(`${id}_end_date`)?.value)}};
 
-                let run_btn = ele('div');
-                a(run_btn,[['class','hover_btn centertext pad8']]);
-                right_body_cont.appendChild(run_btn);
-                run_btn.innerText = btn_text;
-                // run_btn.onclick = ;
+    function addDateSelector(ref_id,ref,date_options){
+        date_options.forEach(itm=> {
+            let cont = ele('div');
+            ref.appendChild(cont);
+            inlineStyler(cont,`{display:grid; grid-gap:4px;}`);
+            cont.innerHTML = `
+            <div>${itm.label}</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 18px;">
+                <div style="display: grid; grid-template-columns: 70px 1fr; grid-gap: 8px;"> <label style="color: #222526;" >Start date</label> <input style="color: #222526; border: 1px solid #222526;" id="${ref_id}_start_date" type="date" value="${itm.start ? itm.start : (yearMonthDate((new Date().getTime() - (2 * 86400000))))}"> </div>
+                <div style="display: grid; grid-template-columns: 70px 1fr; grid-gap: 8px;"> <label style="color: #222526;" >End date</label> <input style="color: #222526; border: 1px solid #222526;" id="${ref_id}_end_date" type="date" value="${itm.end ? itm.end : (yearMonthDate((new Date().getTime() - 86400000)))}"> </div>
+            </div>
+            `; 
+        })
+        
+    }
 
-                inlineStyler(range_slider,`{width:${textarea.getBoundingClientRect().width}px;}`)
+    function addSelectOptions(id,ref,select_options){
+        select_options?.forEach((itm,i)=> {
+            let field = ele('div');
+            ref.appendChild(field);
+            a(field,[['class','search_field']]);
+            inlineStyler(field,`{display: grid; grid-template-columns: 52px 1fr; grid-gap:8px;}`);
+            
+            let btn = ele('div');
+            field.appendChild(btn);
+            a(btn,[['class','textarea']]);
+            addTypeSwitch(id,btn,{...itm,...{index:i}});
+            
+            let label = ele('div');
+            field.appendChild(label);
+            label.innerText = itm.label;
+        })
     }
     
-    buildContainer({sub_application_id:'content_popup_form',range_label_text:'range_label_text',btn_text:'Run Program'})
+    function addTypeSwitch(id,parent_elm,params){
+        var {index,key,current_switch_text,bool_state,boolstates} = params;
+        // 
+        let boolopt = ele('div');
+        parent_elm.appendChild(boolopt);
+        a(boolopt,[['id',id],['class','hover_btn switch_btn'],['boolx',bool_state],['index',index],['key',key],['boolstates',btoa(JSON.stringify(boolstates))]]);
+        inlineStyler(boolopt,`{z-index: ${topZIndexer()+1500}; height: 20px; width: 20px; background: ${ bool_state === 'unselected' ? '#8a0e00' : '#008a0e'}; border: 1px solid #d4e4ff; box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 6px 0px, rgba(255, 255, 255, 0.8) -6px -2px 6px -3px; transform:translate(${bool_state === 'unselected' ? 28 : 0}px,0px);}`);
+        boolopt.onclick = everySomeSwitchRxBool;
+    
+        let boolcard = ele('div');
+        parent_elm.appendChild(boolcard);
+        inlineStyler(boolcard,`{user-select: none; z-index: ${topZIndexer()}; background: transparent; color: ${ bool_state === 'unselected' ? '#8a0e00' : '#008a0e'}; text-align: center; transform:translate(0px,0px);}`);
+        boolcard.innerText = current_switch_text;
+    }
+    function everySomeSwitchRxBool(){
+        let boolstates = JSON.parse(atob(this.getAttribute('boolstates')));
+        let status = this.getAttribute('boolx');
+        let display = tn(this.parentElement,'div')[1];
+        
+        if(status === 'selected'){
+            a(this,[['boolx','unselected']]);
+            inlineStyler(this,`{transform:translate(28px,0px); background:#8a0e00;}`);
+            inlineStyler(display,`{color:#8a0e00; text-align: center; transform:translate(0px,0px);}`);
+            display.innerText = boolstates['unselected'];
+        }else{
+            a(this,[['boolx','selected']]);
+            inlineStyler(this,`{transform:translate(0px,0px); background:#008a0e;}`);
+            inlineStyler(display,`{color:#008a0e; text-align: center; transform:translate(0px,0px);}`);
+            display.innerText = boolstates['selected'];
+        }
+    }
+
+    var container_params = {
+        left:0,
+        top:0,
+        sub_application_id:'content_popup_form',
+        btn_text:'Run Program',
+        textareas:[{placeholder:'user input text',width:400,height:320}],
+        date_options:[
+            {start:'2015-01-01',end:'',label:'select date range'}
+        ],
+        ranges:[{
+            label:'Selected',
+            min:1,
+            max:100,
+            default_value:7,
+        }],
+        
+        select_options:[
+            {
+                label:'Some Item To Select',
+                key:'some_key_reference',
+                current_switch_text:'true',
+                bool_state:'selected',
+                boolstates:{selected:'true',unselected:'false'},
+            }
+        ]
+    }
+    let run_program_btn = buildContainer(container_params);
+    run_program_btn.onclick = runProgram;
+
+    async function runProgram(){
+        console.log('get user selections and do your thing');
+    }
+
 }
-buildBasicFormTemplate()
+genericFormsPopup()
