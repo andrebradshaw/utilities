@@ -289,8 +289,8 @@ async function genericFormsPopup(){
             cont.innerHTML = `
             <div>${itm.label}</div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 18px;">
-                <div style="display: grid; grid-template-columns: 70px 1fr; grid-gap: 8px;"> <label style="color: #222526;" >Start date</label> <input style="color: #222526; border: 1px solid #222526;" id="${ref_id}_start_date" type="date" value="${itm.start ? itm.start : (yearMonthDate((new Date().getTime() - (2 * 86400000))))}"> </div>
-                <div style="display: grid; grid-template-columns: 70px 1fr; grid-gap: 8px;"> <label style="color: #222526;" >End date</label> <input style="color: #222526; border: 1px solid #222526;" id="${ref_id}_end_date" type="date" value="${itm.end ? itm.end : (yearMonthDate((new Date().getTime() - 86400000)))}"> </div>
+                <div style="display: grid; grid-template-columns: 70px 1fr; grid-gap: 8px;"> <label style="background: transparent; color: #222526;" >Start date</label> <input style="background: transparent; color: #222526; border: 1px solid #222526;" id="${ref_id}_start_date" type="date" value="${itm.start ? itm.start : (yearMonthDate((new Date().getTime() - (2 * 86400000))))}"> </div>
+                <div style="display: grid; grid-template-columns: 70px 1fr; grid-gap: 8px;"> <label style="background: transparent; color: #222526;" >End date</label> <input style="background: transparent; color: #222526; border: 1px solid #222526;" id="${ref_id}_end_date" type="date" value="${itm.end ? itm.end : (yearMonthDate((new Date().getTime() - 86400000)))}"> </div>
             </div>
             `; 
         })
@@ -317,7 +317,6 @@ async function genericFormsPopup(){
     
     function addTypeSwitch(id,parent_elm,params){
         var {index,key,current_switch_text,bool_state,boolstates} = params;
-        // 
         let boolopt = ele('div');
         parent_elm.appendChild(boolopt);
         a(boolopt,[['id',id],['class','hover_btn switch_btn'],['boolx',bool_state],['index',index],['key',key],['boolstates',btoa(JSON.stringify(boolstates))]]);
@@ -352,7 +351,9 @@ async function genericFormsPopup(){
         top:0,
         sub_application_id:'content_popup_form',
         btn_text:'Run Program',
-        textareas:[{placeholder:'user input text',width:400,height:320}],
+        textareas:[
+            {placeholder:'user input text',width:400,height:320}
+        ],
         date_options:[
             {start:'2015-01-01',end:'',label:'select date range'}
         ],
@@ -362,7 +363,6 @@ async function genericFormsPopup(){
             max:100,
             default_value:7,
         }],
-        
         select_options:[
             {
                 label:'Some Item To Select',
