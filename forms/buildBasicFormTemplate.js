@@ -191,7 +191,7 @@ async function genericFormsPopup(){
         setQuickliCSS(sub_application_id);
         if(gi(document,sub_application_id)) gi(document,sub_application_id).outerHTML = '';
         const cont = ele('div');
-        a(cont,[['id',sub_application_id]]);
+        a(cont,[['id',sub_application_id],['class','pad8']]);
         let shadow = 'box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;';
         inlineStyler(cont,`{display: grid; grid-template-columns: 32px 1fr 4px; ${shadow} text-align: left; background-image: linear-gradient(to bottom right, #dae3e8, #ffffff, #ffffff); color: #1c1d1f; border-radius: 1em; position: fixed; z-index: ${topZIndexer()}; top: ${top ? top : 50}px; left: ${left ? left : 50}px;}`);
         document.body.appendChild(cont);
@@ -316,7 +316,7 @@ async function genericFormsPopup(){
     }
     
     function addTypeSwitch(id,parent_elm,params){
-        var {index,key,current_switch_text,bool_state,boolstates} = params;
+        var {index,key,bool_state,boolstates} = params;
         let boolopt = ele('div');
         parent_elm.appendChild(boolopt);
         a(boolopt,[['id',id],['class','hover_btn switch_btn'],['boolx',bool_state],['index',index],['key',key],['boolstates',btoa(JSON.stringify(boolstates))]]);
@@ -326,7 +326,7 @@ async function genericFormsPopup(){
         let boolcard = ele('div');
         parent_elm.appendChild(boolcard);
         inlineStyler(boolcard,`{user-select: none; z-index: ${topZIndexer()}; background: transparent; color: ${ bool_state === 'unselected' ? '#8a0e00' : '#008a0e'}; text-align: center; transform:translate(0px,0px);}`);
-        boolcard.innerText = current_switch_text;
+        boolcard.innerText = boolstates[bool_state];
     }
     function everySomeSwitchRxBool(){
         let boolstates = JSON.parse(atob(this.getAttribute('boolstates')));
@@ -367,7 +367,6 @@ async function genericFormsPopup(){
             {
                 label:'Some Item To Select',
                 key:'some_key_reference',
-                current_switch_text:'true',
                 bool_state:'selected',
                 boolstates:{selected:'true',unselected:'false'},
             }
