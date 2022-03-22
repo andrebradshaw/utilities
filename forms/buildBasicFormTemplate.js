@@ -289,8 +289,8 @@ async function genericFormsPopup(){
             cont.innerHTML = `
             <div>${itm.label}</div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; grid-gap: 18px;">
-                <div style="display: grid; grid-template-columns: 70px 1fr; grid-gap: 8px;"> <label style="background: transparent; color: #222526;" >Start date</label> <input style="background: transparent; color: #222526; border: 1px solid #222526;" id="${ref_id}_start_date" type="date" value="${itm.start ? itm.start : (yearMonthDate((new Date().getTime() - (2 * 86400000))))}"> </div>
-                <div style="display: grid; grid-template-columns: 70px 1fr; grid-gap: 8px;"> <label style="background: transparent; color: #222526;" >End date</label> <input style="background: transparent; color: #222526; border: 1px solid #222526;" id="${ref_id}_end_date" type="date" value="${itm.end ? itm.end : (yearMonthDate((new Date().getTime() - 86400000)))}"> </div>
+                <div style="display: grid; grid-template-columns: 70px 1fr; grid-gap: 8px;"> <label style="background: transparent; color: #222526;" >Start date</label> <input class="textarea" style="background: transparent; color: #222526;" id="${ref_id}_start_date" type="date" value="${itm.start ? itm.start : (yearMonthDate((new Date().getTime() - (2 * 86400000))))}"> </div>
+                <div style="display: grid; grid-template-columns: 70px 1fr; grid-gap: 8px;"> <label style="background: transparent; color: #222526;" >End date</label> <input class="textarea" style="background: transparent; color: #222526;" id="${ref_id}_end_date" type="date" value="${itm.end ? itm.end : (yearMonthDate((new Date().getTime() - 86400000)))}"> </div>
             </div>
             `; 
         })
@@ -320,7 +320,7 @@ async function genericFormsPopup(){
         let boolopt = ele('div');
         parent_elm.appendChild(boolopt);
         a(boolopt,[['id',id],['class','hover_btn switch_btn'],['boolx',bool_state],['index',index],['key',key],['boolstates',btoa(JSON.stringify(boolstates))]]);
-        inlineStyler(boolopt,`{z-index: ${topZIndexer()+1500}; height: 20px; width: 20px; background: ${ bool_state === 'unselected' ? '#8a0e00' : '#008a0e'}; border: 1px solid #d4e4ff; box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 6px 0px, rgba(255, 255, 255, 0.8) -6px -2px 6px -3px; transform:translate(${bool_state === 'unselected' ? 28 : 0}px,0px);}`);
+        inlineStyler(boolopt,`{z-index: ${topZIndexer()+1500}; height: 20px; width: 20px; background: ${ bool_state === 'unselected' ? '#8a0e00' : '#008a0e'}; border: 1px solid #d4e4ff; box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 6px 0px, rgba(255, 255, 255, 0.8) -6px -2px 6px -3px; transform:translate(${bool_state === 'unselected' ? 30 : 2}px,2px);}`);
         boolopt.onclick = everySomeSwitchRxBool;
     
         let boolcard = ele('div');
@@ -335,12 +335,12 @@ async function genericFormsPopup(){
         
         if(status === 'selected'){
             a(this,[['boolx','unselected']]);
-            inlineStyler(this,`{transform:translate(28px,0px); background:#8a0e00;}`);
+            inlineStyler(this,`{transform:translate(30px,2px); background:#8a0e00;}`);
             inlineStyler(display,`{color:#8a0e00; text-align: center; transform:translate(0px,0px);}`);
             display.innerText = boolstates['unselected'];
         }else{
             a(this,[['boolx','selected']]);
-            inlineStyler(this,`{transform:translate(0px,0px); background:#008a0e;}`);
+            inlineStyler(this,`{transform:translate(2px,2px); background:#008a0e;}`);
             inlineStyler(display,`{color:#008a0e; text-align: center; transform:translate(0px,0px);}`);
             display.innerText = boolstates['selected'];
         }
