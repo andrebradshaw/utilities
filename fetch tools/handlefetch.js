@@ -1,4 +1,6 @@
 async function handleFetch(url,params_obj,type){ //all arguments are required
+  const rando = (n) => Math.round(Math.random() * n);
+  const delay = (ms) => new Promise(res => setTimeout(res, ms));
   async function handleResponse(res,type){
     if(type == 'json') return await res.json().catch(err=> { console.log([err,url,params_obj]); return false });
     if(type == 'text') return await res.text().catch(err=> { console.log([err,url,params_obj]); return false });
