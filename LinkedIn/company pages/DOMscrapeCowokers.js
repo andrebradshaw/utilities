@@ -1,7 +1,6 @@
 async function getLinkedInDialogPopUp(){
-    function downloadr(arr2D, filename) {
-      var data = /.json$|.js$/.test(filename) ? JSON.stringify(arr2D) : arr2D.map(el=> el.reduce((a,b) => a+'	'+b )).reduce((a,b) => a+''+b);
-      var type = /.json$|.js$/.test(filename) ? 'data:application/json;charset=utf-8,' : 'data:text/plain;charset=utf-8,';
+    function downloadr(data, filename) {
+      var type ='data:text/plain;charset=utf-8,';
       var file = new Blob([data], {    type: type  });
       if (window.navigator.msSaveOrOpenBlob) {
         window.navigator.msSaveOrOpenBlob(file, filename);
@@ -25,12 +24,12 @@ async function getLinkedInDialogPopUp(){
     var scrollable = document.getElementsByClassName('scaffold-finite-scroll--infinite')?.[0];
     let header_text = dialog.getElementsByTagName('h2')?.[0]?.innerText;
     let loop_count = /\d+/.exec(header_text)?.[0] ? parseInt(/\d+/.exec(header_text)?.[0]) : 100;
-    let loop_degradiation_ratio = loop_count * 0.15;
-    for(let i=0; i<loop_count; i=i+9){
+    let loop_degradiation_ratio = loop_count * 0.9;
+    for(let i=0; i<loop_count; i=i+5){
         await delay(500);
         Array.from(document.getElementsByClassName('scaffold-finite-scroll--infinite')?.[0]?.getElementsByTagName('a'))?.at(-1)?.scrollIntoViewIfNeeded({block: "end", inline: "end"});
         let urls = unqHsh(hrefs,{});
-        if((urls?.length - loop_degradiation_ratio) >= loop_count) break;
+        if((urls?.length + loop_degradiation_ratio) >= loop_count) break;
     }
     Array.from(document.getElementsByClassName('scaffold-finite-scroll--infinite')?.[0]?.getElementsByTagName('a'))?.at(-1)?.scrollIntoViewIfNeeded({block: "end", inline: "end"});
     let tbody = Array.from(Array.from(document.getElementsByTagName('div')).filter(elm=> elm.getAttribute('role') == 'dialog')?.[0]?.getElementsByTagName('a')).filter(a=> !/message/i.test(a.className)).map(a=> {
