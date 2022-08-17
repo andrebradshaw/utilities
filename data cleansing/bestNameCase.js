@@ -3,7 +3,7 @@ function fixNameCase(s){
     const x = new RegExp('^[^'+specialchar+'abcdefghijklmnopqrstuvwxyz\s]+','ig');
     const w = new RegExp('[^'+specialchar+'abcdefghijklmnopqrstuvwxyz\s]+$','ig');
     const y = new RegExp('(?=[^'+specialchar+'a-zA-Z])\\b','i');
-    return s && typeof s == 'string' ? s.replace(x,'').replace(w,'').split(y).map(el=> el.replace(/\w\S*/g, txt=> txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())).join('').replace(/(?<=\bMc)\w/ig, t=> t.charAt(0).toUpperCase()) : s;
+    return s && typeof s == 'string' ? s.replace(x,'').replace(w,'').split(y).map(el=> el.replace(/\w\S*/g, txt=> txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())).join('').replace(/(?<=\bMc)\w/ig, t=> t.charAt(0).toUpperCase()).replace(/\.|\(|\)/g,'') : s;
 }
 fixNameCase('◄ ★ ANDRÉ	BRADSHAW ★ ►')
 /*
