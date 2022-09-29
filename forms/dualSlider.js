@@ -179,3 +179,89 @@ draggingEle.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"}
   };
   this.onmousedown = mouseDownHandler;
 }
+
+
+
+
+
+
+//version2
+function createDualRangeSlider(parmas){
+	const {min,max,offset,type,displayTranslation,id,parent_element} = params;
+  const raw_differential = (max-min);
+  //const offset_differential = (max-min)/(offset ? offset : 1);
+  
+  const cn = (o, s) => o ? o.getElementsByClassName(s) : null;
+  const tn = (o, s) => o ? o.getElementsByTagName(s) : null;
+  const gi = (o, s) => o ? o.getElementById(s) : null;
+  const ele = (t) => document.createElement(t);
+  const attr = (o, k, v) => o.setAttribute(k, v);
+  const a = (l, r) => r.forEach(a => attr(l, a[0], a[1]));
+  const delay = (ms) => new Promise(res => setTimeout(res, ms));
+  
+  const cleanObject = (ob) => 
+    Object.entries(ob).reduce((r, [k, v]) => {
+      if(v != null && v != undefined && v != "" && ( typeof v == 'boolean' || typeof v == 'string' || typeof v == 'symbol' || typeof v == 'number' || typeof v == 'function' || (typeof v == 'object'  && ((Array.isArray(v) && v.length) || (Array.isArray(v) != true)) ) ) ) { 
+        r[k] = v; 
+        return r;
+      } else { 
+        return r; 
+      }
+  }, {});
+  function topZIndexer(){
+    let n = new Date().getTime() / 1000000;
+    let r = (n - Math.floor(n)) * 100000;
+    return (Math.ceil(n+r) * 10);
+  }
+
+  function inlineStyler(elm,css){
+    Object.entries(JSON.parse(
+      css.replace(/(?<=:)\s*(\b|\B)(?=.+?;)/g,'"')
+      .replace(/(?<=:\s*.+?);/g,'",')
+      .replace(/[a-zA-Z-]+(?=:)/g, k=> k.replace(/^\b/,'"').replace(/\b$/,'"'))
+      .replace(/\s*,\s*\}/g,'}')
+    )).forEach(kv=> { elm.style[kv[0]] = kv[1]});
+  }
+
+  function setCSS(style_id){
+    if(gi(document,`${style_id}_style`)) gi(document,`${style_id}_style`).outerHTML = '';
+    let csselm = ele('style');
+    a(csselm,[['class',`${style_id}_style`]]);
+    document.head.appendChild(csselm);
+    csselm.innerHTML = `
+			.slider_parent {
+      	height:22px;
+        width:${parent_element.getBoundingClientRect().width}px;
+        border-radius:0.2em;
+        user-select: none; 
+      }
+      .slider_container {
+      	height:22px;
+        width:${parent_element.getBoundingClientRect().width}px;
+        border-radius:0.2em; 
+      }
+		`;
+	}
+	setCSS(`${id}_slider_css`);
+        
+  const slider_parent = ele('div');
+  parent_element.appendChild(slider_parent);
+  a(slider_parent,[['class','slider_parent']]);
+  
+    const slider_container = ele('div');
+    a(slider_parent,[['class','slider_container']]);
+    slide_parent.appendChild(slider_container);
+  
+        const slide_ball_1 = ele('div');
+        a(slide_ball_1,[['class','slide_ball'],['id',`${id}_slide_ball_1`]]);
+        inlineStyler(slide_ball_1,`{transform:translate(-7px,0px); left:${ref_elm.getBoundingClientRect().left}px; z-index:${topZIndexer()};}`);
+        slide_container.appendChild(slide_ball_1);
+        slide_ball_1.onmouseenter = dragSlider;
+    
+        const slide_ball_2 = ele('div');
+        a(slide_ball_2,[['class','slide_ball'],['id',`${id}_slide_ball_2`]]);
+        inlineStyler(slide_ball_2,`{transform:translate(-7px,0px); left:${ref_elm.getBoundingClientRect().x + max_slide_cont}px; z-index:${topZIndexer()};}`);
+        slide_container.appendChild(slide_ball_2);
+        slide_ball_2.onmouseenter = dragSlider;
+  
+}
