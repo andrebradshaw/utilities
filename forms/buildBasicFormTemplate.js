@@ -187,6 +187,7 @@ async function genericFormsPopup(){
             date_options,
             ranges,
             select_options,
+            uploads,
         } = params;
         setQuickliCSS(sub_application_id);
         if(gi(document,sub_application_id)) gi(document,sub_application_id).outerHTML = '';
@@ -237,6 +238,20 @@ async function genericFormsPopup(){
                     if(date_options) addDateSelector(sub_application_id,right_body_cont,date_options);
                     if(select_options) addSelectOptions(sub_application_id,right_body_cont,select_options);
 
+                    if(uploads){
+                        uploads?.forEach((itm,i)=> {
+                            let upload_cont = ele('div');
+                            a(upload_cont,[['class','upload_container']]);
+                            inlineStyler(upload_cont,`{width:100%;}`);
+                            right_body_cont.appendChild(upload_cont);
+
+                            let upload_elm = ele('input');
+                            upload_cont.appendChild(upload_elm);
+                            a(upload_elm,[['id', `${i}_upload_container`],["type", "file"],["name", "file[]"],["multiple", "true"]]);
+                            upload_elm.addEventListener('change',handleFiles);
+                            
+                        })
+                    }
                     
                     ranges?.forEach((itm,i)=> {
                         let range_cont = ele('div');
@@ -256,7 +271,7 @@ async function genericFormsPopup(){
                         range_slider.onmousemove = ()=> {    range_label.innerText = `${range_slider.value} ${itm.label}`;  };
                     });
                     
-                    textareas.forEach((itm,i)=> {
+                    textareas?.forEach((itm,i)=> {
                         let textarea = ele('textarea');
                         a(textarea,[['id',`${i}_${sub_application_id}_textarea`],['class','textareas textarea pad8'],['placeholder',itm.placeholder]]);
                         inlineStyler(textarea,`{height:${itm.height}px; width:${itm.width}px;}`);
@@ -351,27 +366,66 @@ async function genericFormsPopup(){
         top:0,
         sub_application_id:'content_popup_form',
         btn_text:'Run Program',
-        textareas:[
-            {placeholder:'user input text',width:400,height:320}
-        ],
-        date_options:[
-            {start:'2015-01-01',end:'',label:'select date range'}
-        ],
-        ranges:[{
-            label:'Selected',
-            min:1,
-            max:100,
-            default_value:7,
-        }],
-        select_options:[
+        // textareas:[
+        //     {placeholder:'user input text',width:400,height:320}
+        // ],
+        // date_options:[
+        //     {start:'2015-01-01',end:'',label:'select date range'}
+        // ],
+        // ranges:[{
+        //     label:'Selected',
+        //     min:1,
+        //     max:100,
+        //     default_value:7,
+        // }],
+        // select_options:[
+        //     {
+        //         label:'Some Item To Select',
+        //         key:'some_key_reference',
+        //         bool_state:'selected',
+        //         boolstates:{selected:'true',unselected:'false'},
+        //     }
+        // ],
+        uploads:[
             {
-                label:'Some Item To Select',
-                key:'some_key_reference',
-                bool_state:'selected',
-                boolstates:{selected:'true',unselected:'false'},
+                hide_elm_id_while_loading:'content_popup_form_run_btn'
             }
         ]
     }
+
+ 
+
+    var upload_contain_arr = [];
+    async function handleFiles() {
+      let run_btn = gi(document,container_params?.uploads?.[0]?.hide_elm_id_while_loading);
+      inlineStyler(run_btn,`{display: none;}`);
+      var textJSONAsArray = (text) => Array.isArray(JSON.parse(text)) ? JSON.parse(text) : [JSON.parse(text)];
+      var files = this.files;
+      for(var i=0; i<files.length; i++){
+        let textdata = await getDataFromFile(files[i]);
+        textJSONAsArray(textdata).forEach(d=> upload_contain_arr.push(d));
+      }
+        inlineStyler(run_btn,`{display: block;}`);
+      console.log(upload_contain_arr);
+      // gi(document,'pop_FileUploader').outerHTML = '';
+    }
+
+    async function readTextFile(d){
+      var reader = new FileReader();    /* https://developer.mozilla.org/en-US/docs/Web/API/FileReader */
+      reader.readAsText(d);          /* https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsText */
+      return new Promise((res,rej)=> {  /* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise */
+        reader.onload = (e) => {        /* https://developer.mozilla.org/en-US/docs/Web/API/FileReader/onload */
+          res(e.target.result)
+        }
+      })
+    } 
+
+    async function getDataFromFile(file){
+      var textdata = await readTextFile(file);
+      return textdata;
+    }
+    
+        
     let run_program_btn = buildContainer(container_params);
     run_program_btn.onclick = runProgram;
 
