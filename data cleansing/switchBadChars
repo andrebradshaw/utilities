@@ -1,0 +1,3 @@
+function switchBadChars(s){
+    return typeof s == 'string' ? s.replace(/aÃ\sÃµ/g,'açõ').replace(/nÃ Ã o/g,'nção').replace(/kÃ\s+b/g,'køb').replace(/seÃ\s+a/g,'eña').replace(/rÃ\s+f/g,'ráf').replace(/Ã³/g,'ó').replace(/Ãª/g,'e').replace(/Ã¼/g,'ü').replace(/rÃ\sa/g,'ría').replace(/\bÃ\s+\b/g,'é').replace(/^æ å å$/g,'攻城师') : s;
+}
