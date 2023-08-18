@@ -1,3 +1,4 @@
+const cleanKey = (s)=> s?.toLowerCase()?.replace(/-/g,'_')?.replace(/^_/g,'')?.replace(/_$/g,'')?.replace(/[_]+/g,'_')
 function formatJSONstring(s){
     if(/\{\w+:/.test(s)){
         try{
@@ -29,9 +30,9 @@ function getCookieAsJSON(){
         let decoded = tryJSON(tryATOB(cleanval),'formatJSONstring');
         return {
             ...{
-                [kv[0]]: cleanval
+                [cleanKey(kv[0])]: cleanval
             },
-            ...(decoded ? {[`atob_${kv[0]}`]:decoded} : {})
+            ...(decoded ? {[`atob_${cleanKey(kv[0])}`]:decoded} : {})
         }
     }).reduce((a,b)=> { return {...a,...b}});
 }
