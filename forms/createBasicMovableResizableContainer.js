@@ -209,7 +209,7 @@ function createBasicContainer(params){
         head_mover:head_mover,
         tbody:tbody,
         left_side:left_side,
-        middle_cont:middle_cont,
+        middle_cont:middle_cont, /* this is where you will attach all of the elements you wish to add to the container */
         right_side:right_side,
         footer:footer,
         foot_label:foot_label,
