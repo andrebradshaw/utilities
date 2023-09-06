@@ -5,8 +5,8 @@ function initMilitaryCharCoder(){
     const ele = (t)=>document.createElement(t);
     const attr = (o,k,v)=>o ? o.setAttribute(k, v) : false;
     const a = (l,r)=>r.forEach(i=>attr(l, i[0], i[1]));
-    const btoaJSON = (s)=>btoa(encodeURIComponent(JSON.stringify(s)))
-    const atobJSON = (s)=>JSON.parse(decodeURIComponent(atob(s)))
+    const btoaJSON = (s)=>btoa(encodeURIComponent(JSON.stringify(s)));
+    const atobJSON = (s)=>JSON.parse(decodeURIComponent(atob(s)));
     const app_icons = {
         resize: `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet" viewBox="0 0 1000.000000 1000.000000" version="1.0"><g stroke="none" fill="#53fc18" transform="translate(0.000000,1000.000000) scale(0.100000,-0.100000)">        <path d="M9235 9969 c-31 -17 -9164 -9151 -9181 -9181 -8 -15 -14 -49 -14 -76 0 -38 6 -57 29 -88 34 -46 535 -544 571 -568 28 -18 110 -22 143 -5 31 16 9165 9148 9183 9181 8 15 14 49 14 76 0 38 -6 57 -29 88 -34 46 -535 544 -571 568 -28 18 -114 21 -145 5z"/>        <path d="M5923 4093 c-1911 -1908 -3479 -3476 -3484 -3485 -5 -9 -9 -38 -9 -64 l0 -48 228 -228 228 -228 53 0 53 0 3478 3472 c1914 1909 3482 3478 3485 3485 3 8 5 35 5 61 l0 46 -228 228 -228 228 -53 0 -53 0 -3475 -3467z"/>        <path d="M7042 2957 l-2442 -2442 0 -45 0 -45 213 -213 212 -212 45 0 45 0 2443 2443 2442 2442 0 45 0 45 -213 213 -212 212 -45 0 -45 0 -2443 -2443z"/>        <path d="M8088 1922 l-1478 -1477 0 -45 c0 -44 1 -45 178 -222 177 -178 178 -178 222 -178 l45 0 1472 1473 1473 1472 0 55 0 56 -173 172 c-172 171 -174 172 -218 172 l-44 0 -1477 -1478z"/></g>        </svg>`,
         resize_hover: `<svg xmlns="http://www.w3.org/2000/svg" version="1.0" viewBox="0 0 1000.000000 1000.000000" preserveAspectRatio="xMidYMid meet">        <g transform="translate(0.000000,1000.000000) scale(0.100000,-0.100000)" fill="#53fc18" stroke="none">        <path d="M5318 4622 l-3798 -3797 0 -59 0 -60 312 -314 c172 -172 325 -320 340 -328 15 -8 49 -14 75 -14 l48 0 3797 3798 3798 3797 0 59 0 60 -312 314 c-172 172 -325 320 -340 328 -15 8 -49 14 -75 14 l-48 0 -3797 -3798z"/>        <path d="M6763 3147 l-2483 -2482 0 -50 0 -49 268 -268 268 -268 49 0 50 0 2482 2483 2483 2482 0 50 0 49 -268 268 -268 268 -49 0 -50 0 -2482 -2483z"/>        <path d="M8058 1902 l-1268 -1267 0 -50 0 -50 248 -247 247 -248 50 0 50 0 1267 1268 1268 1267 0 50 0 50 -248 247 -247 248 -50 0 -50 0 -1267 -1268z"/>        </g>        </svg>`,
@@ -18,7 +18,7 @@ function initMilitaryCharCoder(){
         attach_method:'appendChild',
         id:'container_main',
         bg_color:'#191b1f',
-    }
+    };
     
     function inlineStyler(elm, css) {
         if (elm) {
@@ -84,9 +84,7 @@ function initMilitaryCharCoder(){
     
     function adjustElementSize(){
         var cont = this.parentElement.parentElement;
-        // var tbod = cn(cont,'menu_body')?.[0]
         let resize_elm_classes = this.getAttribute('data-resize-classes').split(/,/);
-        // var cont = document.getElementsByClassName(resize_elm_classes[0])?.[0];
         var tbod = cont.getElementsByClassName(resize_elm_classes[1])?.[0];
         let tbod_css = atobJSON(tbod.getAttribute('data-css'));
         let min_width = 100;
@@ -105,8 +103,8 @@ function initMilitaryCharCoder(){
             document.onmousemove = elementDrag;
         }
         function elementDrag(e) {
-            let moved_width = (width - (pos3 - e.clientX))
-            let moved_height = (height - (pos4 - e.clientY))
+            let moved_width = (width - (pos3 - e.clientX));
+            let moved_height = (height - (pos4 - e.clientY));
             let main_width = moved_width < min_width ? min_width : moved_width;
             let main_height = moved_height < min_height ? min_height : Math.floor(((height - (pos4 - e.clientY)) - (foot_height)));
             
@@ -158,7 +156,7 @@ function initMilitaryCharCoder(){
     
             let tbody = ele('div');
             cont.appendChild(tbody);
-            a(tbody,[['class','menu_body']])
+            a(tbody,[['class','menu_body']]);
             inlineStyler(tbody, `{display: grid; grid-template-columns: 32px 1fr 32px;}`);
     
                 let left_side = ele('div');
@@ -207,18 +205,15 @@ function initMilitaryCharCoder(){
             footer:footer,
             foot_label:foot_label,
             foot_resizer:foot_resizer,
-        }
+        };
     }
 
-
-/*
-Create basic dragable and resizable container
-*/
 
     var cont_elms = createBasicContainer(container_params);
     
     var textarea = ele('textarea');
     cont_elms.middle_cont.appendChild(textarea);
+    inlineStyler(textarea,`{ width:${cont_elms.middle_cont.getBoundingClientRect().width-30}px;}`);
     var go_btn = ele('div');
     go_btn.innerText = 'Run Conversion';
     inlineStyler(go_btn,`{margin: auto; text-align:center; cursor:pointer; color:#fffffe;}`);
@@ -229,7 +224,7 @@ Create basic dragable and resizable container
             textarea.select();
             document.execCommand('copy');
         }
-    }
+    };
 
     function stringToMilitaryLetterCallout(s){
         var codes = [
@@ -246,7 +241,7 @@ Create basic dragable and resizable container
             let i = codes.findIndex(c=> c.x.test(char));
             let ref = i > -1 ? codes[i].code : char;
             return `${char}\t${ref}\n`;
-        }).reduce((a,b)=> a+b)
+        }).reduce((a,b)=> a+b);
     }
 }
 initMilitaryCharCoder()
