@@ -129,7 +129,7 @@ function createBasicContainer(params){
 
     let cont = ele('div');
     a(cont,[['class',`menu_container${params?.classname ? ' '+params?.classname : ''}`],['id',params?.id]].filter(r=> r[1]));
-    inlineStyler(cont,`{position: fixed; top: ${params?.top ? params?.top+'px' ? '0x'}; width: ${params?.width ? params?.width+'px' : main_width}px; left: ${params?.left ? params?.left+'px' : '0px'}; z-index: ${topZIndexer()}; background: ${params?.bg_color ? params?.bg_color : 'transparent'}; border-radius: 0.2em; border: 2px solid ${params.border_color ? params.border_color : 'transparent'}; box-shadow:0px 1px 1px 1px rgba(0,0,0,0.4);}`);
+    inlineStyler(cont,`{position: fixed; top: ${params?.top ? params?.top+'px' : '0x'}; width: ${params?.width ? params?.width+'px' : main_width}px; left: ${params?.left ? params?.left+'px' : '0px'}; z-index: ${topZIndexer()}; background: ${params?.bg_color ? params?.bg_color : 'transparent'}; border-radius: 0.2em; border: 2px solid ${params.border_color ? params.border_color : 'transparent'}; box-shadow:0px 1px 1px 1px rgba(0,0,0,0.4);}`);
     
     try{
         params?.parent_elm?.[params?.attach_method](cont,params?.ref_elm);
