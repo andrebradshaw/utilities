@@ -49,8 +49,6 @@ function setHTMLCSS(style_id, css_text) {
 function dragElement() {
     var acted_elm = this;
     var el = this.parentElement.parentElement;
-    // inlineStyler(acted_elm,`{background: linear-gradient(to bottom left, transparent, transparent, transparent, ${colors.kick_green});}`);
-    // el.style.zIndex = topZIndexer();
     var pos1 = 0
       , pos2 = 0
       , pos3 = 0
@@ -60,14 +58,12 @@ function dragElement() {
     else
         this.onmousedown = dragMouseDown;
     function dragMouseDown(e) {
-        // inlineStyler(acted_elm,`{background-color:transparent;}`)
         pos3 = e.clientX;
         pos4 = e.clientY;
         document.onmouseup = closeDragElement;
         document.onmousemove = elementDrag;
     }
     function elementDrag(e) {
-        // inlineStyler(acted_elm,`{background-color:transparent;}`)
         pos1 = pos3 - e.clientX;
         pos2 = pos4 - e.clientY;
         pos3 = e.clientX;
@@ -75,7 +71,6 @@ function dragElement() {
         el.style.top = (el.offsetTop - pos2) + "px";
         el.style.left = (el.offsetLeft - pos1) + "px";
         el.style.opacity = "0.85";
-        // el.style.transition = "opacity 700ms";
         el.style.zIndex = topZIndexer();
     }
     function closeDragElement() {
@@ -83,7 +78,6 @@ function dragElement() {
         document.onmousemove = null;
         el.style.opacity = "1";
         el.style.zIndex = topZIndexer();
-        // inlineStyler(acted_elm,`{background-color:transparent;}`)
     }
 }
 
@@ -93,9 +87,7 @@ function adjustElementSize(){
     let resize_elm_classes = this.getAttribute('data-resize-classes').split(/,/);
     // var cont = document.getElementsByClassName(resize_elm_classes[0])?.[0];
     var tbod = cont.getElementsByClassName(resize_elm_classes[1])?.[0];
-    let tbod_css = atobJSON(tbod.getAttribute('data-css'))
-    // let header_pxs = cbod?.firstChild.style.gridTemplateColumns.split(/\s/).map(r=> /[\d\.]+/.exec(r)?.[0]).filter(r=> r).map(r=> parseFloat(r));
-    // let min_width = header_pxs?.length ? header_pxs.reduce((a,b)=> a+b)+60 : 120;
+    let tbod_css = atobJSON(tbod.getAttribute('data-css'));
     let min_width = 100;
     let min_height = 98;
     var foot_height = 0;
@@ -197,7 +189,7 @@ function createBasicContainer(params){
 
             let foot_resizer = ele('div');
             a(foot_resizer,[['data-resize-classes','menu_container,middle_cont']]);
-            inlineStyler(foot_resizer,`{width:22px; height: 22px; cursor:nw-resize;}`)
+            inlineStyler(foot_resizer,`{width:22px; height: 22px; cursor:nw-resize;}`);
             footer.appendChild(foot_resizer);
             foot_resizer.innerHTML = app_icons.resize;
             foot_resizer.onmouseover = adjustElementSize;
@@ -221,4 +213,5 @@ function createBasicContainer(params){
 /*
 Create basic dragable and resizable container
 */
+
 createBasicContainer(container_params)
